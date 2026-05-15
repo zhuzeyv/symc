@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌍 我的世界私服 - 官方網站</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #4ade80;
+    --green-dark: #16a34a;
+    --green-dim: #14532d;
+    --brown: #92400e;
+    --brown-light: #d97706;
+    --stone: #1c1917;
+    --stone-mid: #292524;
+    --stone-light: #3c3835;
+    --text: #fafaf9;
+    --text-muted: #a8a29e;
+    --text-dim: #78716c;
+    --border: rgba(255,255,255,0.08);
+    --red: #f87171;
+    --blue: #60a5fa;
+    --yellow: #facc15;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--stone);
+    color: var(--text);
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Pixel grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(28,25,23,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+  }
+  .nav-logo {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--green);
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo .cube {
+    width: 22px; height: 22px;
+    background: var(--green);
+    display: inline-block;
+    image-rendering: pixelated;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+  }
+  .nav-links {
+    display: flex;
+    gap: 0;
+    list-style: none;
+  }
+  .nav-links a {
+    display: block;
+    padding: 0 1rem;
+    height: 60px;
+    line-height: 60px;
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s, background 0.2s;
+  }
+  .nav-links a:hover { color: var(--green); background: rgba(74,222,128,0.05); }
+  .nav-ip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    background: var(--green-dim);
+    color: var(--green);
+    padding: 6px 14px;
+    border-radius: 4px;
+    border: 1px solid rgba(74,222,128,0.3);
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .nav-ip:hover { background: rgba(74,222,128,0.2); }
+  .copy-tip {
+    position: absolute;
+    top: -30px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--green);
+    color: #000;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 3px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .copy-tip.show { opacity: 1; }
+  .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
+  .hamburger span { width: 22px; height: 2px; background: var(--text-muted); display: block; transition: 0.3s; }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 200px;
+    background: linear-gradient(transparent, var(--stone));
+    pointer-events: none;
+  }
+  .pixel-art {
+    width: 120px; height: 120px;
+    margin-bottom: 2rem;
+    image-rendering: pixelated;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  /* SVG inline pixel character */
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.2s forwards;
+  }
+  .hero-title {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.4s forwards;
+  }
+  .hero-title span { color: var(--green); }
+  .hero-sub {
+    font-size: 1.1rem;
+    color: var(--text-muted);
+    max-width: 540px;
+    margin-bottom: 2.5rem;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.6s forwards;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.6s 0.8s forwards;
+  }
+  .btn-primary {
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
+    font-size: 0.95rem;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.35); }
+  .btn-outline {
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.8rem 2rem;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+    font-size: 0.95rem;
+  }
+  .btn-outline:hover { border-color: var(--green); background: rgba(74,222,128,0.08); }
+  .online-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2rem;
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    opacity: 0;
+    animation: fadeUp 0.6s 1s forwards;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.25); } 50% { box-shadow: 0 0 0 6px rgba(74,222,128,0.1); } }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  /* SECTION */
+  .section {
+    position: relative; z-index: 1;
+    padding: 5rem 2rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  .section-header {
+    margin-bottom: 3rem;
+  }
+  .section-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--green);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-size: 2rem;
+    font-weight: 900;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0;
+  }
+
+  /* STAT CARDS */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 4rem;
+  }
+  .stat-card {
+    background: var(--stone-mid);
+    padding: 2rem;
+    text-align: center;
+  }
+  .stat-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--green);
+    display: block;
+  }
+  .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* POSTS GRID */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+  }
+  .post-card {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .post-card:hover { border-color: rgba(74,222,128,0.4); transform: translateY(-3px); }
+  .post-card-header {
+    padding: 1.25rem 1.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .post-badge {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .badge-update { background: rgba(74,222,128,0.15); color: var(--green); }
+  .badge-guide  { background: rgba(96,165,250,0.15); color: var(--blue); }
+  .badge-event  { background: rgba(250,204,21,0.15);  color: var(--yellow); }
+  .post-date { font-size: 0.78rem; color: var(--text-dim); margin-left: auto; }
+  .post-card-body { padding: 1rem 1.5rem 1.5rem; }
+  .post-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .post-excerpt { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+
+  /* GUIDES */
+  .guide-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  .guide-item {
+    background: var(--stone-mid);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+  }
+  .guide-item:hover { background: var(--stone-light); }
+  .guide-icon {
+    width: 40px; height: 40px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+  .guide-icon.green { background: rgba(74,222,128,0.15); }
+  .guide-icon.blue  { background: rgba(96,165,250,0.15); }
+  .guide-icon.yellow{ background: rgba(250,204,21,0.15); }
+  .guide-icon.red   { background: rgba(248,113,113,0.15); }
+  .guide-info { flex: 1; }
+  .guide-title { font-weight: 700; margin-bottom: 3px; }
+  .guide-desc { font-size: 0.83rem; color: var(--text-muted); }
+  .guide-arrow { color: var(--text-dim); margin-left: auto; align-self: center; font-size: 1.2rem; }
+
+  /* BAN TABLE */
+  .ban-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+  }
+  thead tr { background: var(--stone-light); }
+  thead th {
+    padding: 1rem 1.25rem;
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+  }
+  tbody tr { background: var(--stone-mid); border-bottom: 1px solid var(--border); transition: background 0.15s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--stone-light); }
+  tbody td { padding: 0.9rem 1.25rem; }
+  .ban-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 100px;
+  }
+  .ban-perm { background: rgba(248,113,113,0.15); color: var(--red); }
+  .ban-temp { background: rgba(250,204,21,0.15); color: var(--yellow); }
+  .ban-reason { color: var(--text-muted); }
+
+  /* SUGGESTION FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  .form-field { display: flex; flex-direction: column; gap: 6px; }
+  .form-field.full { grid-column: 1 / -1; }
+  label { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; }
+  input, textarea, select {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: 0.7rem 1rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+    resize: vertical;
+  }
+  input:focus, textarea:focus, select:focus { border-color: var(--green); }
+  textarea { min-height: 120px; }
+  select option { background: var(--stone); }
+  .form-submit {
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    padding: 0.85rem 2.5rem;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: transform 0.15s, box-shadow 0.15s;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.3); }
+  .form-note { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.75rem; }
+
+  /* SUGGESTION CARDS */
+  .suggestion-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  .suggestion-card {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+  .suggestion-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
+  .suggestion-player { font-weight: 700; font-size: 0.9rem; }
+  .suggestion-votes {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 0.8rem; color: var(--text-muted);
+  }
+  .vote-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    font-family: 'Noto Sans TC', sans-serif;
+  }
+  .vote-btn:hover { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.08); }
+  .vote-btn.voted { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.12); }
+  .suggestion-text { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+  .suggestion-tag {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: var(--stone-light);
+    color: var(--text-dim);
+  }
+  .suggestion-status { font-size: 0.75rem; margin-top: 0.5rem; }
+  .status-pending  { color: var(--yellow); }
+  .status-accepted { color: var(--green); }
+  .status-reviewed { color: var(--blue); }
+
+  /* FOOTER */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 3rem 2rem;
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.82rem;
+  }
+  footer strong { color: var(--text-muted); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75);
+    z-index: 200;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.25s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 560px;
+    width: 100%;
+    transform: translateY(20px);
+    transition: transform 0.25s;
+    position: relative;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; font-size: 1.2rem;
+  }
+  .modal-title { font-size: 1.25rem; font-weight: 900; margin-bottom: 0.5rem; }
+  .modal-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
+  .modal-body strong { color: var(--text); }
+  .modal-body h3 { color: var(--green); font-size: 1rem; margin: 1.25rem 0 0.5rem; }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem;
+    background: var(--green);
+    color: #000;
+    font-weight: 700;
+    padding: 0.85rem 1.5rem;
+    border-radius: 8px;
+    z-index: 300;
+    transform: translateY(10px);
+    opacity: 0;
+    transition: all 0.3s;
+    font-size: 0.875rem;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 640px) {
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 60px; left: 0; right: 0;
+      background: var(--stone);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-links.open a { height: auto; padding: 1rem 2rem; line-height: 1.5; }
+    .hamburger { display: flex; }
+    .form-grid { grid-template-columns: 1fr; }
+    .form-field.full { grid-column: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+      <rect x="2" y="8" width="6" height="6" fill="#4ade80"/>
+      <rect x="8" y="8" width="6" height="6" fill="#16a34a"/>
+      <rect x="14" y="8" width="6" height="6" fill="#4ade80"/>
+      <rect x="2" y="2" width="6" height="6" fill="#92400e"/>
+      <rect x="8" y="2" width="6" height="6" fill="#d97706"/>
+      <rect x="14" y="2" width="6" height="6" fill="#92400e"/>
+      <rect x="2" y="14" width="6" height="6" fill="#d97706"/>
+      <rect x="8" y="14" width="6" height="6" fill="#92400e"/>
+      <rect x="14" y="14" width="6" height="6" fill="#d97706"/>
+    </svg>
+    我的世界私服
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#news">最新公告</a></li>
+    <li><a href="#guides">攻略</a></li>
+    <li><a href="#bans">封禁名單</a></li>
+    <li><a href="#suggestions">玩家建議</a></li>
+  </ul>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <div class="nav-ip" onclick="copyIP()" title="點擊複製">
+      <span id="serverIP">play.yourserver.net</span>
+      <span class="copy-tip" id="copyTip">已複製！</span>
+    </div>
+    <div class="hamburger" onclick="toggleNav()" aria-label="選單">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <svg width="100" height="100" viewBox="0 0 16 16" class="pixel-art" xmlns="http://www.w3.org/2000/svg">
+    <rect x="4" y="0" width="8" height="8" fill="#d97706"/>
+    <rect x="4" y="0" width="4" height="4" fill="#92400e"/>
+    <rect x="6" y="2" width="2" height="2" fill="#1c1917"/>
+    <rect x="10" y="2" width="2" height="2" fill="#1c1917"/>
+    <rect x="6" y="5" width="4" height="1" fill="#1c1917"/>
+    <rect x="2" y="8" width="12" height="8" fill="#4ade80"/>
+    <rect x="2" y="8" width="12" height="1" fill="#16a34a"/>
+    <rect x="0" y="9" width="4" height="6" fill="#4ade80"/>
+    <rect x="12" y="9" width="4" height="6" fill="#4ade80"/>
+    <rect x="4" y="13" width="3" height="3" fill="#92400e"/>
+    <rect x="9" y="13" width="3" height="3" fill="#92400e"/>
+  </svg>
+  <div class="hero-tag">⛏ Minecraft 私人伺服器</div>
+  <h1 class="hero-title">探索、建造<br><span>屬於你的世界</span></h1>
+  <p class="hero-sub">一個友善、活躍的 Minecraft 社群。加入我們，與其他玩家一起冒險、建設、挑戰！</p>
+  <div class="hero-btns">
+    <a href="#guides" class="btn-primary">📖 新手攻略</a>
+    <a href="#news" class="btn-outline">📢 最新公告</a>
+  </div>
+  <div class="online-badge">
+    <span class="dot"></span>
+    伺服器運行中 · <span id="playerCount">47</span> 位玩家在線
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- STATS -->
+<section class="section">
+  <div class="stats-grid">
+    <div class="stat-card">
+      <span class="stat-num" id="stat1">1,284</span>
+      <span class="stat-label">🧑 註冊玩家</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">365</span>
+      <span class="stat-label">📅 伺服器天數</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">24/7</span>
+      <span class="stat-label">⏰ 穩定在線</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-num">1.21</span>
+      <span class="stat-label">🎮 遊戲版本</span>
+    </div>
+  </div>
+
+  <!-- ANNOUNCEMENTS -->
+  <div id="news" class="section-header">
+    <div class="section-tag">📢 公告</div>
+    <h2 class="section-title">最新公告與更新日誌</h2>
+  </div>
+  <div class="posts-grid">
+    <a href="#" class="post-card" onclick="openPost('post1');return false;">
+      <div class="post-card-header">
+        <span class="post-badge badge-update">更新</span>
+        <span class="post-date">2025-01-15</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">✨ v2.4.0 重大更新 — 新副本「深淵要塞」</div>
+        <div class="post-excerpt">全新地下城副本上線！組隊挑戰5層難度，頂層Boss掉落稀有裝備與稱號...</div>
+      </div>
+    </a>
+    <a href="#" class="post-card" onclick="openPost('post2');return false;">
+      <div class="post-card-header">
+        <span class="post-badge badge-event">活動</span>
+        <span class="post-date">2025-01-10</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">🎉 冬季節日活動開始！限定任務與獎勵</div>
+        <div class="post-excerpt">為期兩週的冬季活動，完成限定任務可獲得雪花幣，兌換獨家外觀與稱號...</div>
+      </div>
+    </a>
+    <a href="#" class="post-card" onclick="openPost('post3');return false;">
+      <div class="post-card-header">
+        <span class="post-badge badge-update">維護</span>
+        <span class="post-date">2025-01-05</span>
+      </div>
+      <div class="post-card-body">
+        <div class="post-title">🔧 伺服器效能優化 — 大幅減少卡頓</div>
+        <div class="post-excerpt">針對高峰時段的TPS掉落問題進行了全面優化，記憶體管理升級，生成速度提升...</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- GUIDES -->
+<section class="section" id="guides">
+  <div class="section-header">
+    <div class="section-tag">📖 攻略</div>
+    <h2 class="section-title">新手到老手的完整攻略</h2>
+  </div>
+  <div class="guide-list">
+    <a href="#" class="guide-item" onclick="openGuide('g1');return false;">
+      <div class="guide-icon green">🌱</div>
+      <div class="guide-info">
+        <div class="guide-title">新手入門：進服第一天該做什麼？</div>
+        <div class="guide-desc">領取新手禮包、認識基本指令、找到適合的居住地點</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g2');return false;">
+      <div class="guide-icon blue">⚔️</div>
+      <div class="guide-info">
+        <div class="guide-title">戰鬥系統教學：技能、裝備與強化</div>
+        <div class="guide-desc">了解自訂戰鬥系統、如何取得最強裝備、附魔與強化流程</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g3');return false;">
+      <div class="guide-icon yellow">💰</div>
+      <div class="guide-info">
+        <div class="guide-title">經濟系統指南：賺錢、交易與商店</div>
+        <div class="guide-desc">伺服器貨幣系統、玩家市集使用方式、高效賺錢方法</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g4');return false;">
+      <div class="guide-icon red">🏰</div>
+      <div class="guide-info">
+        <div class="guide-title">副本攻略：深淵要塞完全指南</div>
+        <div class="guide-desc">5層關卡詳細攻略、Boss機制說明、最佳隊伍配置建議</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g5');return false;">
+      <div class="guide-icon green">🏡</div>
+      <div class="guide-info">
+        <div class="guide-title">領地系統：如何圈地保護你的建築</div>
+        <div class="guide-desc">領地指令教學、保護設定、共享與信任玩家管理</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g6');return false;">
+      <div class="guide-icon blue">📋</div>
+      <div class="guide-info">
+        <div class="guide-title">完整指令清單</div>
+        <div class="guide-desc">所有可用指令一覽，包含傳送、商店、領地、個人設定等</div>
+      </div>
+      <span class="guide-arrow">›</span>
+    </a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BAN LIST -->
+<section class="section" id="bans">
+  <div class="section-header">
+    <div class="section-tag">🚫 封禁</div>
+    <h2 class="section-title">封禁名單</h2>
+  </div>
+  <div class="ban-table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>玩家名稱</th>
+          <th>違規原因</th>
+          <th>封禁時間</th>
+          <th>狀態</th>
+        </tr>
+      </thead>
+      <tbody id="banTable">
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">Steve_Hacker</code></td>
+          <td class="ban-reason">使用外掛程式（飛行 / KillAura）</td>
+          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-14</td>
+          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">xXNoob_DestroyXx</code></td>
+          <td class="ban-reason">惡意破壞他人領地與建築</td>
+          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-12</td>
+          <td><span class="ban-status ban-temp">⏱ 封禁30天</span></td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">ChatSpam_Bot</code></td>
+          <td class="ban-reason">大量刷頻、廣告宣傳其他伺服器</td>
+          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-09</td>
+          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">ToxicPlayer99</code></td>
+          <td class="ban-reason">持續騷擾玩家、言語攻擊</td>
+          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-07</td>
+          <td><span class="ban-status ban-temp">⏱ 封禁7天</span></td>
+        </tr>
+        <tr>
+          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">DupeGlitch_King</code></td>
+          <td class="ban-reason">利用複製BUG刷取物品，破壞遊戲經濟</td>
+          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-03</td>
+          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:0.8rem;color:var(--text-dim);margin-top:1rem;">
+    ⚠️ 如對封禁結果有異議，請透過 Discord 申訴頻道提出申請。管理員將在 72 小時內回覆。
+  </p>
+</section>
+
+<hr class="section-divider">
+
+<!-- SUGGESTIONS -->
+<section class="section" id="suggestions">
+  <div class="section-header">
+    <div class="section-tag">💬 玩家</div>
+    <h2 class="section-title">玩家建議</h2>
+  </div>
+
+  <!-- Submit Form -->
+  <div style="background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;">
+    <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.25rem;color:var(--green);">📝 提交你的建議</h3>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>遊戲名稱</label>
+        <input type="text" id="suggName" placeholder="Steve" />
+      </div>
+      <div class="form-field">
+        <label>建議類型</label>
+        <select id="suggType">
+          <option value="">選擇類型...</option>
+          <option value="gameplay">遊戲玩法</option>
+          <option value="economy">經濟系統</option>
+          <option value="events">活動 / 副本</option>
+          <option value="rules">規則 / 管理</option>
+          <option value="tech">技術 / 效能</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="form-field full">
+        <label>建議內容</label>
+        <textarea id="suggContent" placeholder="詳細描述你的建議，越具體越好！我們會認真閱讀每一條。"></textarea>
+      </div>
+    </div>
+    <button class="form-submit" onclick="submitSuggestion()">送出建議</button>
+    <p class="form-note">💡 所有建議都會被認真評估。已採納的建議會在下次更新時標記。</p>
+  </div>
+
+  <!-- Existing Suggestions -->
+  <h3 style="font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;">📌 近期建議</h3>
+  <div class="suggestion-cards" id="suggCards">
+    <div class="suggestion-card">
+      <div class="suggestion-header">
+        <span class="suggestion-player">CreeperFarmer</span>
+        <div class="suggestion-votes">
+          <button class="vote-btn voted" onclick="vote(this)">▲ <span class="vcount">34</span></button>
+        </div>
+      </div>
+      <div class="suggestion-text">希望能增加「自動農場」系統，讓玩家可以設置定時收穫機制，離線時也能有少量產出。</div>
+      <span class="suggestion-tag">遊戲玩法</span>
+      <div class="suggestion-status status-accepted">✅ 已採納，預計 v2.5 上線</div>
+    </div>
+    <div class="suggestion-card">
+      <div class="suggestion-header">
+        <span class="suggestion-player">BuildMaster_TW</span>
+        <div class="suggestion-votes">
+          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">21</span></button>
+        </div>
+      </div>
+      <div class="suggestion-text">建議在主城附近設置「展覽區」，讓玩家能展示自己的建築作品，每月評選最佳建築。</div>
+      <span class="suggestion-tag">活動 / 副本</span>
+      <div class="suggestion-status status-reviewed">🔍 審核中</div>
+    </div>
+    <div class="suggestion-card">
+      <div class="suggestion-header">
+        <span class="suggestion-player">EmeraldTrader</span>
+        <div class="suggestion-votes">
+          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">15</span></button>
+        </div>
+      </div>
+      <div class="suggestion-text">市集系統可以加入「收購單」功能，玩家可以掛出收購需求，讓其他玩家來填訂單。</div>
+      <span class="suggestion-tag">經濟系統</span>
+      <div class="suggestion-status status-pending">⏳ 待審核</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="margin-bottom:1rem;font-size:1.5rem;">⛏️</div>
+  <p><strong>我的世界私服</strong></p>
+  <p style="margin-top:0.5rem;">伺服器 IP：<code style="font-family:'JetBrains Mono',monospace;color:var(--green);" id="footerIP">play.yourserver.net</code></p>
+  <p style="margin-top:1rem;">版本 1.21 · Java Edition · 非官方，與 Mojang 無關</p>
+  <p style="margin-top:0.5rem;">© 2025 我的世界私服管理團隊</p>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+    <div class="modal-title" id="modalTitle"></div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────
+const posts = {
+  post1: {
+    title: '✨ v2.4.0 重大更新 — 新副本「深淵要塞」',
+    body: `
+      <h3>更新概覽</h3>
+      <p>本次更新加入全新地下城副本「深淵要塞」，共5層難度，挑戰最頂層的古老巨龍 BOSS，可獲得限定傳說裝備。</p>
+      <h3>新增內容</h3>
+      <p><strong>🏰 深淵要塞副本</strong><br>· 5層難度，每層有不同機制<br>· 第5層 BOSS 掉落稀有傳說裝備<br>· 通關可獲得限定稱號「深淵征服者」</p>
+      <p><strong>⚔️ 新裝備系列</strong><br>· 深淵系列武器 (10件)<br>· 傳說套裝防具 (5套)<br>· 全新附魔：深淵之力、虛空抗性</p>
+      <h3>Bug 修復</h3>
+      <p>· 修復市集部分物品無法交易的問題<br>· 修復玩家傳送後偶發卡在方塊內的問題<br>· 修復稱號顯示重疊的視覺錯誤</p>
+      <h3>注意事項</h3>
+      <p>副本每個帳號每天可進入 <strong>3次</strong>，重置時間為每日 00:00（台灣時間）。</p>
+    `
+  },
+  post2: {
+    title: '🎉 冬季節日活動開始！',
+    body: `
+      <h3>活動時間</h3>
+      <p><strong>2025/01/10 — 2025/01/24</strong>（共14天）</p>
+      <h3>活動內容</h3>
+      <p><strong>❄️ 每日任務</strong><br>每天完成3個節日任務，獲得雪花幣 × 50</p>
+      <p><strong>🎄 建築大賽</strong><br>以「冬季」為主題建造作品，截止 1/20，優勝可獲得 VIP 會員一個月</p>
+      <p><strong>🎁 登入獎勵</strong><br>活動期間每天登入即可獲得隨機節日禮盒</p>
+      <h3>兌換商店</h3>
+      <p>雪花幣可在主城 NPC「冬日商人」兌換：<br>· 雪人寵物 — 200幣<br>· 聖誕老人外觀 — 350幣<br>· 限定稱號「雪之守護者」 — 500幣</p>
+    `
+  },
+  post3: {
+    title: '🔧 伺服器效能優化公告',
+    body: `
+      <h3>優化內容</h3>
+      <p><strong>記憶體管理升級</strong><br>將伺服器記憶體從 16GB 提升至 32GB，並優化 GC（垃圾回收）策略，大幅減少卡頓。</p>
+      <p><strong>Chunk 生成優化</strong><br>新玩家進入未開發區域時的地形生成速度提升約 60%。</p>
+      <p><strong>Anti-Lag 插件更新</strong><br>更新至最新版本，對熔爐、紅石電路密集區域有更好的效能表現。</p>
+      <h3>預期效果</h3>
+      <p>高峰期（晚上 8-11點）的 TPS 應可穩定維持在 18-20，大幅改善之前掉到 12 以下的狀況。</p>
+      <p>感謝各位玩家的耐心等待！</p>
+    `
+  }
+};
+
+const guides = {
+  g1: {
+    title: '🌱 新手入門指南',
+    body: `
+      <h3>第一步：領取新手禮包</h3>
+      <p>進服後輸入 <strong>/newbie</strong> 即可領取一次性新手禮包，包含：基礎工具、食物 × 64、金幣 × 500。</p>
+      <h3>基本指令</h3>
+      <p><strong>/spawn</strong> — 回到主城<br><strong>/home</strong> — 回到家<br><strong>/sethome</strong> — 設定家的位置<br><strong>/tpa [玩家名]</strong> — 申請傳送到玩家<br><strong>/money</strong> — 查看金幣餘額<br><strong>/shop</strong> — 開啟商城</p>
+      <h3>找到適合的居住地</h3>
+      <p>建議從主城出發，向四個方向探索，在距離主城 <strong>500格以上</strong> 的區域建立自己的家（避免資源競爭）。記得用 <strong>/sethome</strong> 設定家！</p>
+      <h3>加入公會</h3>
+      <p>輸入 <strong>/guild list</strong> 查看所有公會，加入公會可獲得保護、組隊加成，新手建議優先尋找友善公會。</p>
+    `
+  },
+  g2: {
+    title: '⚔️ 戰鬥系統教學',
+    body: `
+      <h3>技能系統</h3>
+      <p>本伺服器使用自訂技能系統，每個職業有4個主動技能 + 2個被動技能。職業在第一次登入時選擇，14天內可免費更換一次。</p>
+      <h3>裝備品質</h3>
+      <p>裝備分5個品質：<br>⬜ 普通 → 🟦 罕見 → 🟩 稀有 → 🟪 史詩 → 🟨 傳說</p>
+      <h3>裝備強化</h3>
+      <p>在主城鐵匠處使用強化石升級裝備，+1 至 +5 成功率高，+6 以上需使用保護符避免降階。</p>
+      <h3>推薦刷裝地點</h3>
+      <p>· 初期：東部森林（普通/罕見裝）<br>· 中期：地下岩漿城（稀有裝）<br>· 後期：深淵要塞副本（史詩/傳說裝）</p>
+    `
+  },
+  g3: {
+    title: '💰 經濟系統指南',
+    body: `
+      <h3>賺錢方式</h3>
+      <p><strong>🌾 農業</strong> — 穩定但較慢，適合掛機<br><strong>⚔️ 刷怪</strong> — 怪物掉落金幣與材料<br><strong>🛒 市集交易</strong> — 買低賣高，熟悉行情後利潤最高<br><strong>📋 任務</strong> — 每日接取任務，完成獲得金幣獎勵</p>
+      <h3>玩家市集</h3>
+      <p>輸入 <strong>/market</strong> 開啟玩家市集。手續費為交易金額的 3%。建議查看近期成交價格後再掛單。</p>
+      <h3>月末活動</h3>
+      <p>每月最後一週舉辦「商人節」，玩家市集手續費降為 0%，是囤積/出清物品的好時機。</p>
+    `
+  },
+  g4: {
+    title: '🏰 深淵要塞攻略',
+    body: `
+      <h3>入口位置</h3>
+      <p>主城以北 200格，座標 (0, 64, -200) 附近有傳送石碑，輸入 <strong>/dungeon abyss</strong> 也可直接傳送。</p>
+      <h3>推薦隊伍配置（5人）</h3>
+      <p>1 坦克 + 1 治療 + 3 輸出。坦克需要至少 +7 以上裝備，治療需備足回復藥水。</p>
+      <h3>各層攻略</h3>
+      <p><strong>第1-3層</strong> — 清怪即可，注意精英怪的AOE技能<br><strong>第4層</strong> — 石像鬼BOSS，躲避紅色地板傷害<br><strong>第5層</strong> — 古老巨龍，核心機制是交替攻擊弱點，詳見公會Discord</p>
+    `
+  },
+  g5: {
+    title: '🏡 領地系統教學',
+    body: `
+      <h3>建立領地</h3>
+      <p>手持木棍，左鍵選擇第一個角落，右鍵選擇第二個角落，輸入 <strong>/claim [領地名稱]</strong> 完成圈地。</p>
+      <h3>信任玩家</h3>
+      <p><strong>/trust [玩家] build</strong> — 允許在你領地建造<br><strong>/trust [玩家] container</strong> — 允許開箱子<br><strong>/trust [玩家] access</strong> — 只允許進入</p>
+      <h3>領地限制</h3>
+      <p>普通玩家最多可圈 <strong>5個領地</strong>，每個最大面積 <strong>100×100格</strong>。VIP 會員可圈 10個，每個最大 200×200格。</p>
+    `
+  },
+  g6: {
+    title: '📋 完整指令清單',
+    body: `
+      <h3>基本指令</h3>
+      <p>/spawn · /home · /sethome · /tpa · /tpaccept · /back</p>
+      <h3>經濟指令</h3>
+      <p>/money · /pay [玩家] [金額] · /market · /shop · /baltop</p>
+      <h3>領地指令</h3>
+      <p>/claim · /unclaim · /trust · /untrust · /claimlist</p>
+      <h3>社交指令</h3>
+      <p>/guild · /msg [玩家] · /r · /ignore · /friend</p>
+      <h3>副本/活動指令</h3>
+      <p>/dungeon · /party · /event · /quest</p>
+      <h3>個人設定</h3>
+      <p>/settings · /nickname · /skin · /toggle pvp</p>
+    `
+  }
+};
+
+// ─── FUNCTIONS ───────────────────────────────────────
+function copyIP() {
+  const ip = document.getElementById('serverIP').textContent;
+  navigator.clipboard.writeText(ip).catch(() => {});
+  const tip = document.getElementById('copyTip');
+  tip.classList.add('show');
+  setTimeout(() => tip.classList.remove('show'), 2000);
+}
+
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
+}
+
+function openPost(id) {
+  const p = posts[id];
+  document.getElementById('modalTitle').textContent = p.title;
+  document.getElementById('modalBody').innerHTML = p.body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function openGuide(id) {
+  const g = guides[id];
+  document.getElementById('modalTitle').textContent = g.title;
+  document.getElementById('modalBody').innerHTML = g.body;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
+}
+function closeModalBtn() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function vote(btn) {
+  const countEl = btn.querySelector('.vcount');
+  if (btn.classList.contains('voted')) {
+    btn.classList.remove('voted');
+    countEl.textContent = parseInt(countEl.textContent) - 1;
+  } else {
+    btn.classList.add('voted');
+    countEl.textContent = parseInt(countEl.textContent) + 1;
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function submitSuggestion() {
+  const name = document.getElementById('suggName').value.trim();
+  const type = document.getElementById('suggType').value;
+  const content = document.getElementById('suggContent').value.trim();
+  if (!name || !type || !content) { showToast('⚠️ 請填寫所有欄位！'); return; }
+
+  const typeLabels = { gameplay:'遊戲玩法', economy:'經濟系統', events:'活動 / 副本', rules:'規則 / 管理', tech:'技術 / 效能', other:'其他' };
+  const card = document.createElement('div');
+  card.className = 'suggestion-card';
+  card.innerHTML = `
+    <div class="suggestion-header">
+      <span class="suggestion-player">${name.replace(/</g,'&lt;')}</span>
+      <div class="suggestion-votes">
+        <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">0</span></button>
+      </div>
+    </div>
+    <div class="suggestion-text">${content.replace(/</g,'&lt;')}</div>
+    <span class="suggestion-tag">${typeLabels[type]}</span>
+    <div class="suggestion-status status-pending">⏳ 待審核</div>
+  `;
+  document.getElementById('suggCards').prepend(card);
+
+  document.getElementById('suggName').value = '';
+  document.getElementById('suggType').value = '';
+  document.getElementById('suggContent').value = '';
+  showToast('✅ 建議已送出！感謝你的回饋！');
+}
+
+// Animate stats on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      animateNum(document.getElementById('stat1'), 0, 1284, 1200);
+      observer.disconnect();
+    }
+  });
+}, { threshold: 0.3 });
+const statsEl = document.querySelector('.stats-grid');
+if (statsEl) observer.observe(statsEl);
+
+function animateNum(el, from, to, dur) {
+  const start = performance.now();
+  function step(now) {
+    const p = Math.min((now - start) / dur, 1);
+    el.textContent = Math.floor(from + (to - from) * easeOut(p)).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+// Close nav on link click (mobile)
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+</script>
+</body>
+</html>
