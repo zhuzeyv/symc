@@ -560,7 +560,200 @@
     .nav-links.open a { height: auto; padding: 1rem 2rem; line-height: 1.5; }
     .hamburger { display: flex; }
     .form-grid { grid-template-columns: 1fr; }
-    。form-field.full { grid-column: auto; }
+    .form-field.full { grid-column: auto; }
+  }
+  /* ── 管理员按钮 ── */
+  .admin-btn {
+    position: fixed; bottom: 1.5rem; left: 1.5rem;
+    z-index: 150;
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 42px; height: 42px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: border-color .2s, color .2s, background .2s;
+  }
+  .admin-btn:hover { border-color: var(--green); color: var(--green); background: rgba(74,222,128,.08); }
+  .admin-btn.active { border-color: var(--green); color: var(--green); background: rgba(74,222,128,.15); }
+
+  /* ── 管理员密码弹窗 ── */
+  #adminLoginOverlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.8);
+    z-index: 400;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s;
+  }
+  #adminLoginOverlay.open { opacity: 1; pointer-events: all; }
+  。login-box {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%; max-width: 360px;
+    transform: translateY(20px);
+    transition: transform .25s;
+  }
+  #adminLoginOverlay.open .login-box { transform: translateY(0); }
+  .login-box h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 1.25rem; }
+  .login-box input {
+    width: 100%;
+    background: var(--stone);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: .7rem 1rem;
+    font-size: .9rem;
+    outline: none;
+    margin-bottom: .75rem;
+  }
+  .login-box input:focus { border-color: var(--green); }
+  .login-row { display: flex; gap: .75rem; }
+  .login-row button {
+    flex: 1; padding: .7rem; border-radius: 8px; border: none;
+    font-weight: 700; font-size: .875rem;
+    cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+    transition: opacity .15s;
+  }
+  .login-row button:hover { opacity: .85; }
+  .btn-login-ok  { background: var(--green); color: #000; }
+  .btn-login-no  { background: var(--stone-light); color: var(--text-muted); }
+  .login-err { color: var(--red); font-size: .82rem; margin-top: .5rem; display: none; }
+
+  /* ── 编辑工具栏（悬浮在卡片/攻略上）── */
+  .edit-actions {
+    display: none;
+    gap: 6px;
+    margin-top: .75rem;
+  }
+  body.admin-mode .edit-actions { display: flex; }
+  .edit-actions button {
+    font-size: .75rem; padding: 3px 10px;
+    border-radius: 4px; border: 1px solid var(--border);
+    cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
+    transition: .15s;
+  }
+  .btn-edit  { background: rgba(96,165,250,.15); color: var(--blue);  border-color: rgba(96,165,250,.3); }
+  .btn-edit:hover  { background: rgba(96,165,250,.3); }
+  .btn-del   { background: rgba(248,113,113,.12); color: var(--red);   border-color: rgba(248,113,113,.3); }
+  .btn-del:hover   { background: rgba(248,113,113,.25); }
+  .btn-add-card {
+    display: none;
+    margin-top: 1rem;
+    width: 100%;
+    background: rgba(74,222,128,.08);
+    border: 1px dashed rgba(74,222,128,.35);
+    color: var(--green);
+    padding: .7rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: .875rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 700;
+    transition: background .2s;
+  }
+  .btn-add-card:hover { background: rgba(74,222,128,.15); }
+  body。admin-mode .btn-add-card { display: block; }
+
+  /* 管理模式时卡片高亮边框 */
+  body。admin-mode .post-card,
+  body.admin-mode .guide-item {
+    border-color: rgba(96,165,250,.2);
+  }
+
+  /* ── 内容编辑弹窗 ── */
+  #editorOverlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,.82);
+    z-index: 500;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1rem;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s;
+  }
+  #editorOverlay.open { opacity: 1; pointer-events: all; }
+  .editor-box {
+    background: var(--stone-mid);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%; max-width: 680px;
+    max-height: 90vh;
+    overflow-y: auto;
+    transform: translateY(20px);
+    transition: transform .25s;
+    position: relative;
+  }
+  #editorOverlay.open .editor-box { transform: translateY(0); }
+  .editor-box h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 1.25rem; }
+  .editor-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
+  .editor-field label { font-size: .8rem; color: var(--text-muted); font-weight: 500; }
+  .editor-field input, .editor-field select, .editor-field textarea {
+    background: var(--stone);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: .65rem 1rem;
+    font-size: .875rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    outline: none;
+    resize: vertical;
+  }
+  .editor-field input:focus,
+  .editor-field select:focus,
+  .editor-field textarea:focus { border-color: var(--green); }
+  .editor-field textarea { min-height: 180px; }
+  /* 富文本工具栏 */
+  .richbar {
+    display: flex; flex-wrap: wrap; gap: 4px;
+    margin-bottom: 6px;
+  }
+  .richbar button {
+    background: var(--stone-light);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 3px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: .78rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    transition: .15s;
+  }
+  .richbar button:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
+  .rich-editor {
+    background: var(--stone);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    padding: .75rem 1rem;
+    font-size: .875rem;
+    font-family: 'Noto Sans TC', sans-serif;
+    min-height: 200px;
+    outline: none;
+    line-height: 1.8;
+  }
+  .rich-editor:focus { border-color: var(--green); }
+  .rich-editor h3 { color: var(--green); font-size: 1rem; margin: 1rem 0 .4rem; }
+  .rich-editor p  { margin-bottom: .5rem; }
+  .rich-editor strong { color: var(--text); }
+  .editor-footer { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1rem; }
+  .editor-footer button {
+    padding: .7rem 1.5rem; border-radius: 8px; border: none;
+    font-weight: 700; font-size: .875rem; cursor: pointer;
+    font-family: 'Noto Sans TC', sans-serif; transition: opacity .15s;
+  }
+  .editor-footer button:hover { opacity: .85; }
+  .btn-save   { background: var(--green); color: #000; }
+  .btn-cancel { background: var(--stone-light); color: var(--text-muted); }
+  .editor-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: none; border: none; color: var(--text-muted);
+    cursor: pointer; font-size: 1.1rem;
   }
 </style>
 </head>
@@ -651,38 +844,51 @@
     <div class="section-tag">📢 公告</div>
     <h2 class="section-title">最新公告与更新日志</h2>
   </div>
-  <div class="posts-grid">
-    <div class="post-card" onclick="openPost('post1')">
+  <div class="posts-grid" id="postsGrid">
+    <div class="post-card" data-id="post1" onclick="openPost('post1')">
       <div class="post-card-header">
-        <span class="post-badge badge-update">更新</span>
-        <span class="post-date">2025-01-15</span>
+        <span class="post-badge badge-update" id="post1-badge">更新</span>
+        <span class="post-date" id="post1-date">2025-01-15</span>
       </div>
       <div class="post-card-body">
-        <div class="post-title">✨ v2.4.0 重大更新 — 新副本“深渊要塞”</div>
-        <div class="post-excerpt">全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...</div>
+        <div class="post-title" id="post1-title">✨ v2.4.0 重大更新 — 新副本"深渊要塞"</div>
+        <div class="post-excerpt" id="post1-excerpt">全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...</div>
+      </div>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editPost('post1')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deletePost('post1')">🗑 删除</button>
       </div>
     </div>
-    <div class="post-card" onclick="openPost('post2')">
+    <div class="post-card" data-id="post2" onclick="openPost('post2')">
       <div class="post-card-header">
-        <span class="post-badge badge-event">活动</span>
-        <span class="post-date">2025-01-10</span>
+        <span class="post-badge badge-event" id="post2-badge">活动</span>
+        <span class="post-date" id="post2-date">2025-01-10</span>
       </div>
       <div class="post-card-body">
-        <div class="post-title">🎉 冬季节日活动开始！限定任务与奖励</div>
-        <div class="post-excerpt">为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...</div>
+        <div class="post-title" id="post2-title">🎉 冬季节日活动开始！限定任务与奖励</div>
+        <div class="post-excerpt" id="post2-excerpt">为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...</div>
+      </div>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editPost('post2')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deletePost('post2')">🗑 删除</button>
       </div>
     </div>
-    <div class="post-card" onclick="openPost('post3')">
+    <div class="post-card" data-id="post3" onclick="openPost('post3')">
       <div class="post-card-header">
-        <span class="post-badge badge-update">维护</span>
-        <span class="post-date">2025-01-05</span>
+        <span class="post-badge badge-update" id="post3-badge">维护</span>
+        <span class="post-date" id="post3-date">2025-01-05</span>
       </div>
       <div class="post-card-body">
-        <div class="post-title">🔧 服务器性能优化 — 大幅减少卡顿</div>
-        <div class="post-excerpt">针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...</div>
+        <div class="post-title" id="post3-title">🔧 服务器性能优化 — 大幅减少卡顿</div>
+        <div class="post-excerpt" id="post3-excerpt">针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...</div>
+      </div>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editPost('post3')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deletePost('post3')">🗑 删除</button>
       </div>
     </div>
   </div>
+  <button class="btn-add-card" onclick="newPost()">＋ 新增公告</button>
 </section>
 
 <hr class="section-divider">
@@ -692,56 +898,81 @@
     <div class="section-tag">📖 攻略</div>
     <h2 class="section-title">新手到老手的完整攻略</h2>
   </div>
-  <div class="guide-list">
-    <div class="guide-item" onclick="openGuide('g1')">
+  <div class="guide-list" id="guideList">
+    <div class="guide-item" data-id="g1" onclick="openGuide('g1')">
       <div class="guide-icon green">🌱</div>
       <div class="guide-info">
-        <div class="guide-title">新手入门：进服第一天该做什么？</div>
-        <div class="guide-desc">领取新手礼包、认识基本指令、找到适合的居住地点</div>
+        <div class="guide-title" id="g1-title">新手入门：进服第一天该做什么？</div>
+        <div class="guide-desc"  id="g1-desc">领取新手礼包、认识基本指令、找到适合的居住地点</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g1')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g1')">🗑 删除</button>
+      </div>
     </div>
-    <div class="guide-item" onclick="openGuide('g2')">
+    <div class="guide-item" data-id="g2" onclick="openGuide('g2')">
       <div class="guide-icon blue">⚔️</div>
       <div class="guide-info">
-        <div class="guide-title">战斗系统教学：技能、装备与强化</div>
-        <div class="guide-desc">了解自定义战斗系统、如何取得最强装备、附魔与强化流程</div>
+        <div class="guide-title" id="g2-title">战斗系统教学：技能、装备与强化</div>
+        <div class="guide-desc"  id="g2-desc">了解自定义战斗系统、如何取得最强装备、附魔与强化流程</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g2')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g2')">🗑 删除</button>
+      </div>
     </div>
-    <div class="guide-item" onclick="openGuide('g3')">
+    <div class="guide-item" data-id="g3" onclick="openGuide('g3')">
       <div class="guide-icon yellow">💰</div>
       <div class="guide-info">
-        <div class="guide-title">经济系统指南：赚钱、交易与商店</div>
-        <div class="guide-desc">服务器货币系统、玩家市集使用方式、高效赚钱方法</div>
+        <div class="guide-title" id="g3-title">经济系统指南：赚钱、交易与商店</div>
+        <div class="guide-desc"  id="g3-desc">服务器货币系统、玩家市集使用方式、高效赚钱方法</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g3')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g3')">🗑 删除</button>
+      </div>
     </div>
-    <div class="guide-item" onclick="openGuide('g4')">
+    <div class="guide-item" data-id="g4" onclick="openGuide('g4')">
       <div class="guide-icon red">🏰</div>
       <div class="guide-info">
-        <div class="guide-title">副本攻略：深渊要塞完全指南</div>
-        <div class="guide-desc">5层关卡详细攻略、Boss机制说明、最佳队伍配置建议</div>
+        <div class="guide-title" id="g4-title">副本攻略：深渊要塞完全指南</div>
+        <div class="guide-desc"  id="g4-desc">5层关卡详细攻略、Boss机制说明、最佳队伍配置建议</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g4')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g4')">🗑 删除</button>
+      </div>
     </div>
-    <div class="guide-item" onclick="openGuide('g5')">
+    <div class="guide-item" data-id="g5" onclick="openGuide('g5')">
       <div class="guide-icon green">🏡</div>
       <div class="guide-info">
-        <div class="guide-title">领地系统：如何圈地保护你的建筑</div>
-        <div class="guide-desc">领地指令教学、保护设定、共享与信任玩家管理</div>
+        <div class="guide-title" id="g5-title">领地系统：如何圈地保护你的建筑</div>
+        <div class="guide-desc"  id="g5-desc">领地指令教学、保护设定、共享与信任玩家管理</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g5')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g5')">🗑 删除</button>
+      </div>
     </div>
-    <div class="guide-item" onclick="openGuide('g6')">
+    <div class="guide-item" data-id="g6" onclick="openGuide('g6')">
       <div class="guide-icon blue">📋</div>
       <div class="guide-info">
-        <div class="guide-title">完整指令清单</div>
-        <div class="guide-desc">所有可用指令一览，包含传送、商店、领地、个人设置等</div>
+        <div class="guide-title" id="g6-title">完整指令清单</div>
+        <div class="guide-desc"  id="g6-desc">所有可用指令一览，包含传送、商店、领地、个人设置等</div>
       </div>
       <span class="guide-arrow">›</span>
+      <div class="edit-actions" onclick="event.stopPropagation()">
+        <button class="btn-edit" onclick="editGuide('g6')">✏️ 编辑</button>
+        <button class="btn-del"  onclick="deleteGuide('g6')">🗑 删除</button>
+      </div>
     </div>
   </div>
+  <button class="btn-add-card" onclick="newGuide()">＋ 新增攻略</button>
 </section>
 
 <hr class="section-divider">
@@ -890,146 +1121,228 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- 管理员密码弹窗 -->
+<div id="adminLoginOverlay">
+  <div class="login-box">
+    <h3>🔐 管理员登录</h3>
+    <input type="password" id="adminPwdInput" placeholder="输入管理员密码" onkeydown="if(event.key==='Enter')checkAdminPwd()" />
+    <div class="login-row">
+      <button class="btn-login-ok" onclick="checkAdminPwd()">确认</button>
+      <button class="btn-login-no" onclick="closeAdminLogin()">取消</button>
+    </div>
+    <div class="login-err" id="loginErr">❌ 密码错误</div>
+  </div>
+</div>
+
+<!-- 内容编辑弹窗 -->
+<div id="editorOverlay">
+  <div class="editor-box">
+    <button class="editor-close" onclick="closeEditor()">✕</button>
+    <h3 id="editorTitle">编辑内容</h3>
+
+    <!-- 公告专用字段 -->
+    <div id="postFields">
+      <div class="editor-field">
+        <label>标题</label>
+        <input type="text" id="edTitle" placeholder="公告标题" />
+      </div>
+      <div class="editor-field">
+        <label>摘要（卡片上显示的简短描述）</label>
+        <input type="text" id="edExcerpt" placeholder="简短描述..." />
+      </div>
+      <div class="editor-field">
+        <label>类型标签</label>
+        <select id="edBadge">
+          <option value="更新">更新</option>
+          <option value="活动">活动</option>
+          <option value="维护">维护</option>
+          <option value="公告">公告</option>
+        </select>
+      </div>
+      <div class="editor-field">
+        <label>日期</label>
+        <input type="date" id="edDate" />
+      </div>
+    </div>
+
+    <!-- 攻略专用字段 -->
+    <div id="guideFields" style="display:none">
+      <div class="editor-field">
+        <label>标题</label>
+        <input type="text" id="edGuideTitle" placeholder="攻略标题" />
+      </div>
+      <div class="editor-field">
+        <label>简介（列表上显示）</label>
+        <input type="text" id="edGuideDesc" placeholder="一行简介..." />
+      </div>
+      <div class="editor-field">
+        <label>图标颜色</label>
+        <select id="edGuideColor">
+          <option value="green">🟢 绿色</option>
+          <option value="blue">🔵 蓝色</option>
+          <option value="yellow">🟡 黄色</option>
+          <option value="red">🔴 红色</option>
+        </select>
+      </div>
+      <div class="editor-field">
+        <label>图标 Emoji</label>
+        <input type="text" id="edGuideIcon" placeholder="例：🌱 ⚔️ 💰" />
+      </div>
+    </div>
+
+    <!-- 富文本编辑器（公告和攻略共用） -->
+    <div class="editor-field">
+      <label>正文内容</label>
+      <div class="richbar">
+        <button onclick="fmt('bold')"><b>B</b></button>
+        <button onclick="fmt('italic')"><i>I</i></button>
+        <button onclick="fmtH3()">H3 标题</button>
+        <button onclick="fmtP()">段落</button>
+        <button onclick="fmtBr()">换行</button>
+        <button onclick="fmtCode()">代码</button>
+        <button onclick="fmtHr()" title="分隔线">—</button>
+      </div>
+      <div class="rich-editor" id="richEditor" contenteditable="true"></div>
+    </div>
+
+    <div class="editor-footer">
+      <button class="btn-cancel" onclick="closeEditor()">取消</button>
+      <button class="btn-save"   id="edSaveBtn" onclick="saveContent()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 管理员按钮（右下角） -->
+<button class="admin-btn" id="adminBtn" onclick="toggleAdmin()" title="管理员模式">⚙️</button>
+
+
 
 <script>
-// ─── 数据 ───────────────────────────────────────────
+// ── Supabase ─────────────────────────────────────────
+const SUPABASE_URL = 'https://vlbdguleovswmchypadd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
+const SB_TABLE_CONTENT  = 'content';   // 公告+攻略表
+const SB_TABLE_SUGGEST  = 'suggestions';
+
+function sbH(extra={}) {
+  return { 'Content-Type':'application/json',
+    'apikey': SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, ...extra };
+}
+
+// ── 管理员密码（改这里）─────────────────────────────
+const ADMIN_PASSWORD = 'Fe#d35@f';
+// ───────────────────────────────────────────────────
+let isAdmin = false;
+
+// ── 静态初始数据（Supabase 无数据时的默认内容）───────
 const posts = {
   post1: {
-    title: '✨ v2.4.0 重大更新 — 新副本“深渊要塞”',
-    body: `
-      <h3>更新概览</h3>
-      <p>本次更新加入全新地下城副本“深渊要塞”，共5层难度，挑战最顶层的古老巨龙 BOSS，可获得限定传说装备。</p>
-      <h3>新增内容</h3>
-      <p><strong>🏰 深渊要塞副本</strong><br>· 5层难度，每层有不同机制<br>· 第5层 BOSS 掉落稀有传说装备<br>· 通关可获得限定称号“深渊征服者”</p>
-      <p><strong>⚔️ 新装备系列</strong><br>· 深渊系列武器 (10件)<br>· 传说套装防具 (5套)<br>· 全新附魔：深渊之力、虚空抗性</p>
-      <h3>Bug 修复</h3>
-      <p>· 修复市集部分物品无法交易的问题<br>· 修复玩家传送后偶发卡在方块内的问题<br>· 修复称号显示重叠的视觉错误</p>
-      <h3>注意事项</h3>
-      <p>副本每个账号每天可进入 <strong>3次</strong>，重置时间为每日 00:00。</p>
-    `
+    title: '✨ v2.4.0 重大更新 — 新副本"深渊要塞"',
+    badge: '更新', date: '2025-01-15',
+    excerpt: '全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...',
+    body: `<h3>更新概览</h3><p>本次更新加入全新地下城副本"深渊要塞"，共5层难度，挑战最顶层的古老巨龙 BOSS，可获得限定传说装备。</p><h3>新增内容</h3><p><strong>🏰 深渊要塞副本</strong><br>· 5层难度，每层有不同机制<br>· 第5层 BOSS 掉落稀有传说装备<br>· 通关可获得限定称号"深渊征服者"</p><h3>Bug 修复</h3><p>· 修复市集部分物品无法交易的问题<br>· 修复玩家传送后偶发卡在方块内的问题</p>`
   },
   post2: {
-    title: '🎉 冬季节日活动开始！',
-    body: `
-      <h3>活动时间</h3>
-      <p><strong>2025/01/10 — 2025/01/24</strong>（共14天）</p>
-      <h3>活动内容</h3>
-      <p><strong>❄️ 每日任务</strong><br>每天完成3个节日任务，获得雪花币 × 50</p>
-      <p><strong>🎄 建筑大赛</strong><br>以“冬季”为主题建造作品，截止 1/20，优胜可获得 VIP 会员一个月</p>
-      <p><strong>🎁 登录奖励</strong><br>活动期间每天登录即可获得随机节日礼盒</p>
-      <h3>兑换商店</h3>
-      <p>雪花币可在主城 NPC“冬日商人”兑换：<br>· 雪人宠物 — 200币<br>· 圣诞老人外观 — 350币<br>· 限定称号“雪之守护者” — 500币</p>
-    `
+    title: '🎉 冬季节日活动开始！', badge: '活动', date: '2025-01-10',
+    excerpt: '为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...',
+    body: `<h3>活动时间</h3><p><strong>2025/01/10 — 2025/01/24</strong>（共14天）</p><h3>活动内容</h3><p><strong>❄️ 每日任务</strong><br>每天完成3个节日任务，获得雪花币 × 50</p><h3>兑换商店</h3><p>雪花币可在主城 NPC"冬日商人"兑换各种限定外观</p>`
   },
   post3: {
-    title: '🔧 服务器性能优化公告',
-    body: `
-      <h3>优化内容</h3>
-      <p><strong>内存管理升级</strong><br>将服务器内存从 16GB 提升至 32GB，并优化 GC（垃圾回收）策略，大幅减少卡顿。</p>
-      <p><strong>Chunk 生成优化</strong><br>新玩家进入未开发区域时的地形生成速度提升约 60%。</p>
-      <p><strong>Anti-Lag 插件更新</strong><br>更新至最新版本，对熔炉、红石电路密集区域有更好的性能表现。</p>
-      <h3>预期效果</h3>
-      <p>高峰期（晚上 8-11点）的 TPS 应可稳定维持在 18-20，大幅改善之前掉到 12 以下的状况。</p>
-      <p>感谢各位玩家的耐心等待！</p>
-    `
+    title: '🔧 服务器性能优化公告', badge: '维护', date: '2025-01-05',
+    excerpt: '针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...',
+    body: `<h3>优化内容</h3><p><strong>内存管理升级</strong><br>将服务器内存从 16GB 提升至 32GB，大幅减少卡顿。</p><p><strong>Chunk 生成优化</strong><br>新玩家进入未开发区域时的地形生成速度提升约 60%。</p>`
   }
 };
 
 const guides = {
-  g1: {
-    title: '🌱 新手入门指南',
-    body: `
-      <h3>第一步：领取新手礼包</h3>
-      <p>进服后输入 <strong>/newbie</strong> 即可领取一次性新手礼包，包含：基础工具、食物 × 64、金币 × 500。</p>
-      <h3>基本指令</h3>
-      <p><strong>/spawn</strong> — 回到主城<br><strong>/home</strong> — 回到家<br><strong>/sethome</strong> — 设定家的位置<br><strong>/tpa [玩家名]</strong> — 申请传送到玩家<br><strong>/money</strong> — 查看金币余额<br><strong>/shop</strong> — 开启商城</p>
-      <h3>找到适合的居住地</h3>
-      <p>建议从主城出发，向四个方向探索，在距离主城 <strong>500格以上</strong> 的区域建立自己的家（避免资源竞争）。记得用 <strong>/sethome</strong> 设定家！</p>
-      <h3>加入公会</h3>
-      <p>输入 <strong>/guild list</strong> 查看所有公会，加入公会可获得保护、组队加成，新手建议优先寻找友善公会。</p>
-    `
-  },
-  g2: {
-    title: '⚔️ 战斗系统教学',
-    body: `
-      <h3>技能系统</h3>
-      <p>本服务器使用自定义技能系统，每个职业有4个主动技能 + 2个被动技能。职业在第一次登录时选择，14天内可免费更换一次。</p>
-      <h3>装备品质</h3>
-      <p>装备分5个品质：<br>⬜ 普通 → 🟦 罕见 → 🟩 稀有 → 🟪 史诗 → 🟨 传说</p>
-      <h3>装备强化</h3>
-      <p>在主城铁匠处使用强化石升级装备，+1 至 +5 成功率高，+6 以上需使用保护符避免降阶。</p>
-      <h3>推荐刷装地点</h3>
-      <p>· 初期：东部森林（普通/罕见装）<br>· 中期：地下岩浆城（稀有装）<br>· 后期：深渊要塞副本（史诗/传说装）</p>
-    `
-  },
-  g3: {
-    title: '💰 经济系统指南',
-    body: `
-      <h3>赚钱方式</h3>
-      <p><strong>🌾 农业</strong> — 稳定但较慢，适合挂机<br><strong>⚔️ 刷怪</strong> — 怪物掉落金币与材料<br><strong>🛒 市集交易</strong> — 买低卖高，熟悉行情后利润最高<br><strong>📋 任务</strong> — 每日接取任务，完成获得金币奖励</p>
-      <h3>玩家市集</h3>
-      <p>输入 <strong>/market</strong> 开启玩家市集。手续费为交易金额的 3%。建议查看近期成交价格后再挂单。</p>
-      <h3>月末活动</h3>
-      <p>每月最后一周举办“商人节”，玩家市集手续费降为 0%，是囤积/出清物品的好时机。</p>
-    `
-  },
-  g4: {
-    title: '🏰 深渊要塞攻略',
-    body: `
-      <h3>入口位置</h3>
-      <p>主城以北 200格，坐标 (0, 64, -200) 附近有传送石碑，输入 <strong>/dungeon abyss</strong> 也可直接传送。</p>
-      <h3>推荐队伍配置（5人）</h3>
-      <p>1 坦克 + 1 治疗 + 3 输出。坦克需要至少 +7 以上装备，治疗需备足回复药水。</p>
-      <h3>各层攻略</h3>
-      <p><strong>第1-3层</strong> — 清怪即可，注意精英怪的AOE技能<br><strong>第4层</strong> — 石像鬼BOSS，躲避红色地板伤害<br><strong>第5层</strong> — 古老巨龙，核心机制是交替攻击弱点，详见公会Discord</p>
-    `
-  },
-  g5: {
-    title: '🏡 领地系统教学',
-    body: `
-      <h3>建立领地</h3>
-      <p>手持木棍，左键选择第一个角落，右键选择第二个角落，输入 <strong>/claim [领地名称]</strong> 完成圈地。</p>
-      <h3>信任玩家</h3>
-      <p><strong>/trust [玩家] build</strong> — 允许在你领地建造<br><strong>/trust [玩家] container</strong> — 允许开箱子<br><strong>/trust [玩家] access</strong> — 只允许进入</p>
-      <h3>领地限制</h3>
-      <p>普通玩家最多可圈 <strong>5个领地</strong>，每个最大面积 <strong>100×100格</strong>。VIP 会员可圈 10个，每个最大 200×200格。</p>
-    `
-  },
-  g6: {
-    title: '📋 完整指令清单',
-    body: `
-      <h3>基本指令</h3>
-      <p>/spawn · /home · /sethome · /tpa · /tpaccept · /back</p>
-      <h3>经济指令</h3>
-      <p>/money · /pay [玩家] [金额] · /market · /shop · /baltop</p>
-      <h3>领地指令</h3>
-      <p>/claim · /unclaim · /trust · /untrust · /claimlist</p>
-      <h3>社交指令</h3>
-      <p>/guild · /msg [玩家] · /r · /ignore · /friend</p>
-      <h3>副本/活动指令</h3>
-      <p>/dungeon · /party · /event · /quest</p>
-      <h3>个人设置</h3>
-      <p>/settings · /nickname · /skin · /toggle pvp</p>
-    `
-  }
+  g1: { title:'🌱 新手入门指南', icon:'🌱', color:'green', desc:'领取新手礼包、认识基本指令、找到适合的居住地点',
+    body:`<h3>第一步：领取新手礼包</h3><p>进服后输入 <strong>/newbie</strong> 即可领取一次性新手礼包，包含：基础工具、食物 × 64、金币 × 500。</p><h3>基本指令</h3><p><strong>/spawn</strong> — 回到主城<br><strong>/home</strong> — 回到家<br><strong>/sethome</strong> — 设定家的位置</p>`},
+  g2: { title:'⚔️ 战斗系统教学', icon:'⚔️', color:'blue', desc:'了解自定义战斗系统、如何取得最强装备、附魔与强化流程',
+    body:`<h3>技能系统</h3><p>本服务器使用自定义技能系统，每个职业有4个主动技能 + 2个被动技能。</p><h3>装备品质</h3><p>装备分5个品质：⬜ 普通 → 🟦 罕见 → 🟩 稀有 → 🟪 史诗 → 🟨 传说</p>`},
+  g3: { title:'💰 经济系统指南', icon:'💰', color:'yellow', desc:'服务器货币系统、玩家市集使用方式、高效赚钱方法',
+    body:`<h3>赚钱方式</h3><p><strong>🌾 农业</strong> — 稳定但较慢，适合挂机<br><strong>⚔️ 刷怪</strong> — 怪物掉落金币与材料<br><strong>🛒 市集交易</strong> — 买低卖高，熟悉行情后利润最高</p>`},
+  g4: { title:'🏰 深渊要塞攻略', icon:'🏰', color:'red', desc:'5层关卡详细攻略、Boss机制说明、最佳队伍配置建议',
+    body:`<h3>入口位置</h3><p>主城以北 200格，输入 <strong>/dungeon abyss</strong> 也可直接传送。</p><h3>推荐队伍配置（5人）</h3><p>1 坦克 + 1 治疗 + 3 输出。坦克需要至少 +7 以上装备。</p>`},
+  g5: { title:'🏡 领地系统教学', icon:'🏡', color:'green', desc:'领地指令教学、保护设定、共享与信任玩家管理',
+    body:`<h3>建立领地</h3><p>手持木棍，左键选第一个角落，右键选第二个角落，输入 <strong>/claim [领地名称]</strong> 完成圈地。</p>`},
+  g6: { title:'📋 完整指令清单', icon:'📋', color:'blue', desc:'所有可用指令一览，包含传送、商店、领地、个人设置等',
+    body:`<h3>基本指令</h3><p>/spawn · /home · /sethome · /tpa · /tpaccept · /back</p><h3>经济指令</h3><p>/money · /pay · /market · /shop · /baltop</p><h3>领地指令</h3><p>/claim · /unclaim · /trust · /untrust · /claimlist</p>`}
 };
 
-// ─── 函数 ───────────────────────────────────────
-function copyIP() {
-  const ip = document.getElementById('serverIP').textContent;
-  navigator.clipboard.writeText(ip).catch(() => {});
-  const tip = document.getElementById('copyTip');
-  tip.classList.add('show');
-  setTimeout(() => tip.classList.remove('show'), 2000);
+// ── 从 Supabase 加载并覆盖内容 ─────────────────────
+async function loadContent() {
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}?select=*`,
+      { headers: sbH() }
+    );
+    if (!res.ok) return;
+    const rows = await res.json();
+    rows.forEach(row => {
+      const d = row.data;
+      if (row.type === 'post' && posts[row.slug]) {
+        Object.assign(posts[row.slug], d);
+        applyPostToDOM(row.slug);
+      } else if (row.type === 'guide' && guides[row.slug]) {
+        Object.assign(guides[row.slug], d);
+        applyGuideToDOM(row.slug);
+      }
+    });
+  } catch(e) { console.warn('loadContent:', e); }
 }
 
-function toggleNav() {
-  document.getElementById('navLinks').classList.toggle('open');
+function applyPostToDOM(id) {
+  const p = posts[id];
+  const el = document.querySelector(`.post-card[data-id="${id}"]`);
+  if (!el) return;
+  const badge = el.querySelector('.post-badge');
+  if (badge) {
+    badge.textContent = p.badge || '';
+    badge.className = 'post-badge ' + badgeClass(p.badge);
+  }
+  const date = el.querySelector('.post-date'); if (date) date.textContent = p.date || '';
+  const title = el.querySelector('.post-title'); if (title) title.textContent = p.title || '';
+  const excerpt = el.querySelector('.post-excerpt'); if (excerpt) excerpt.textContent = p.excerpt || '';
 }
 
+function applyGuideToDOM(id) {
+  const g = guides[id];
+  const el = document.querySelector(`.guide-item[data-id="${id}"]`);
+  if (!el) return;
+  const icon = el.querySelector('.guide-icon');
+  if (icon) { icon.textContent = g.icon || ''; icon.className = 'guide-icon ' + (g.color||'green'); }
+  const t = el.querySelector('.guide-title'); if (t) t.textContent = g.title || '';
+  const d = el.querySelector('.guide-desc');  if (d) d.textContent = g.desc  || '';
+}
+
+function badgeClass(badge) {
+  const map = { '活动':'badge-event','维护':'badge-update','公告':'badge-update','更新':'badge-update' };
+  return map[badge] || 'badge-update';
+}
+
+// ── 保存到 Supabase ─────────────────────────────────
+async function saveToSupabase(type, slug, data) {
+  // upsert: 如果存在就更新，不存在就插入
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}`, {
+    method: 'POST',
+    headers: sbH({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
+    body: JSON.stringify({ type, slug, data })
+  });
+  if (!res.ok) throw new Error(await res.text());
+}
+
+async function deleteFromSupabase(type, slug) {
+  const res = await fetch(
+    `${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}?type=eq.${type}&slug=eq.${slug}`,
+    { method: 'DELETE', headers: sbH() }
+  );
+  if (!res.ok) throw new Error(await res.text());
+}
+
+// ── 弹窗查看 ────────────────────────────────────────
 function openPost(id) {
   const p = posts[id];
+  if (!p) return;
   document.getElementById('modalTitle').textContent = p.title;
   document.getElementById('modalBody').innerHTML = p.body;
   document.getElementById('modalOverlay').classList.add('open');
@@ -1037,6 +1350,7 @@ function openPost(id) {
 
 function openGuide(id) {
   const g = guides[id];
+  if (!g) return;
   document.getElementById('modalTitle').textContent = g.title;
   document.getElementById('modalBody').innerHTML = g.body;
   document.getElementById('modalOverlay').classList.add('open');
@@ -1049,28 +1363,248 @@ function closeModalBtn() {
   document.getElementById('modalOverlay').classList.remove('open');
 }
 
-// ── Supabase 配置 ─────────────────────────────────────
-const SUPABASE_URL = 'https://vlbdguleovswmchypadd.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
-const SB_TABLE = 'suggestions';
-// ─────────────────────────────────────────────────────
+// ── 管理员逻辑 ───────────────────────────────────────
+function toggleAdmin() {
+  if (isAdmin) {
+    isAdmin = false;
+    document.body.classList.remove('admin-mode');
+    document.getElementById('adminBtn').classList.remove('active');
+    showToast('已退出管理员模式');
+  } else {
+    document.getElementById('adminLoginOverlay').classList.add('open');
+    setTimeout(() => document.getElementById('adminPwdInput').focus(), 100);
+  }
+}
 
+function checkAdminPwd() {
+  const val = document.getElementById('adminPwdInput').value;
+  if (val === ADMIN_PASSWORD) {
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminBtn').classList.add('active');
+    document.getElementById('adminLoginOverlay').classList.remove('open');
+    document.getElementById('adminPwdInput').value = '';
+    document.getElementById('loginErr').style.display = 'none';
+    showToast('✅ 进入管理员模式');
+  } else {
+    document.getElementById('loginErr').style.display = 'block';
+    document.getElementById('adminPwdInput').value = '';
+    document.getElementById('adminPwdInput').focus();
+  }
+}
+
+function closeAdminLogin() {
+  document.getElementById('adminLoginOverlay').classList.remove('open');
+  document.getElementById('adminPwdInput').value = '';
+  document.getElementById('loginErr').style.display = 'none';
+}
+
+// ── 编辑弹窗 ─────────────────────────────────────────
+let _editMode = null; // { kind:'post'|'guide', id, isNew }
+
+function editPost(id) {
+  if (!isAdmin) return;
+  const p = posts[id];
+  _editMode = { kind:'post', id, isNew:false };
+  document.getElementById('editorTitle').textContent = '编辑公告';
+  document.getElementById('postFields').style.display = '';
+  document.getElementById('guideFields').style.display = 'none';
+  document.getElementById('edTitle').value   = p.title   || '';
+  document.getElementById('edExcerpt').value = p.excerpt || '';
+  document.getElementById('edDate').value    = p.date    || '';
+  const badgeEl = document.getElementById('edBadge');
+  badgeEl.value = p.badge || '更新';
+  document.getElementById('richEditor').innerHTML = p.body || '';
+  document.getElementById('editorOverlay').classList.add('open');
+}
+
+function newPost() {
+  if (!isAdmin) return;
+  const newId = 'post' + Date.now();
+  posts[newId] = { title:'新公告', badge:'公告', date: new Date().toISOString().slice(0,10), excerpt:'', body:'' };
+  _editMode = { kind:'post', id: newId, isNew:true };
+  document.getElementById('editorTitle').textContent = '新增公告';
+  document.getElementById('postFields').style.display = '';
+  document.getElementById('guideFields').style.display = 'none';
+  document.getElementById('edTitle').value   = '';
+  document.getElementById('edExcerpt').value = '';
+  document.getElementById('edDate').value    = new Date().toISOString().slice(0,10);
+  document.getElementById('edBadge').value   = '公告';
+  document.getElementById('richEditor').innerHTML = '';
+  document.getElementById('editorOverlay').classList.add('open');
+}
+
+function editGuide(id) {
+  if (!isAdmin) return;
+  const g = guides[id];
+  _editMode = { kind:'guide', id, isNew:false };
+  document.getElementById('editorTitle').textContent = '编辑攻略';
+  document.getElementById('postFields').style.display = 'none';
+  document.getElementById('guideFields').style.display = '';
+  document.getElementById('edGuideTitle').value = g.title || '';
+  document.getElementById('edGuideDesc').value  = g.desc  || '';
+  document.getElementById('edGuideColor').value = g.color || 'green';
+  document.getElementById('edGuideIcon').value  = g.icon  || '';
+  document.getElementById('richEditor').innerHTML = g.body || '';
+  document.getElementById('editorOverlay').classList.add('open');
+}
+
+function newGuide() {
+  if (!isAdmin) return;
+  const newId = 'g' + Date.now();
+  guides[newId] = { title:'新攻略', icon:'📋', color:'blue', desc:'', body:'' };
+  _editMode = { kind:'guide', id: newId, isNew:true };
+  document.getElementById('editorTitle').textContent = '新增攻略';
+  document.getElementById('postFields').style.display = 'none';
+  document.getElementById('guideFields').style.display = '';
+  document.getElementById('edGuideTitle').value = '';
+  document.getElementById('edGuideDesc').value  = '';
+  document.getElementById('edGuideColor').value = 'blue';
+  document.getElementById('edGuideIcon').value  = '📋';
+  document.getElementById('richEditor').innerHTML = '';
+  document.getElementById('editorOverlay').classList.add('open');
+}
+
+function closeEditor() {
+  document.getElementById('editorOverlay').classList.remove('open');
+  _editMode = null;
+}
+
+async function saveContent() {
+  if (!_editMode) return;
+  const btn = document.getElementById('edSaveBtn');
+  btn.disabled = true; btn.textContent = '保存中...';
+  const body = document.getElementById('richEditor').innerHTML;
+
+  try {
+    if (_editMode.kind === 'post') {
+      const id = _editMode.id;
+      const badge  = document.getElementById('edBadge').value;
+      const date   = document.getElementById('edDate').value;
+      const title  = document.getElementById('edTitle').value.trim();
+      const excerpt= document.getElementById('edExcerpt').value.trim();
+      posts[id] = { ...posts[id], title, badge, date, excerpt, body };
+      await saveToSupabase('post', id, posts[id]);
+      if (_editMode.isNew) addPostCard(id);
+      else applyPostToDOM(id);
+
+    } else {
+      const id    = _editMode.id;
+      const title = document.getElementById('edGuideTitle').value.trim();
+      const desc  = document.getElementById('edGuideDesc').value.trim();
+      const color = document.getElementById('edGuideColor').value;
+      const icon  = document.getElementById('edGuideIcon').value.trim();
+      guides[id] = { ...guides[id], title, desc, color, icon, body };
+      await saveToSupabase('guide', id, guides[id]);
+      if (_editMode.isNew) addGuideItem(id);
+      else applyGuideToDOM(id);
+    }
+    closeEditor();
+    showToast('✅ 已保存到数据库！');
+  } catch(e) {
+    showToast('❌ 保存失败：' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 保存';
+  }
+}
+
+// 动态插入新公告卡片
+function addPostCard(id) {
+  const p = posts[id];
+  const grid = document.getElementById('postsGrid');
+  const div = document.createElement('div');
+  div.className = 'post-card';
+  div.dataset.id = id;
+  div.onclick = () => openPost(id);
+  div.innerHTML = `
+    <div class="post-card-header">
+      <span class="post-badge ${badgeClass(p.badge)}">${p.badge}</span>
+      <span class="post-date">${p.date}</span>
+    </div>
+    <div class="post-card-body">
+      <div class="post-title">${p.title}</div>
+      <div class="post-excerpt">${p.excerpt}</div>
+    </div>
+    <div class="edit-actions" onclick="event.stopPropagation()">
+      <button class="btn-edit" onclick="editPost('${id}')">✏️ 编辑</button>
+      <button class="btn-del"  onclick="deletePost('${id}')">🗑 删除</button>
+    </div>`;
+  grid.appendChild(div);
+}
+
+// 动态插入新攻略条目
+function addGuideItem(id) {
+  const g = guides[id];
+  const list = document.getElementById('guideList');
+  const div = document.createElement('div');
+  div.className = 'guide-item';
+  div.dataset.id = id;
+  div.onclick = () => openGuide(id);
+  div.innerHTML = `
+    <div class="guide-icon ${g.color}">${g.icon}</div>
+    <div class="guide-info">
+      <div class="guide-title">${g.title}</div>
+      <div class="guide-desc">${g.desc}</div>
+    </div>
+    <span class="guide-arrow">›</span>
+    <div class="edit-actions" onclick="event.stopPropagation()">
+      <button class="btn-edit" onclick="editGuide('${id}')">✏️ 编辑</button>
+      <button class="btn-del"  onclick="deleteGuide('${id}')">🗑 删除</button>
+    </div>`;
+  list.appendChild(div);
+}
+
+// ── 删除 ────────────────────────────────────────────
+async function deletePost(id) {
+  if (!isAdmin || !confirm('确定要删除这条公告吗？')) return;
+  try {
+    await deleteFromSupabase('post', id);
+    const el = document.querySelector(`.post-card[data-id="${id}"]`);
+    if (el) el.remove();
+    delete posts[id];
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); }
+}
+
+async function deleteGuide(id) {
+  if (!isAdmin || !confirm('确定要删除这条攻略吗？')) return;
+  try {
+    await deleteFromSupabase('guide', id);
+    const el = document.querySelector(`.guide-item[data-id="${id}"]`);
+    if (el) el.remove();
+    delete guides[id];
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); }
+}
+
+// ── 富文本工具栏 ─────────────────────────────────────
+function fmt(cmd) { document.getElementById('richEditor').focus(); document.execCommand(cmd, false, null); }
+function fmtH3() {
+  document.getElementById('richEditor').focus();
+  document.execCommand('formatBlock', false, 'h3');
+}
+function fmtP()  { document.getElementById('richEditor').focus(); document.execCommand('formatBlock', false, 'p'); }
+function fmtBr() { document.getElementById('richEditor').focus(); document.execCommand('insertLineBreak'); }
+function fmtCode() {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const code = document.createElement('code');
+  code.style.cssText = 'background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;font-family:monospace;';
+  try { sel.getRangeAt(0).surroundContents(code); } catch(e) {}
+}
+function fmtHr() {
+  document.getElementById('richEditor').focus();
+  document.execCommand('insertHorizontalRule');
+}
+
+// ── 玩家建议 Supabase ────────────────────────────────
 const typeLabels = {
   gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本',
   rules:'规则 / 管理', tech:'技术 / 性能', other:'其他'
 };
 
-function sbHeaders(extra = {}) {
-  return {
-    'Content-Type': 'application/json',
-    'apikey': SUPABASE_KEY,
-    'Authorization': 'Bearer ' + SUPABASE_KEY,
-    ...extra
-  };
-}
-
-// 渲染单条建议卡片
-function renderCard(s) {
+function renderSuggCard(s) {
   const esc = str => String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
   const statusMap = {
     pending:  `<div class="suggestion-status status-pending">⏳ 待审核</div>`,
@@ -1090,19 +1624,17 @@ function renderCard(s) {
     </div>
     <div class="suggestion-text">${esc(s.content)}</div>
     ${s.type ? `<span class="suggestion-tag">${esc(typeLabels[s.type] ?? s.type)}</span>` : ''}
-    ${statusMap[s.status] ?? statusMap.pending}
-  `;
+    ${statusMap[s.status] ?? statusMap.pending}`;
   return el;
 }
 
-// 页面加载时拉取所有建议
 async function loadSuggestions() {
   const container = document.getElementById('suggCards');
   container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">加载中...</p>`;
   try {
     const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SB_TABLE}?order=created_at.desc&limit=50`,
-      { headers: sbHeaders() }
+      `${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}?order=created_at.desc&limit=50`,
+      { headers: sbH() }
     );
     if (!res.ok) throw new Error(await res.text());
     const rows = await res.json();
@@ -1111,65 +1643,69 @@ async function loadSuggestions() {
       container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">暂无建议，来第一个提交吧！</p>`;
       return;
     }
-    rows.forEach(s => container.appendChild(renderCard(s)));
-  } catch (err) {
-    console.error('loadSuggestions:', err);
-    container.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败：${err.message}</p>`;
+    rows.forEach(s => container.appendChild(renderSuggCard(s)));
+  } catch(e) {
+    console.error(e);
+    container.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败</p>`;
   }
 }
 
-// 提交建议
 async function submitSuggestion() {
   const name    = document.getElementById('suggName').value.trim();
   const type    = document.getElementById('suggType').value;
   const content = document.getElementById('suggContent').value.trim();
   if (!name || !type || !content) { showToast('⚠️ 请填写所有栏位！'); return; }
-
   const btn = document.querySelector('.form-submit');
-  btn.disabled = true;
-  btn.textContent = '提交中...';
-
+  btn.disabled = true; btn.textContent = '提交中...';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}`, {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}`, {
       method: 'POST',
-      headers: sbHeaders({ 'Prefer': 'return=representation' }),
-      body: JSON.stringify({ player_name: name, type, content, votes: 0, status: 'pending' })
+      headers: sbH({ 'Prefer':'return=representation' }),
+      body: JSON.stringify({ player_name:name, type, content, votes:0, status:'pending' })
     });
     if (!res.ok) throw new Error(await res.text());
     const [saved] = await res.json();
-    document.getElementById('suggCards').prepend(renderCard(saved));
+    document.getElementById('suggCards').prepend(renderSuggCard(saved));
     document.getElementById('suggName').value = '';
     document.getElementById('suggType').value = '';
     document.getElementById('suggContent').value = '';
     showToast('✅ 建议已送出！感谢你的反馈！');
-  } catch (err) {
-    console.error('submitSuggestion:', err);
+  } catch(e) {
     showToast('❌ 提交失败，请稍后再试');
+    console.error(e);
   } finally {
-    btn.disabled = false;
-    btn.textContent = '提交建议';
+    btn.disabled = false; btn.textContent = '提交建议';
   }
 }
 
-// 投票（同步写回 Supabase）
 async function vote(btn) {
   const countEl = btn.querySelector('.vcount');
   const card = btn.closest('[data-id]');
   const id = card?.dataset.id;
   const isVoted = btn.classList.contains('voted');
   const newVotes = parseInt(countEl.textContent) + (isVoted ? -1 : 1);
-
   btn.classList.toggle('voted');
   countEl.textContent = newVotes;
-
-  if (!id) return; // 静态示例卡片，只本地更新
+  if (!id) return;
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}?id=eq.${id}`, {
-      method: 'PATCH',
-      headers: sbHeaders(),
+    await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}?id=eq.${id}`, {
+      method: 'PATCH', headers: sbH(),
       body: JSON.stringify({ votes: newVotes })
     });
-  } catch (err) { console.error('vote patch:', err); }
+  } catch(e) { console.error(e); }
+}
+
+// ── 工具函数 ─────────────────────────────────────────
+function copyIP() {
+  const ip = document.getElementById('serverIP').textContent;
+  navigator.clipboard.writeText(ip).catch(() => {});
+  const tip = document.getElementById('copyTip');
+  tip.classList.add('show');
+  setTimeout(() => tip.classList.remove('show'), 2000);
+}
+
+function toggleNav() {
+  document.getElementById('navLinks').classList.toggle('open');
 }
 
 function showToast(msg) {
@@ -1179,13 +1715,11 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-// 启动时加载建议
-document.addEventListener('DOMContentLoaded', loadSuggestions);
-
+// ── 数字滚动动画 ─────────────────────────────────────
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
-      animateNum(document.getElementById('stat1'), 0, 10050, 1200);
+      animateNum(document.getElementById('stat1'), 0, 10050, 1800);
       observer.disconnect();
     }
   });
@@ -1206,6 +1740,12 @@ function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
 document.querySelectorAll('.nav-links a').forEach(a => {
   a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+});
+
+// ── 启动 ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  loadContent();
+  loadSuggestions();
 });
 </script>
 </body>
