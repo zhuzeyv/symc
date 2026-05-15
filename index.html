@@ -38,7 +38,7 @@
   body::before {
     content: '';
     position: fixed;
-    在set: 0;
+    inset: 0;
     background-image:
       linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
@@ -56,10 +56,16 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    height: 60px;
+  }
+  .nav-right {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    height: 60px;
+    gap: 1rem;
+    justify-content: flex-end;
   }
   .nav-logo {
     font-family: 'JetBrains Mono', monospace;
@@ -105,11 +111,28 @@
     cursor: pointer;
     transition: background 0.2s;
     position: relative;
+    user-select: none;
   }
   .nav-ip:hover { background: rgba(74,222,128,0.2); }
+  .nav-ip .hover-hint {
+    position: absolute;
+    bottom: -30px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--stone-light);
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    border: 1px solid var(--border);
+  }
+  .nav-ip:hover .hover-hint { opacity: 1; }
   .copy-tip {
     position: absolute;
-    top: -30px; left: 50%;
+    top: -32px; left: 50%;
     transform: translateX(-50%);
     background: var(--green);
     color: #000;
@@ -120,6 +143,8 @@
     transition: opacity 0.3s;
     pointer-events: none;
     white-space: nowrap;
+    font-weight: 700;
+    z-index: 10;
   }
   .copy-tip.show { opacity: 1; }
   .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
@@ -587,10 +612,11 @@
     <li><a href="#bans">封禁名单</a></li>
     <li><a href="#suggestions">玩家建议</a></li>
   </ul>
-  <div style="display:flex;align-items:center;gap:1rem;">
+  <div class="nav-right">
     <div class="nav-ip" onclick="copyIP()" title="点击复制">
       <span id="serverIP">symc.cc</span>
-      <span class="copy-tip" id="copyTip">已复制！</span>
+      <span class="hover-hint">点击复制 IP</span>
+      <span class="copy-tip" id="copyTip">✓ 已复制！</span>
     </div>
     <div class="hamburger" onclick="toggleNav()" aria-label="菜单">
       <span></span><span></span><span></span>
@@ -652,7 +678,7 @@
     <h2 class="section-title">最新公告与更新日志</h2>
   </div>
   <div class="posts-grid">
-    <a href="#" class="post-card" onclick="openPost('post1');return false;">
+    <div class="post-card" onclick="openPost('post1')">
       <div class="post-card-header">
         <span class="post-badge badge-update">更新</span>
         <span class="post-date">2025-01-15</span>
@@ -661,8 +687,8 @@
         <div class="post-title">✨ v2.4.0 重大更新 — 新副本“深渊要塞”</div>
         <div class="post-excerpt">全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...</div>
       </div>
-    </a>
-    <a href="#" class="post-card" onclick="openPost('post2');return false;">
+    </div>
+    <div class="post-card" onclick="openPost('post2')">
       <div class="post-card-header">
         <span class="post-badge badge-event">活动</span>
         <span class="post-date">2025-01-10</span>
@@ -671,8 +697,8 @@
         <div class="post-title">🎉 冬季节日活动开始！限定任务与奖励</div>
         <div class="post-excerpt">为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...</div>
       </div>
-    </a>
-    <a href="#" class="post-card" onclick="openPost('post3');return false;">
+    </div>
+    <div class="post-card" onclick="openPost('post3')">
       <div class="post-card-header">
         <span class="post-badge badge-update">维护</span>
         <span class="post-date">2025-01-05</span>
@@ -681,7 +707,7 @@
         <div class="post-title">🔧 服务器性能优化 — 大幅减少卡顿</div>
         <div class="post-excerpt">针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...</div>
       </div>
-    </a>
+    </div>
   </div>
 </section>
 
@@ -693,54 +719,54 @@
     <h2 class="section-title">新手到老手的完整攻略</h2>
   </div>
   <div class="guide-list">
-    <a href="#" class="guide-item" onclick="openGuide('g1');return false;">
+    <div class="guide-item" onclick="openGuide('g1')">
       <div class="guide-icon green">🌱</div>
       <div class="guide-info">
         <div class="guide-title">新手入门：进服第一天该做什么？</div>
         <div class="guide-desc">领取新手礼包、认识基本指令、找到适合的居住地点</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
-    <a href="#" class="guide-item" onclick="openGuide('g2');return false;">
+    </div>
+    <div class="guide-item" onclick="openGuide('g2')">
       <div class="guide-icon blue">⚔️</div>
       <div class="guide-info">
         <div class="guide-title">战斗系统教学：技能、装备与强化</div>
         <div class="guide-desc">了解自定义战斗系统、如何取得最强装备、附魔与强化流程</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
-    <a href="#" class="guide-item" onclick="openGuide('g3');return false;">
+    </div>
+    <div class="guide-item" onclick="openGuide('g3')">
       <div class="guide-icon yellow">💰</div>
       <div class="guide-info">
         <div class="guide-title">经济系统指南：赚钱、交易与商店</div>
         <div class="guide-desc">服务器货币系统、玩家市集使用方式、高效赚钱方法</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
-    <a href="#" class="guide-item" onclick="openGuide('g4');return false;">
+    </div>
+    <div class="guide-item" onclick="openGuide('g4')">
       <div class="guide-icon red">🏰</div>
       <div class="guide-info">
         <div class="guide-title">副本攻略：深渊要塞完全指南</div>
         <div class="guide-desc">5层关卡详细攻略、Boss机制说明、最佳队伍配置建议</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
-    <a href="#" class="guide-item" onclick="openGuide('g5');return false;">
+    </div>
+    <div class="guide-item" onclick="openGuide('g5')">
       <div class="guide-icon green">🏡</div>
       <div class="guide-info">
         <div class="guide-title">领地系统：如何圈地保护你的建筑</div>
         <div class="guide-desc">领地指令教学、保护设定、共享与信任玩家管理</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
-    <a href="#" class="guide-item" onclick="openGuide('g6');return false;">
+    </div>
+    <div class="guide-item" onclick="openGuide('g6')">
       <div class="guide-icon blue">📋</div>
       <div class="guide-info">
         <div class="guide-title">完整指令清单</div>
         <div class="guide-desc">所有可用指令一览，包含传送、商店、领地、个人设置等</div>
       </div>
       <span class="guide-arrow">›</span>
-    </a>
+    </div>
   </div>
 </section>
 
@@ -1046,7 +1072,7 @@ function closeModal(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
 }
 function closeModalBtn() {
-  document。getElementById('modalOverlay').classList.remove('open');
+  document.getElementById('modalOverlay').classList.remove('open');
 }
 
 function vote(btn) {
