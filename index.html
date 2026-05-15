@@ -38,7 +38,7 @@
   body::before {
     content: '';
     position: fixed;
-    inset: 0;
+    在set: 0;
     background-image:
       linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
       linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
@@ -56,16 +56,10 @@
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
     padding: 0 2rem;
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-    align-items: center;
-    height: 60px;
-  }
-  .nav-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    justify-content: flex-end;
+    justify-content: space-between;
+    height: 60px;
   }
   .nav-logo {
     font-family: 'JetBrains Mono', monospace;
@@ -111,28 +105,11 @@
     cursor: pointer;
     transition: background 0.2s;
     position: relative;
-    user-select: none;
   }
   .nav-ip:hover { background: rgba(74,222,128,0.2); }
-  .nav-ip .hover-hint {
-    position: absolute;
-    bottom: -30px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--stone-light);
-    color: var(--text-muted);
-    font-size: 0.68rem;
-    padding: 3px 8px;
-    border-radius: 3px;
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 0.2s;
-    pointer-events: none;
-    border: 1px solid var(--border);
-  }
-  .nav-ip:hover .hover-hint { opacity: 1; }
   .copy-tip {
     position: absolute;
-    top: -32px; left: 50%;
+    top: -30px; left: 50%;
     transform: translateX(-50%);
     background: var(--green);
     color: #000;
@@ -143,8 +120,6 @@
     transition: opacity 0.3s;
     pointer-events: none;
     white-space: nowrap;
-    font-weight: 700;
-    z-index: 10;
   }
   .copy-tip.show { opacity: 1; }
   .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
@@ -612,11 +587,10 @@
     <li><a href="#bans">封禁名单</a></li>
     <li><a href="#suggestions">玩家建议</a></li>
   </ul>
-  <div class="nav-right">
+  <div style="display:flex;align-items:center;gap:1rem;">
     <div class="nav-ip" onclick="copyIP()" title="点击复制">
       <span id="serverIP">symc.cc</span>
-      <span class="hover-hint">点击复制 IP</span>
-      <span class="copy-tip" id="copyTip">✓ 已复制！</span>
+      <span class="copy-tip" id="copyTip">已复制！</span>
     </div>
     <div class="hamburger" onclick="toggleNav()" aria-label="菜单">
       <span></span><span></span><span></span>
@@ -678,7 +652,7 @@
     <h2 class="section-title">最新公告与更新日志</h2>
   </div>
   <div class="posts-grid">
-    <div class="post-card" onclick="openPost('post1')">
+    <a href="#" class="post-card" onclick="openPost('post1');return false;">
       <div class="post-card-header">
         <span class="post-badge badge-update">更新</span>
         <span class="post-date">2025-01-15</span>
@@ -687,8 +661,8 @@
         <div class="post-title">✨ v2.4.0 重大更新 — 新副本“深渊要塞”</div>
         <div class="post-excerpt">全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...</div>
       </div>
-    </div>
-    <div class="post-card" onclick="openPost('post2')">
+    </a>
+    <a href="#" class="post-card" onclick="openPost('post2');return false;">
       <div class="post-card-header">
         <span class="post-badge badge-event">活动</span>
         <span class="post-date">2025-01-10</span>
@@ -697,8 +671,8 @@
         <div class="post-title">🎉 冬季节日活动开始！限定任务与奖励</div>
         <div class="post-excerpt">为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...</div>
       </div>
-    </div>
-    <div class="post-card" onclick="openPost('post3')">
+    </a>
+    <a href="#" class="post-card" onclick="openPost('post3');return false;">
       <div class="post-card-header">
         <span class="post-badge badge-update">维护</span>
         <span class="post-date">2025-01-05</span>
@@ -707,7 +681,7 @@
         <div class="post-title">🔧 服务器性能优化 — 大幅减少卡顿</div>
         <div class="post-excerpt">针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...</div>
       </div>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -719,54 +693,54 @@
     <h2 class="section-title">新手到老手的完整攻略</h2>
   </div>
   <div class="guide-list">
-    <div class="guide-item" onclick="openGuide('g1')">
+    <a href="#" class="guide-item" onclick="openGuide('g1');return false;">
       <div class="guide-icon green">🌱</div>
       <div class="guide-info">
         <div class="guide-title">新手入门：进服第一天该做什么？</div>
         <div class="guide-desc">领取新手礼包、认识基本指令、找到适合的居住地点</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
-    <div class="guide-item" onclick="openGuide('g2')">
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g2');return false;">
       <div class="guide-icon blue">⚔️</div>
       <div class="guide-info">
         <div class="guide-title">战斗系统教学：技能、装备与强化</div>
         <div class="guide-desc">了解自定义战斗系统、如何取得最强装备、附魔与强化流程</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
-    <div class="guide-item" onclick="openGuide('g3')">
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g3');return false;">
       <div class="guide-icon yellow">💰</div>
       <div class="guide-info">
         <div class="guide-title">经济系统指南：赚钱、交易与商店</div>
         <div class="guide-desc">服务器货币系统、玩家市集使用方式、高效赚钱方法</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
-    <div class="guide-item" onclick="openGuide('g4')">
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g4');return false;">
       <div class="guide-icon red">🏰</div>
       <div class="guide-info">
         <div class="guide-title">副本攻略：深渊要塞完全指南</div>
         <div class="guide-desc">5层关卡详细攻略、Boss机制说明、最佳队伍配置建议</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
-    <div class="guide-item" onclick="openGuide('g5')">
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g5');return false;">
       <div class="guide-icon green">🏡</div>
       <div class="guide-info">
         <div class="guide-title">领地系统：如何圈地保护你的建筑</div>
         <div class="guide-desc">领地指令教学、保护设定、共享与信任玩家管理</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
-    <div class="guide-item" onclick="openGuide('g6')">
+    </a>
+    <a href="#" class="guide-item" onclick="openGuide('g6');return false;">
       <div class="guide-icon blue">📋</div>
       <div class="guide-info">
         <div class="guide-title">完整指令清单</div>
         <div class="guide-desc">所有可用指令一览，包含传送、商店、领地、个人设置等</div>
       </div>
       <span class="guide-arrow">›</span>
-    </div>
+    </a>
   </div>
 </section>
 
@@ -868,7 +842,7 @@
       <div class="suggestion-header">
         <span class="suggestion-player">CreeperFarmer</span>
         <div class="suggestion-votes">
-          <button class="vote-btn voted" onclick="vote(this)">▲ <span class="vcount">34</span></button>
+          <button class="vote-btn voted" onclick="vote(this,'')">▲ <span class="vcount">34</span></button>
         </div>
       </div>
       <div class="suggestion-text">希望能增加“自动农场”系统，让玩家可以设置定时收获机制，离线时也能有少量产出。</div>
@@ -879,7 +853,7 @@
       <div class="suggestion-header">
         <span class="suggestion-player">BuildMaster_CN</span>
         <div class="suggestion-votes">
-          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">21</span></button>
+          <button class="vote-btn" onclick="vote(this,'')">▲ <span class="vcount">21</span></button>
         </div>
       </div>
       <div class="suggestion-text">建议在主城附近设置“展览区”，让玩家能展示自己的建筑作品，每月评选最佳建筑。</div>
@@ -890,7 +864,7 @@
       <div class="suggestion-header">
         <span class="suggestion-player">EmeraldTrader</span>
         <div class="suggestion-votes">
-          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">15</span></button>
+          <button class="vote-btn" onclick="vote(this,'')">▲ <span class="vcount">15</span></button>
         </div>
       </div>
       <div class="suggestion-text">市集系统可以加入“收购单”功能，玩家可以挂出收购需求，让其他玩家来填订单。</div>
@@ -1072,19 +1046,10 @@ function closeModal(e) {
   if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
 }
 function closeModalBtn() {
-  document.getElementById('modalOverlay').classList.remove('open');
+  document。getElementById('modalOverlay').classList.remove('open');
 }
 
-function vote(btn) {
-  const countEl = btn.querySelector('.vcount');
-  if (btn.classList.contains('voted')) {
-    btn.classList.remove('voted');
-    countEl.textContent = parseInt(countEl.textContent) - 1;
-  } else {
-    btn.classList.add('voted');
-    countEl.textContent = parseInt(countEl.textContent) + 1;
-  }
-}
+// vote() 已在上方 Supabase 区块定义
 
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -1093,38 +1058,145 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-function submitSuggestion() {
-  const name = document.getElementById('suggName').value.trim();
-  const type = document.getElementById('suggType').value;
+// ─── Supabase 配置 ── 填入你自己的值 ───────────────
+const SUPABASE_URL = 'https://vlbdguleovswmchypadd.supabase.co';       // 例: https://xxxx.supabase.co
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';  // 你的 anon public key
+const TABLE = 'suggestions';
+// ─────────────────────────────────────────────────
+
+const typeLabels = { gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本', rules:'规则 / 管理', tech:'技术 / 性能', other:'其他' };
+
+function sbHeaders() {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY
+  };
+}
+
+// 渲染一条建议卡片
+function renderCard(s) {
+  const safe = str => String(str).replace(/</g,'&lt;');
+  const label = typeLabels[s.type] || s.type || '';
+  const statusMap = {
+    pending:  '<div class="suggestion-status status-pending">⏳ 待审核</div>',
+    accepted: '<div class="suggestion-status status-accepted">✅ 已采纳</div>',
+    reviewed: '<div class="suggestion-status status-reviewed">🔍 审核中</div>',
+    rejected: '<div class="suggestion-status" style="color:var(--red);font-size:.75rem;">❌ 暂不采纳</div>'
+  };
+  const card = document.createElement('div');
+  card.className = 'suggestion-card';
+  card.dataset.id = s.id;
+  card.innerHTML = `
+    <div class="suggestion-header">
+      <span class="suggestion-player">${safe(s.player_name)}</span>
+      <div class="suggestion-votes">
+        <button class="vote-btn" onclick="vote(this,'${s.id}')">▲ <span class="vcount">${s.votes || 0}</span></button>
+      </div>
+    </div>
+    <div class="suggestion-text">${safe(s.content)}</div>
+    ${label ? `<span class="suggestion-tag">${safe(label)}</span>` : ''}
+    ${statusMap[s.status] || statusMap.pending}
+  `;
+  return card;
+}
+
+// 加载所有建议
+async function loadSuggestions() {
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    // 未配置时保留示例卡片，不请求
+    return;
+  }
+  const container = document.getElementById('suggCards');
+  container.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">加载中...</p>';
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${TABLE}?order=created_at.desc&limit=50`,
+      { headers: sbHeaders() }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    const data = await res.json();
+    container.innerHTML = '';
+    if (data.length === 0) {
+      container.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">暂无建议，来第一个提交吧！</p>';
+      return;
+    }
+    data.forEach(s => container.appendChild(renderCard(s)));
+  } catch(e) {
+    container.innerHTML = '<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败，请检查 Supabase 配置</p>';
+    console.error('Supabase load error:', e);
+  }
+}
+
+// 提交建议
+async function submitSuggestion() {
+  const name    = document.getElementById('suggName').value.trim();
+  const type    = document.getElementById('suggType').value;
   const content = document.getElementById('suggContent').value.trim();
   if (!name || !type || !content) { showToast('⚠️ 请填写所有栏位！'); return; }
 
-  const typeLabels = { gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本', rules:'规则 / 管理', tech:'技术 / 性能', other:'其他' };
-  const card = document.createElement('div');
-  card.className = 'suggestion-card';
-  card.innerHTML = `
-    <div class="suggestion-header">
-      <span class="suggestion-player">${name.replace(/</g,'&lt;')}</span>
-      <div class="suggestion-votes">
-        <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">0</span></button>
-      </div>
-    </div>
-    <div class="suggestion-text">${content.replace(/</g,'&lt;')}</div>
-    <span class="suggestion-tag">${typeLabels[type]}</span>
-    <div class="suggestion-status status-pending">⏳ 待审核</div>
-  `;
-  document.getElementById('suggCards').prepend(card);
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    // 未配置时仍走本地预览
+    const fakeCard = renderCard({ id: Date.now(), player_name: name, type, content, votes: 0, status: 'pending' });
+    document.getElementById('suggCards').prepend(fakeCard);
+    document.getElementById('suggName').value = '';
+    document.getElementById('suggType').value = '';
+    document.getElementById('suggContent').value = '';
+    showToast('✅ 建议已送出！（本地预览模式）');
+    return;
+  }
 
-  document.getElementById('suggName').value = '';
-  document.getElementById('suggType').value = '';
-  document.getElementById('suggContent').value = '';
-  showToast('✅ 建议已送出！感谢你的反馈！');
+  const btn = document.querySelector('.form-submit');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}`, {
+      method: 'POST',
+      headers: { ...sbHeaders(), 'Prefer': 'return=representation' },
+      body: JSON.stringify({ player_name: name, type, content, votes: 0, status: 'pending' })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const [saved] = await res.json();
+    document.getElementById('suggCards').prepend(renderCard(saved));
+    document.getElementById('suggName').value = '';
+    document.getElementById('suggType').value = '';
+    document.getElementById('suggContent').value = '';
+    showToast('✅ 建议已送出！感谢你的反馈！');
+  } catch(e) {
+    showToast('❌ 提交失败，请稍后再试');
+    console.error('Supabase submit error:', e);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '提交建议';
+  }
 }
+
+// 投票（写回 Supabase）
+async function vote(btn, id) {
+  const countEl = btn.querySelector('.vcount');
+  const isVoted = btn.classList.contains('voted');
+  const newVotes = parseInt(countEl.textContent) + (isVoted ? -1 : 1);
+  btn.classList.toggle('voted');
+  countEl.textContent = newVotes;
+
+  if (SUPABASE_URL === 'YOUR_SUPABASE_URL' || !id) return;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/${TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: sbHeaders(),
+      body: JSON.stringify({ votes: newVotes })
+    });
+  } catch(e) { console.error('Vote error:', e); }
+}
+
+// 页面加载时拉数据
+document.addEventListener('DOMContentLoaded', loadSuggestions);
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
     if (e.isIntersecting) {
-      animateNum(document.getElementById('stat1'), 0, 1284, 1200);
+      animateNum(document.getElementById('stat1'), 0, 10050, 1800);
       observer.disconnect();
     }
   });
