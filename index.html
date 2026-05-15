@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌍 我的世界私服 - 官方網站</title>
+<title>🌍 我的世界神域城邦 - 官方網站</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
@@ -50,7 +50,7 @@
   /* NAV */
   nav {
     position: sticky;
-    top: 0;
+    到p: 0;
     z-index: 100;
     background: rgba(28,25,23,0.92);
     backdrop-filter: blur(12px);
@@ -94,7 +94,7 @@
     transition: color 0.2s, background 0.2s;
   }
   .nav-links a:hover { color: var(--green); background: rgba(74,222,128,0.05); }
-  .nav-ip {
+  。nav-ip {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.75rem;
     background: var(--green-dim);
@@ -521,7 +521,7 @@
     max-height: 80vh;
     overflow-y: auto;
   }
-  .modal-overlay.open .modal { transform: translateY(0); }
+  。modal-overlay.open .modal { transform: translateY(0); }
   .modal-close {
     position: absolute; top: 1rem; right: 1rem;
     background: none; border: none; color: var(--text-muted);
@@ -591,7 +591,7 @@
   </ul>
   <div style="display:flex;align-items:center;gap:1rem;">
     <div class="nav-ip" onclick="copyIP()" title="點擊複製">
-      <span id="serverIP">play.yourserver.net</span>
+      <span id="serverIP">symc.cc:6666</span>
       <span class="copy-tip" id="copyTip">已複製！</span>
     </div>
     <div class="hamburger" onclick="toggleNav()" aria-label="選單">
@@ -616,15 +616,15 @@
     <rect x="9" y="13" width="3" height="3" fill="#92400e"/>
   </svg>
   <div class="hero-tag">⛏ Minecraft 私人伺服器</div>
-  <h1 class="hero-title">探索、建造<br><span>屬於你的世界</span></h1>
-  <p class="hero-sub">一個友善、活躍的 Minecraft 社群。加入我們，與其他玩家一起冒險、建設、挑戰！</p>
+  <h1 class="hero-title">探索、建造<br><span>属于你的世界</span></h1>
+  <p class="hero-sub">一个友善、活跃的 Minecraft 社群。加入我们，与其他玩家一起冒险、建设、挑战！</p>
   <div class="hero-btns">
     <a href="#guides" class="btn-primary">📖 新手攻略</a>
     <a href="#news" class="btn-outline">📢 最新公告</a>
   </div>
   <div class="online-badge">
     <span class="dot"></span>
-    伺服器運行中 · <span id="playerCount">47</span> 位玩家在線
+    服务器运行中 · <span id="playerCount">47</span> 位玩家在线
   </div>
 </section>
 
@@ -635,26 +635,26 @@
   <div class="stats-grid">
     <div class="stat-card">
       <span class="stat-num" id="stat1">1,284</span>
-      <span class="stat-label">🧑 註冊玩家</span>
+      <span class="stat-label">🧑 注册玩家</span>
     </div>
     <div class="stat-card">
       <span class="stat-num">365</span>
-      <span class="stat-label">📅 伺服器天數</span>
+      <span class="stat-label">📅 服务器天數</span>
     </div>
     <div class="stat-card">
       <span class="stat-num">24/7</span>
-      <span class="stat-label">⏰ 穩定在線</span>
+      <span class="stat-label">⏰ 稳定在线</span>
     </div>
     <div class="stat-card">
-      <span class="stat-num">1.21</span>
-      <span class="stat-label">🎮 遊戲版本</span>
+      <span class="stat-num">1.12.2</span>
+      <span class="stat-label">🎮 游戏版本</span>
     </div>
   </div>
 
   <!-- ANNOUNCEMENTS -->
   <div id="news" class="section-header">
     <div class="section-tag">📢 公告</div>
-    <h2 class="section-title">最新公告與更新日誌</h2>
+    <h2 class="section-title">最新公告与更新日志</h2>
   </div>
   <div class="posts-grid">
     <a href="#" class="post-card" onclick="openPost('post1');return false;">
