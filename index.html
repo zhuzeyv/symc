@@ -1049,15 +1049,127 @@ function closeModalBtn() {
   document.getElementById('modalOverlay').classList.remove('open');
 }
 
-function vote(btn) {
-  const countEl = btn.querySelector('.vcount');
-  if (btn.classList.contains('voted')) {
-    btn.classList.remove('voted');
-    countEl.textContent = parseInt(countEl.textContent) - 1;
-  } else {
-    btn.classList.add('voted');
-    countEl.textContent = parseInt(countEl.textContent) + 1;
+// ── Supabase 配置 ─────────────────────────────────────
+const SUPABASE_URL = 'https://vlbdguleovswmchypadd.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
+const SB_TABLE = 'suggestions';
+// ─────────────────────────────────────────────────────
+
+const typeLabels = {
+  gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本',
+  rules:'规则 / 管理', tech:'技术 / 性能', other:'其他'
+};
+
+function sbHeaders(extra = {}) {
+  return {
+    'Content-Type': 'application/json',
+    'apikey': SUPABASE_KEY,
+    'Authorization': 'Bearer ' + SUPABASE_KEY,
+    ...extra
+  };
+}
+
+// 渲染单条建议卡片
+function renderCard(s) {
+  const esc = str => String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+  const statusMap = {
+    pending:  `<div class="suggestion-status status-pending">⏳ 待审核</div>`,
+    accepted: `<div class="suggestion-status status-accepted">✅ 已采纳</div>`,
+    reviewed: `<div class="suggestion-status status-reviewed">🔍 审核中</div>`,
+    rejected: `<div class="suggestion-status" style="color:var(--red);font-size:.75rem;">❌ 暂不采纳</div>`
+  };
+  const el = document.createElement('div');
+  el.className = 'suggestion-card';
+  el.dataset.id = s.id;
+  el.innerHTML = `
+    <div class="suggestion-header">
+      <span class="suggestion-player">${esc(s.player_name)}</span>
+      <div class="suggestion-votes">
+        <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">${s.votes ?? 0}</span></button>
+      </div>
+    </div>
+    <div class="suggestion-text">${esc(s.content)}</div>
+    ${s.type ? `<span class="suggestion-tag">${esc(typeLabels[s.type] ?? s.type)}</span>` : ''}
+    ${statusMap[s.status] ?? statusMap.pending}
+  `;
+  return el;
+}
+
+// 页面加载时拉取所有建议
+async function loadSuggestions() {
+  const container = document.getElementById('suggCards');
+  container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">加载中...</p>`;
+  try {
+    const res = await fetch(
+      `${SUPABASE_URL}/rest/v1/${SB_TABLE}?order=created_at.desc&limit=50`,
+      { headers: sbHeaders() }
+    );
+    if (!res.ok) throw new Error(await res.text());
+    const rows = await res.json();
+    container.innerHTML = '';
+    if (!rows.length) {
+      container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">暂无建议，来第一个提交吧！</p>`;
+      return;
+    }
+    rows.forEach(s => container.appendChild(renderCard(s)));
+  } catch (err) {
+    console.error('loadSuggestions:', err);
+    container.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败：${err.message}</p>`;
   }
+}
+
+// 提交建议
+async function submitSuggestion() {
+  const name    = document.getElementById('suggName').value.trim();
+  const type    = document.getElementById('suggType').value;
+  const content = document.getElementById('suggContent').value.trim();
+  if (!name || !type || !content) { showToast('⚠️ 请填写所有栏位！'); return; }
+
+  const btn = document.querySelector('.form-submit');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}`, {
+      method: 'POST',
+      headers: sbHeaders({ 'Prefer': 'return=representation' }),
+      body: JSON.stringify({ player_name: name, type, content, votes: 0, status: 'pending' })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const [saved] = await res.json();
+    document.getElementById('suggCards').prepend(renderCard(saved));
+    document.getElementById('suggName').value = '';
+    document.getElementById('suggType').value = '';
+    document.getElementById('suggContent').value = '';
+    showToast('✅ 建议已送出！感谢你的反馈！');
+  } catch (err) {
+    console.error('submitSuggestion:', err);
+    showToast('❌ 提交失败，请稍后再试');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '提交建议';
+  }
+}
+
+// 投票（同步写回 Supabase）
+async function vote(btn) {
+  const countEl = btn.querySelector('.vcount');
+  const card = btn.closest('[data-id]');
+  const id = card?.dataset.id;
+  const isVoted = btn.classList.contains('voted');
+  const newVotes = parseInt(countEl.textContent) + (isVoted ? -1 : 1);
+
+  btn.classList.toggle('voted');
+  countEl.textContent = newVotes;
+
+  if (!id) return; // 静态示例卡片，只本地更新
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: sbHeaders(),
+      body: JSON.stringify({ votes: newVotes })
+    });
+  } catch (err) { console.error('vote patch:', err); }
 }
 
 function showToast(msg) {
@@ -1067,33 +1179,8 @@ function showToast(msg) {
   setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-function submitSuggestion() {
-  const name = document.getElementById('suggName').value.trim();
-  const type = document.getElementById('suggType').value;
-  const content = document.getElementById('suggContent').value.trim();
-  if (!name || !type || !content) { showToast('⚠️ 请填写所有栏位！'); return; }
-
-  const typeLabels = { gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本', rules:'规则 / 管理', tech:'技术 / 性能', other:'其他' };
-  const card = document.createElement('div');
-  card.className = 'suggestion-card';
-  card.innerHTML = `
-    <div class="suggestion-header">
-      <span class="suggestion-player">${name.replace(/</g,'&lt;')}</span>
-      <div class="suggestion-votes">
-        <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">0</span></button>
-      </div>
-    </div>
-    <div class="suggestion-text">${content.replace(/</g,'&lt;')}</div>
-    <span class="suggestion-tag">${typeLabels[type]}</span>
-    <div class="suggestion-status status-pending">⏳ 待审核</div>
-  `;
-  document.getElementById('suggCards').prepend(card);
-
-  document.getElementById('suggName').value = '';
-  document.getElementById('suggType').value = '';
-  document.getElementById('suggContent').value = '';
-  showToast('✅ 建议已送出！感谢你的反馈！');
-}
+// 启动时加载建议
+document.addEventListener('DOMContentLoaded', loadSuggestions);
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {
