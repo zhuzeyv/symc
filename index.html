@@ -3,761 +3,235 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌍 我的世界神域城邦 - 官方网站</title>
+<title>🌍 神域城邦 - 官方网站</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --green: #4ade80;
-    --green-dark: #16a34a;
-    --green-dim: #14532d;
-    --brown: #92400e;
-    --brown-light: #d97706;
-    --stone: #1c1917;
-    --stone-mid: #292524;
-    --stone-light: #3c3835;
-    --text: #fafaf9;
-    --text-muted: #a8a29e;
-    --text-dim: #78716c;
-    --border: rgba(255,255,255,0.08);
-    --red: #f87171;
-    --blue: #60a5fa;
-    --yellow: #facc15;
-  }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--stone);
-    color: var(--text);
-    font-family: 'Noto Sans SC', sans-serif;
-    line-height: 1.7;
-    overflow-x: hidden;
-  }
+:root{--green:#4ade80;--green-dark:#16a34a;--green-dim:#14532d;--stone:#1c1917;--stone-mid:#292524;--stone-light:#3c3835;--text:#fafaf9;--text-muted:#a8a29e;--text-dim:#78716c;--border:rgba(255,255,255,0.08);--red:#f87171;--blue:#60a5fa;--yellow:#facc15;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--stone);color:var(--text);font-family:'Noto Sans SC',sans-serif;line-height:1.7;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,222,128,.03)1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,.03)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
-  /* 像素网格背景 */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(74,222,128,0.03) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(74,222,128,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;height:60px;}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--green);display:flex;align-items:center;gap:8px;}
+.nav-links{display:flex;gap:0;list-style:none;justify-content:center;}
+.nav-links a{display:block;padding:0 1rem;height:60px;line-height:60px;color:var(--text-muted);text-decoration:none;font-size:.875rem;transition:color .2s,background .2s;}
+.nav-links a:hover{color:var(--green);background:rgba(74,222,128,.05);}
+.nav-right{display:flex;align-items:center;gap:1rem;justify-content:flex-end;}
+.nav-ip{font-family:'JetBrains Mono',monospace;font-size:.75rem;background:var(--green-dim);color:var(--green);padding:6px 14px;border-radius:4px;border:1px solid rgba(74,222,128,.3);cursor:pointer;position:relative;user-select:none;transition:background .2s;}
+.nav-ip:hover{background:rgba(74,222,128,.2);}
+.nav-ip .hover-hint{position:absolute;bottom:-30px;left:50%;transform:translateX(-50%);background:var(--stone-light);color:var(--text-muted);font-size:.68rem;padding:3px 8px;border-radius:3px;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none;border:1px solid var(--border);}
+.nav-ip:hover .hover-hint{opacity:1;}
+.copy-tip{position:absolute;top:-32px;left:50%;transform:translateX(-50%);background:var(--green);color:#000;font-size:.7rem;padding:3px 8px;border-radius:3px;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap;font-weight:700;z-index:10;}
+.copy-tip.show{opacity:1;}
+.hamburger{display:none;cursor:pointer;flex-direction:column;gap:5px;}
+.hamburger span{width:22px;height:2px;background:var(--text-muted);display:block;}
 
-  /* 导航栏 */
-  nav {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(28,25,23,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
-  }
-  .nav-logo {
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 700;
-    font-size: 1.1rem;
-    color: var(--green);
-    letter-spacing: -0.5px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .nav-logo .cube {
-    width: 22px; height: 22px;
-    background: var(--green);
-    display: inline-block;
-    image-rendering: pixelated;
-    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
-  }
-  .nav-links {
-    display: flex;
-    gap: 0;
-    list-style: none;
-  }
-  .nav-links a {
-    display: block;
-    padding: 0 1rem;
-    height: 60px;
-    line-height: 60px;
-    color: var(--text-muted);
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color 0.2s, background 0.2s;
-  }
-  .nav-links a:hover { color: var(--green); background: rgba(74,222,128,0.05); }
-  .nav-ip {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    background: var(--green-dim);
-    color: var(--green);
-    padding: 6px 14px;
-    border-radius: 4px;
-    border: 1px solid rgba(74,222,128,0.3);
-    cursor: pointer;
-    transition: background 0.2s;
-    position: relative;
-  }
-  .nav-ip:hover { background: rgba(74,222,128,0.2); }
-  .copy-tip {
-    position: absolute;
-    top: -30px; left: 50%;
-    transform: translateX(-50%);
-    background: var(--green);
-    color: #000;
-    font-size: 0.7rem;
-    padding: 3px 8px;
-    border-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    white-space: nowrap;
-  }
-  .copy-tip.show { opacity: 1; }
-  .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 5px; }
-  .hamburger span { width: 22px; height: 2px; background: var(--text-muted); display: block; transition: 0.3s; }
+/* HERO */
+.hero{position:relative;z-index:1;min-height:88vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:4rem 2rem;overflow:hidden;}
+.hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:200px;background:linear-gradient(transparent,var(--stone));pointer-events:none;}
+.pixel-art{width:100px;height:100px;margin-bottom:2rem;image-rendering:pixelated;animation:float 3s ease-in-out infinite;}
+@keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:fadeUp .6s .2s forwards;}
+.hero-title{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s .4s forwards;}
+.hero-title span{color:var(--green);}
+.hero-sub{font-size:1.1rem;color:var(--text-muted);max-width:540px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .6s .6s forwards;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .6s .8s forwards;}
+.btn-primary{background:var(--green);color:#000;font-weight:700;padding:.8rem 2rem;border-radius:6px;text-decoration:none;transition:transform .15s,box-shadow .15s;font-size:.95rem;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,222,128,.35);}
+.btn-outline{border:1px solid var(--border);color:var(--text);padding:.8rem 2rem;border-radius:6px;text-decoration:none;transition:border-color .2s,background .2s;font-size:.95rem;}
+.btn-outline:hover{border-color:var(--green);background:rgba(74,222,128,.08);}
+.online-badge{display:inline-flex;align-items:center;gap:8px;margin-top:2rem;background:var(--stone-mid);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:.82rem;color:var(--text-muted);opacity:0;animation:fadeUp .6s 1s forwards;}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.25);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.25);}50%{box-shadow:0 0 0 6px rgba(74,222,128,.1);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 
-  /* 英雄区 */
-  .hero {
-    position: relative;
-    z-index: 1;
-    min-height: 88vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 4rem 2rem;
-    overflow: hidden;
-  }
-  .hero::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 200px;
-    background: linear-gradient(transparent, var(--stone));
-    pointer-events: none;
-  }
-  .pixel-art {
-    width: 120px; height: 120px;
-    margin-bottom: 2rem;
-    image-rendering: pixelated;
-    animation: float 3s ease-in-out infinite;
-  }
-  @keyframes float {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
-  }
-  .hero-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    color: var(--green);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.2s forwards;
-  }
-  .hero-title {
-    font-size: clamp(2.5rem, 6vw, 5rem);
-    font-weight: 900;
-    line-height: 1.1;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.4s forwards;
-  }
-  .hero-title span { color: var(--green); }
-  .hero-sub {
-    font-size: 1.1rem;
-    color: var(--text-muted);
-    max-width: 540px;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.6s forwards;
-  }
-  .hero-btns {
-    display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.8s forwards;
-  }
-  .btn-primary {
-    background: var(--green);
-    color: #000;
-    font-weight: 700;
-    padding: 0.8rem 2rem;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: transform 0.15s, box-shadow 0.15s;
-    font-size: 0.95rem;
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.35); }
-  .btn-outline {
-    border: 1px solid var(--border);
-    color: var(--text);
-    padding: 0.8rem 2rem;
-    border-radius: 6px;
-    text-decoration: none;
-    transition: border-color 0.2s, background 0.2s;
-    font-size: 0.95rem;
-  }
-  .btn-outline:hover { border-color: var(--green); background: rgba(74,222,128,0.08); }
-  .online-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 2rem;
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 6px 16px;
-    font-size: 0.82rem;
-    color: var(--text-muted);
-    opacity: 0;
-    animation: fadeUp 0.6s 1s forwards;
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--green);
-    box-shadow: 0 0 0 3px rgba(74,222,128,0.25);
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse { 0%,100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.25); } 50% { box-shadow: 0 0 0 6px rgba(74,222,128,0.1); } }
-  @keyframes fadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+/* SECTION */
+.section{position:relative;z-index:1;padding:5rem 2rem;max-width:1100px;margin:0 auto;}
+.section-header{margin-bottom:3rem;}
+.section-tag{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:.5rem;}
+.section-title{font-size:2rem;font-weight:900;}
+.section-divider{border:none;border-top:1px solid var(--border);margin:0;}
 
-  /* 章节 */
-  .section {
-    position: relative; z-index: 1;
-    padding: 5rem 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  .section-header {
-    margin-bottom: 3rem;
-  }
-  .section-tag {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.75rem;
-    color: var(--green);
-    letter-spacing: 3px;
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
-  }
-  .section-title {
-    font-size: 2rem;
-    font-weight: 900;
-  }
-  .section-divider {
-    border: none;
-    border-top: 1px solid var(--border);
-    margin: 0;
-  }
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:4rem;}
+.stat-card{background:var(--stone-mid);padding:2rem;text-align:center;}
+.stat-num{font-family:'JetBrains Mono',monospace;font-size:2.5rem;font-weight:700;color:var(--green);display:block;}
+.stat-label{font-size:.85rem;color:var(--text-muted);margin-top:4px;}
 
-  /* 数据卡片 */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 4rem;
-  }
-  .stat-card {
-    background: var(--stone-mid);
-    padding: 2rem;
-    text-align: center;
-  }
-  .stat-num {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--green);
-    display: block;
-  }
-  .stat-label { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+/* POST CARDS */
+.posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
+.post-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer;display:block;}
+.post-card:hover{border-color:rgba(74,222,128,.4);transform:translateY(-3px);}
+.post-card-header{padding:1.25rem 1.5rem 0;display:flex;align-items:center;gap:10px;}
+。post-badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;}
+.badge-update{background:rgba(74,222,128,.15);color:var(--green);}
+。badge-event{background:rgba(250,204,21,.15);color:var(--yellow);}
+.badge-notice{background:rgba(96,165,250,.15);color:var(--blue);}
+。badge-maintain{background:rgba(248,113,113,.12);color:var(--red);}
+.post-date{font-size:.78rem;color:var(--text-dim);margin-left:auto;}
+.post-card-body{padding:1rem 1.5rem 1.5rem;}
+.post-title{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;}
+.post-excerpt{font-size:.875rem;color:var(--text-muted);line-height:1.6;}
 
-  /* 公告网格 */
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 1.5rem;
-  }
-  .post-card {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-    transition: border-color 0.2s, transform 0.2s;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-  }
-  .post-card:hover { border-color: rgba(74,222,128,0.4); transform: translateY(-3px); }
-  .post-card-header {
-    padding: 1.25rem 1.5rem 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .post-badge {
-    font-size: 0.7rem;
-    font-weight: 700;
-    padding: 3px 10px;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-  .badge-update { background: rgba(74,222,128,0.15); color: var(--green); }
-  .badge-guide  { background: rgba(96,165,250,0.15); color: var(--blue); }
-  .badge-event  { background: rgba(250,204,21,0.15);  color: var(--yellow); }
-  .post-date { font-size: 0.78rem; color: var(--text-dim); margin-left: auto; }
-  .post-card-body { padding: 1rem 1.5rem 1.5rem; }
-  .post-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
-  .post-excerpt { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
+/* GUIDE LIST */
+.guide-list{display:flex;flex-direction:column;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.guide-item{background:var(--stone-mid);padding:1.25rem 1.5rem;display:flex;align-items:flex-start;gap:1rem;cursor:pointer;transition:background .2s;}
+.guide-item:hover{background:var(--stone-light);}
+.guide-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;}
+.guide-icon.green{background:rgba(74,222,128,.15);}
+.guide-icon.blue{background:rgba(96,165,250,.15);}
+.guide-icon.yellow{background:rgba(250,204,21,.15);}
+.guide-icon.red{background:rgba(248,113,113,.15);}
+.guide-info{flex:1;}
+.guide-title{font-weight:700;margin-bottom:3px;}
+.guide-desc{font-size:.83rem;color:var(--text-muted);}
+.guide-arrow{color:var(--text-dim);margin-left:auto;align-self:center;font-size:1.2rem;}
 
-  /* 攻略列表 */
-  .guide-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .guide-item {
-    background: var(--stone-mid);
-    padding: 1.25rem 1.5rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1rem;
-    cursor: pointer;
-    transition: background 0.2s;
-    text-decoration: none;
-    color: inherit;
-  }
-  .guide-item:hover { background: var(--stone-light); }
-  .guide-icon {
-    width: 40px; height: 40px;
-    border-radius: 8px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.2rem;
-    flex-shrink: 0;
-  }
-  .guide-icon.green { background: rgba(74,222,128,0.15); }
-  .guide-icon.blue  { background: rgba(96,165,250,0.15); }
-  .guide-icon.yellow{ background: rgba(250,204,21,0.15); }
-  .guide-icon.red   { background: rgba(248,113,113,0.15); }
-  .guide-info { flex: 1; }
-  .guide-title { font-weight: 700; margin-bottom: 3px; }
-  .guide-desc { font-size: 0.83rem; color: var(--text-muted); }
-  .guide-arrow { color: var(--text-dim); margin-left: auto; align-self: center; font-size: 1.2rem; }
+/* BAN TABLE */
+.ban-table-wrap{overflow-x:auto;border-radius:12px;border:1px solid var(--border);}
+table{width:100%;border-collapse:collapse;font-size:.875rem;}
+thead tr{background:var(--stone-light);}
+thead th{padding:1rem 1.25rem;text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--text-muted);border-bottom:1px solid var(--border);}
+tbody tr{background:var(--stone-mid);border-bottom:1px solid var(--border);transition:background .15s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--stone-light);}
+tbody td{padding:.9rem 1.25rem;}
+.ban-status{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:100px;}
+.ban-perm{background:rgba(248,113,113,.15);color:var(--red);}
+.ban-temp{background:rgba(250,204,21,.15);color:var(--yellow);}
+.ban-reason{color:var(--text-muted);}
 
-  /* 封禁表格 */
-  .ban-table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.875rem;
-  }
-  thead tr { background: var(--stone-light); }
-  thead th {
-    padding: 1rem 1.25rem;
-    text-align: left;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
-    color: var(--text-muted);
-    border-bottom: 1px solid var(--border);
-  }
-  tbody tr { background: var(--stone-mid); border-bottom: 1px solid var(--border); transition: background 0.15s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: var(--stone-light); }
-  tbody td { padding: 0.9rem 1.25rem; }
-  .ban-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 3px 10px;
-    border-radius: 100px;
-  }
-  .ban-perm { background: rgba(248,113,113,0.15); color: var(--red); }
-  .ban-temp { background: rgba(250,204,21,0.15); color: var(--yellow); }
-  .ban-reason { color: var(--text-muted); }
+/* SUGGESTION */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.form-field{display:flex;flex-direction:column;gap:6px;}
+.form-field.full{grid-column:1/-1;}
+label{font-size:.82rem;color:var(--text-muted);font-weight:500;}
+input,textarea,select{background:var(--stone-mid);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.7rem 1rem;font-family:'Noto Sans SC',sans-serif;font-size:.9rem;transition:border-color .2s;outline:none;resize:vertical;}
+input:focus,textarea:focus,select:focus{border-color:var(--green);}
+textarea{min-height:120px;}
+select option{background:var(--stone);}
+.form-submit{background:var(--green);color:#000;font-weight:700;padding:.85rem 2.5rem;border-radius:8px;border:none;cursor:pointer;font-size:.95rem;font-family:'Noto Sans SC',sans-serif;transition:transform .15s,box-shadow .15s;margin-top:.5rem;}
+.form-submit:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,222,128,.3);}
+.form-note{font-size:.8rem;color:var(--text-dim);margin-top:.75rem;}
+.suggestion-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1rem;margin-top:2rem;}
+.suggestion-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:10px;padding:1.25rem;}
+.suggestion-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;}
+。suggestion-player{font-weight:700;font-size:.9rem;}
+.vote-btn{background:none;border:1px solid var(--border);color:var(--text-muted);padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.78rem;transition:.2s;font-family:'Noto Sans SC',sans-serif;}
+.vote-btn:hover,.vote-btn.voted{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.1);}
+.suggestion-text{font-size:.875rem;color:var(--text-muted);line-height:1.6;}
+.suggestion-tag{display:inline-block;margin-top:.75rem;font-size:.7rem;padding:2px 8px;border-radius:3px;background:var(--stone-light);color:var(--text-dim);}
+.suggestion-status{font-size:.75rem;margin-top:.5rem;}
+.status-pending{color:var(--yellow);}
+.status-accepted{color:var(--green);}
+.status-reviewed{color:var(--blue);}
 
-  /* 建议表单 */
-  .form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  .form-field { display: flex; flex-direction: column; gap: 6px; }
-  .form-field.full { grid-column: 1 / -1; }
-  label { font-size: 0.82rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px; }
-  input, textarea, select {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: 0.7rem 1rem;
-    font-family: 'Noto Sans SC', sans-serif;
-    font-size: 0.9rem;
-    transition: border-color 0.2s;
-    outline: none;
-    resize: vertical;
-  }
-  input:focus, textarea:focus, select:focus { border-color: var(--green); }
-  textarea { min-height: 120px; }
-  select option { background: var(--stone); }
-  .form-submit {
-    background: var(--green);
-    color: #000;
-    font-weight: 700;
-    padding: 0.85rem 2.5rem;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.95rem;
-    font-family: 'Noto Sans SC', sans-serif;
-    transition: transform 0.15s, box-shadow 0.15s;
-    margin-top: 0.5rem;
-  }
-  .form-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(74,222,128,0.3); }
-  .form-note { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.75rem; }
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:3rem 2rem;text-align:center;color:var(--text-dim);font-size:.82rem;}
+footer strong{color:var(--text-muted);}
 
-  /* 建议卡片 */
-  .suggestion-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  .suggestion-card {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.25rem;
-  }
-  .suggestion-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.75rem; }
-  .suggestion-player { font-weight: 700; font-size: 0.9rem; }
-  .suggestion-votes {
-    display: flex; align-items: center; gap: 6px;
-    font-size: 0.8rem; color: var(--text-muted);
-  }
-  .vote-btn {
-    background: none;
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    padding: 3px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.78rem;
-    transition: border-color 0.2s, color 0.2s, background 0.2s;
-    font-family: 'Noto Sans SC', sans-serif;
-  }
-  .vote-btn:hover { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.08); }
-  .vote-btn.voted { border-color: var(--green); color: var(--green); background: rgba(74,222,128,0.12); }
-  .suggestion-text { font-size: 0.875rem; color: var(--text-muted); line-height: 1.6; }
-  .suggestion-tag {
-    display: inline-block;
-    margin-top: 0.75rem;
-    font-size: 0.7rem;
-    padding: 2px 8px;
-    border-radius: 3px;
-    background: var(--stone-light);
-    color: var(--text-dim);
-  }
-  .suggestion-status { font-size: 0.75rem; margin-top: 0.5rem; }
-  .status-pending  { color: var(--yellow); }
-  .status-accepted { color: var(--green); }
-  .status-reviewed { color: var(--blue); }
+/* VIEW MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:200;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--stone-mid);border:1px solid var(--border);border-radius:16px;padding:2rem;max-width:600px;width:100%;transform:translateY(20px);transition:transform .25s;position:relative;max-height:85vh;overflow-y:auto;}
+.modal-overlay.open .modal{transform:translateY(0);}
+.modal-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.2rem;}
+.modal-title{font-size:1.25rem;font-weight:900;margin-bottom:.75rem;}
+.modal-body{font-size:.9rem;color:var(--text-muted);line-height:1.8;}
+.modal-body h3{color:var(--green);font-size:1rem;margin:1.25rem 0 .4rem;}
+.modal-body p{margin-bottom:.5rem;}
+.modal-body strong{color:var(--text);}
 
-  /* 页脚 */
-  footer {
-    position: relative; z-index: 1;
-    border-top: 1px solid var(--border);
-    padding: 3rem 2rem;
-    text-align: center;
-    color: var(--text-dim);
-    font-size: 0.82rem;
-  }
-  footer strong { color: var(--text-muted); }
+/* TOAST */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#000;font-weight:700;padding:.85rem 1.5rem;border-radius:8px;z-index:600;transform:translateY(10px);opacity:0;transition:all .3s;font-size:.875rem;}
+.toast.show{transform:translateY(0);opacity:1;}
 
-  /* 弹窗 */
-  .modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,0.75);
-    z-index: 200;
-    display: flex; align-items: center; justify-content: center;
-    padding: 1rem;
-    opacity: 0; pointer-events: none;
-    transition: opacity 0.25s;
-  }
-  .modal-overlay.open { opacity: 1; pointer-events: all; }
-  .modal {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    max-width: 560px;
-    width: 100%;
-    transform: translateY(20px);
-    transition: transform 0.25s;
-    position: relative;
-    max-height: 80vh;
-    overflow-y: auto;
-  }
-  .modal-overlay.open .modal { transform: translateY(0); }
-  .modal-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: none; border: none; color: var(--text-muted);
-    cursor: pointer; font-size: 1.2rem;
-  }
-  .modal-title { font-size: 1.25rem; font-weight: 900; margin-bottom: 0.5rem; }
-  .modal-body { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; }
-  .modal-body strong { color: var(--text); }
-  .modal-body h3 { color: var(--green); font-size: 1rem; margin: 1.25rem 0 0.5rem; }
+/* ── 管理员相关 ───────────────────────────── */
+/* 管理员悬浮按钮 */
+.admin-fab{position:fixed;bottom:1.5rem;left:1.5rem;z-index:150;background:var(--stone-mid);border:1px solid var(--border);color:var(--text-muted);width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;cursor:pointer;transition:.2s;}
+.admin-fab:hover{border-color:var(--green);color:var(--green);}
+.admin-fab.active{border-color:var(--green);color:var(--green);background:rgba(74,222,128,.15);}
 
-  /* 吐司通知 */
-  .toast {
-    position: fixed; bottom: 2rem; right: 2rem;
-    background: var(--green);
-    color: #000;
-    font-weight: 700;
-    padding: 0.85rem 1.5rem;
-    border-radius: 8px;
-    z-index: 300;
-    transform: translateY(10px);
-    opacity: 0;
-    transition: all 0.3s;
-    font-size: 0.875rem;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
+/* 管理员登录弹窗 */
+.overlay-admin-login{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:500;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay-admin-login.open{opacity:1;pointer-events:all;}
+.login-box{background:var(--stone-mid);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:340px;transform:translateY(20px);transition:transform .25s;}
+.overlay-admin-login.open .login-box{transform:translateY(0);}
+.login-box h3{font-size:1.05rem;font-weight:900;margin-bottom:1.25rem;}
+.login-box input{width:100%;background:var(--stone);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.7rem 1rem;font-size:.9rem;outline:none;margin-bottom:.75rem;}
+.login-box input:focus{border-color:var(--green);}
+.login-row{display:flex;gap:.75rem;}
+.login-row button{flex:1;padding:.7rem;border-radius:8px;border:none;font-weight:700;font-size:.875rem;cursor:pointer;font-family:'Noto Sans SC',sans-serif;}
+.btn-login-ok{background:var(--green);color:#000;}
+.btn-login-no{background:var(--stone-light);color:var(--text-muted);}
+.login-err{color:var(--red);font-size:.8rem;margin-top:.6rem;display:none;}
 
-  @media (max-width: 640px) {
-    .nav-links { display: none; }
-    .nav-links.open {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      top: 60px; left: 0; right: 0;
-      background: var(--stone);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-links.open a { height: auto; padding: 1rem 2rem; line-height: 1.5; }
-    .hamburger { display: flex; }
-    .form-grid { grid-template-columns: 1fr; }
-    .form-field.full { grid-column: auto; }
-  }
-  /* ── 管理员按钮 ── */
-  .admin-btn {
-    position: fixed; bottom: 1.5rem; left: 1.5rem;
-    z-index: 150;
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    width: 42px; height: 42px;
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.1rem;
-    cursor: pointer;
-    transition: border-color .2s, color .2s, background .2s;
-  }
-  .admin-btn:hover { border-color: var(--green); color: var(--green); background: rgba(74,222,128,.08); }
-  .admin-btn.active { border-color: var(--green); color: var(--green); background: rgba(74,222,128,.15); }
+/* 编辑弹窗 */
+.overlay-editor{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:510;display:flex;align-items:center;justify-content:center;padding:1rem;opacity:0;pointer-events:none;transition:opacity .25s;}
+.overlay-editor.open{opacity:1;pointer-events:all;}
+.editor-box{background:var(--stone-mid);border:1px solid var(--border);border-radius:16px;padding:2rem;width:100%;max-width:700px;max-height:90vh;overflow-y:auto;transform:translateY(20px);transition:transform .25s;position:relative;}
+.overlay-editor.open .editor-box{transform:translateY(0);}
+.editor-box h3{font-size:1.05rem;font-weight:900;margin-bottom:1.25rem;}
+.ed-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--text-muted);cursor:pointer;font-size:1.1rem;}
+.ed-field{display:flex;flex-direction:column;gap:6px;margin-bottom:1rem;}
+.ed-field label{font-size:.8rem;color:var(--text-muted);font-weight:500;}
+.ed-field input,.ed-field select,.ed-field textarea{background:var(--stone);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.65rem 1rem;font-size:.875rem;font-family:'Noto Sans SC',sans-serif;outline:none;}
+.ed-field input:focus,.ed-field select:focus,.ed-field textarea:focus{border-color:var(--green);}
+/* 富文本工具栏 */
+.richbar{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px;}
+.richbar button{background:var(--stone-light);border:1px solid var(--border);color:var(--text-muted);padding:3px 10px;border-radius:4px;cursor:pointer;font-size:.75rem;font-family:'Noto Sans SC',sans-serif;transition:.15s;}
+.richbar button:hover{color:var(--text);border-color:rgba(255,255,255,.2);}
+.rich-editor{background:var(--stone);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.75rem 1rem;font-size:.875rem;font-family:'Noto Sans SC',sans-serif;min-height:200px;outline:none;line-height:1.8;}
+.rich-editor:focus{border-color:var(--green);}
+.rich-editor h3{color:var(--green);font-size:1rem;margin:1rem 0 .4rem;}
+.rich-editor p{margin-bottom:.5rem;}
+.rich-editor strong{color:var(--text);}
+.ed-footer{display:flex;gap:.75rem;justify-content:flex-end;margin-top:1rem;}
+.ed-footer button{padding:.7rem 1.5rem;border-radius:8px;border:none;font-weight:700;font-size:.875rem;cursor:pointer;font-family:'Noto Sans SC',sans-serif;}
+.btn-save{background:var(--green);color:#000;}
+.btn-cancel{background:var(--stone-light);color:var(--text-muted);}
 
-  /* ── 管理员密码弹窗 ── */
-  #adminLoginOverlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.8);
-    z-index: 400;
-    display: flex; align-items: center; justify-content: center;
-    padding: 1rem;
-    opacity: 0; pointer-events: none;
-    transition: opacity .25s;
-  }
-  #adminLoginOverlay.open { opacity: 1; pointer-events: all; }
-  。login-box {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    width: 100%; max-width: 360px;
-    transform: translateY(20px);
-    transition: transform .25s;
-  }
-  #adminLoginOverlay.open .login-box { transform: translateY(0); }
-  .login-box h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 1.25rem; }
-  .login-box input {
-    width: 100%;
-    background: var(--stone);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: .7rem 1rem;
-    font-size: .9rem;
-    outline: none;
-    margin-bottom: .75rem;
-  }
-  .login-box input:focus { border-color: var(--green); }
-  .login-row { display: flex; gap: .75rem; }
-  .login-row button {
-    flex: 1; padding: .7rem; border-radius: 8px; border: none;
-    font-weight: 700; font-size: .875rem;
-    cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
-    transition: opacity .15s;
-  }
-  .login-row button:hover { opacity: .85; }
-  .btn-login-ok  { background: var(--green); color: #000; }
-  .btn-login-no  { background: var(--stone-light); color: var(--text-muted); }
-  .login-err { color: var(--red); font-size: .82rem; margin-top: .5rem; display: none; }
+/* 管理模式下显示编辑/删除按钮 */
+.edit-bar{display:none;gap:6px;padding:.75rem 1.5rem .9rem;border-top:1px solid var(--border);}
+body.admin-mode .edit-bar{display:flex;}
+.edit-bar button{font-size:.73rem;padding:3px 10px;border-radius:4px;border:1px solid var(--border);cursor:pointer;font-family:'Noto Sans SC',sans-serif;transition:.15s;}
+.btn-edit{background:rgba(96,165,250,.12);color:var(--blue);border-color:rgba(96,165,250,.3);}
+.btn-edit:hover{background:rgba(96,165,250,.25);}
+.btn-del{background:rgba(248,113,113,.1);color:var(--red);border-color:rgba(248,113,113,.3);}
+.btn-del:hover{background:rgba(248,113,113,.22);}
+/* 管理模式添加按钮 */
+.btn-add{display:none;width:100%;margin-top:1rem;background:rgba(74,222,128,.07);border:1px dashed rgba(74,222,128,.35);color:var(--green);padding:.75rem;border-radius:8px;cursor:pointer;font-size:.875rem;font-family:'Noto Sans SC',sans-serif;font-weight:700;transition:background .2s;}
+.btn-add:hover{background:rgba(74,222,128,.15);}
+body.admin-mode .btn-add{display:block;}
+/* 管理模式封禁行操作 */
+.ban-actions{display:none;gap:6px;}
+body.admin-mode .ban-actions{display:flex;}
+/* 管理模式建议状态切换 */
+.sugg-admin{display:none;gap:6px;margin-top:.6rem;}
+body.admin-mode .sugg-admin{display:flex;flex-wrap:wrap;}
+.sugg-admin button{font-size:.7rem;padding:2px 8px;border-radius:3px;border:1px solid var(--border);cursor:pointer;font-family:'Noto Sans SC',sans-serif;background:var(--stone-light);color:var(--text-muted);}
+.sugg-admin button:hover{border-color:var(--green);color:var(--green);}
+/* 管理员模式提示条 */
+.admin-bar{display:none;position:sticky;top:60px;z-index:99;background:rgba(74,222,128,.12);border-bottom:1px solid rgba(74,222,128,.25);padding:.5rem 2rem;font-size:.8rem;color:var(--green);text-align:center;}
+body.admin-mode .admin-bar{display:block;}
 
-  /* ── 编辑工具栏（悬浮在卡片/攻略上）── */
-  .edit-actions {
-    display: none;
-    gap: 6px;
-    margin-top: .75rem;
-  }
-  body.admin-mode .edit-actions { display: flex; }
-  .edit-actions button {
-    font-size: .75rem; padding: 3px 10px;
-    border-radius: 4px; border: 1px solid var(--border);
-    cursor: pointer; font-family: 'Noto Sans TC', sans-serif;
-    transition: .15s;
-  }
-  .btn-edit  { background: rgba(96,165,250,.15); color: var(--blue);  border-color: rgba(96,165,250,.3); }
-  .btn-edit:hover  { background: rgba(96,165,250,.3); }
-  .btn-del   { background: rgba(248,113,113,.12); color: var(--red);   border-color: rgba(248,113,113,.3); }
-  .btn-del:hover   { background: rgba(248,113,113,.25); }
-  .btn-add-card {
-    display: none;
-    margin-top: 1rem;
-    width: 100%;
-    background: rgba(74,222,128,.08);
-    border: 1px dashed rgba(74,222,128,.35);
-    color: var(--green);
-    padding: .7rem;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: .875rem;
-    font-family: 'Noto Sans TC', sans-serif;
-    font-weight: 700;
-    transition: background .2s;
-  }
-  .btn-add-card:hover { background: rgba(74,222,128,.15); }
-  body。admin-mode .btn-add-card { display: block; }
-
-  /* 管理模式时卡片高亮边框 */
-  body。admin-mode .post-card,
-  body.admin-mode .guide-item {
-    border-color: rgba(96,165,250,.2);
-  }
-
-  /* ── 内容编辑弹窗 ── */
-  #editorOverlay {
-    position: fixed; inset: 0;
-    background: rgba(0,0,0,.82);
-    z-index: 500;
-    display: flex; align-items: center; justify-content: center;
-    padding: 1rem;
-    opacity: 0; pointer-events: none;
-    transition: opacity .25s;
-  }
-  #editorOverlay.open { opacity: 1; pointer-events: all; }
-  .editor-box {
-    background: var(--stone-mid);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 2rem;
-    width: 100%; max-width: 680px;
-    max-height: 90vh;
-    overflow-y: auto;
-    transform: translateY(20px);
-    transition: transform .25s;
-    position: relative;
-  }
-  #editorOverlay.open .editor-box { transform: translateY(0); }
-  .editor-box h3 { font-size: 1.1rem; font-weight: 900; margin-bottom: 1.25rem; }
-  .editor-field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1rem; }
-  .editor-field label { font-size: .8rem; color: var(--text-muted); font-weight: 500; }
-  .editor-field input, .editor-field select, .editor-field textarea {
-    background: var(--stone);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: .65rem 1rem;
-    font-size: .875rem;
-    font-family: 'Noto Sans TC', sans-serif;
-    outline: none;
-    resize: vertical;
-  }
-  .editor-field input:focus,
-  .editor-field select:focus,
-  .editor-field textarea:focus { border-color: var(--green); }
-  .editor-field textarea { min-height: 180px; }
-  /* 富文本工具栏 */
-  .richbar {
-    display: flex; flex-wrap: wrap; gap: 4px;
-    margin-bottom: 6px;
-  }
-  .richbar button {
-    background: var(--stone-light);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    padding: 3px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: .78rem;
-    font-family: 'Noto Sans TC', sans-serif;
-    transition: .15s;
-  }
-  .richbar button:hover { color: var(--text); border-color: rgba(255,255,255,.2); }
-  .rich-editor {
-    background: var(--stone);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    padding: .75rem 1rem;
-    font-size: .875rem;
-    font-family: 'Noto Sans TC', sans-serif;
-    min-height: 200px;
-    outline: none;
-    line-height: 1.8;
-  }
-  .rich-editor:focus { border-color: var(--green); }
-  .rich-editor h3 { color: var(--green); font-size: 1rem; margin: 1rem 0 .4rem; }
-  .rich-editor p  { margin-bottom: .5rem; }
-  .rich-editor strong { color: var(--text); }
-  .editor-footer { display: flex; gap: .75rem; justify-content: flex-end; margin-top: 1rem; }
-  .editor-footer button {
-    padding: .7rem 1.5rem; border-radius: 8px; border: none;
-    font-weight: 700; font-size: .875rem; cursor: pointer;
-    font-family: 'Noto Sans TC', sans-serif; transition: opacity .15s;
-  }
-  .editor-footer button:hover { opacity: .85; }
-  .btn-save   { background: var(--green); color: #000; }
-  .btn-cancel { background: var(--stone-light); color: var(--text-muted); }
-  .editor-close {
-    position: absolute; top: 1rem; right: 1rem;
-    background: none; border: none; color: var(--text-muted);
-    cursor: pointer; font-size: 1.1rem;
-  }
+@media(max-width:640px){
+  .nav-links{display:none;}
+  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:var(--stone);border-bottom:1px solid var(--border);}
+  .nav-links.open a{height:auto;padding:1rem 2rem;line-height:1.5;}
+  .hamburger{display:flex;}
+  .form-grid{grid-template-columns:1fr;}
+  .form-field.full{grid-column:auto;}
+}
 </style>
 </head>
 <body>
+
+<!-- 管理员模式提示条 -->
+<div class="admin-bar">⚙️ 管理员模式已开启 — 可编辑所有内容</div>
 
 <nav>
   <div class="nav-logo">
@@ -780,17 +254,17 @@
     <li><a href="#bans">封禁名单</a></li>
     <li><a href="#suggestions">玩家建议</a></li>
   </ul>
-  <div style="display:flex;align-items:center;gap:1rem;">
-    <div class="nav-ip" onclick="copyIP()" title="点击复制">
+  <div class="nav-right">
+    <div class="nav-ip" onclick="copyIP()">
       <span id="serverIP">symc.cc</span>
-      <span class="copy-tip" id="copyTip">已复制！</span>
+      <span class="hover-hint">点击复制 IP</span>
+      <span class="copy-tip" id="copyTip">✓ 已复制！</span>
     </div>
-    <div class="hamburger" onclick="toggleNav()" aria-label="菜单">
-      <span></span><span></span><span></span>
-    </div>
+    <div class="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
   </div>
 </nav>
 
+<!-- HERO -->
 <section class="hero">
   <svg width="100" height="100" viewBox="0 0 16 16" class="pixel-art" xmlns="http://www.w3.org/2000/svg">
     <rect x="4" y="0" width="8" height="8" fill="#d97706"/>
@@ -799,7 +273,6 @@
     <rect x="10" y="2" width="2" height="2" fill="#1c1917"/>
     <rect x="6" y="5" width="4" height="1" fill="#1c1917"/>
     <rect x="2" y="8" width="12" height="8" fill="#4ade80"/>
-    <rect x="2" y="8" width="12" height="1" fill="#16a34a"/>
     <rect x="0" y="9" width="4" height="6" fill="#4ade80"/>
     <rect x="12" y="9" width="4" height="6" fill="#4ade80"/>
     <rect x="4" y="13" width="3" height="3" fill="#92400e"/>
@@ -812,171 +285,43 @@
     <a href="#guides" class="btn-primary">📖 新手攻略</a>
     <a href="#news" class="btn-outline">📢 最新公告</a>
   </div>
-  <div class="online-badge">
-    <span class="dot"></span>
-    服务器运行中 · <span id="playerCount">20</span> 位玩家在线
-  </div>
+  <div class="online-badge"><span class="dot"></span>服务器运行中 · <span id="playerCount">47</span> 位玩家在线</div>
 </section>
 
 <hr class="section-divider">
 
+<!-- STATS + NEWS -->
 <section class="section">
   <div class="stats-grid">
-    <div class="stat-card">
-      <span class="stat-num" id="stat1">10050</span>
-      <span class="stat-label">🧑 注册玩家</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num">2420</span>
-      <span class="stat-label">📅 服务器天数</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num">7*24小时</span>
-      <span class="stat-label">⏰ 稳定在线</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-num">1.12.2</span>
-      <span class="stat-label">🎮 游戏版本</span>
-    </div>
+    <div class="stat-card"><span class="stat-num" id="stat1">10050</span><span class="stat-label">🧑 注册玩家</span></div>
+    <div class="stat-card"><span class="stat-num">2420</span><span class="stat-label">📅 服务器天数</span></div>
+    <div class="stat-card"><span class="stat-num">7×24</span><span class="stat-label">⏰ 稳定在线</span></div>
+    <div class="stat-card"><span class="stat-num">1.12.2</span><span class="stat-label">🎮 游戏版本</span></div>
   </div>
 
   <div id="news" class="section-header">
     <div class="section-tag">📢 公告</div>
     <h2 class="section-title">最新公告与更新日志</h2>
   </div>
-  <div class="posts-grid" id="postsGrid">
-    <div class="post-card" data-id="post1" onclick="openPost('post1')">
-      <div class="post-card-header">
-        <span class="post-badge badge-update" id="post1-badge">更新</span>
-        <span class="post-date" id="post1-date">2025-01-15</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-title" id="post1-title">✨ v2.4.0 重大更新 — 新副本"深渊要塞"</div>
-        <div class="post-excerpt" id="post1-excerpt">全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...</div>
-      </div>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editPost('post1')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deletePost('post1')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="post-card" data-id="post2" onclick="openPost('post2')">
-      <div class="post-card-header">
-        <span class="post-badge badge-event" id="post2-badge">活动</span>
-        <span class="post-date" id="post2-date">2025-01-10</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-title" id="post2-title">🎉 冬季节日活动开始！限定任务与奖励</div>
-        <div class="post-excerpt" id="post2-excerpt">为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...</div>
-      </div>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editPost('post2')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deletePost('post2')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="post-card" data-id="post3" onclick="openPost('post3')">
-      <div class="post-card-header">
-        <span class="post-badge badge-update" id="post3-badge">维护</span>
-        <span class="post-date" id="post3-date">2025-01-05</span>
-      </div>
-      <div class="post-card-body">
-        <div class="post-title" id="post3-title">🔧 服务器性能优化 — 大幅减少卡顿</div>
-        <div class="post-excerpt" id="post3-excerpt">针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...</div>
-      </div>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editPost('post3')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deletePost('post3')">🗑 删除</button>
-      </div>
-    </div>
-  </div>
-  <button class="btn-add-card" onclick="newPost()">＋ 新增公告</button>
+  <div class="posts-grid" id="postsGrid"></div>
+  <button class="btn-add" onclick="openEditor('post',null)">＋ 新增公告</button>
 </section>
 
 <hr class="section-divider">
 
+<!-- GUIDES -->
 <section class="section" id="guides">
   <div class="section-header">
     <div class="section-tag">📖 攻略</div>
     <h2 class="section-title">新手到老手的完整攻略</h2>
   </div>
-  <div class="guide-list" id="guideList">
-    <div class="guide-item" data-id="g1" onclick="openGuide('g1')">
-      <div class="guide-icon green">🌱</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g1-title">新手入门：进服第一天该做什么？</div>
-        <div class="guide-desc"  id="g1-desc">领取新手礼包、认识基本指令、找到适合的居住地点</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g1')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g1')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="guide-item" data-id="g2" onclick="openGuide('g2')">
-      <div class="guide-icon blue">⚔️</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g2-title">战斗系统教学：技能、装备与强化</div>
-        <div class="guide-desc"  id="g2-desc">了解自定义战斗系统、如何取得最强装备、附魔与强化流程</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g2')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g2')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="guide-item" data-id="g3" onclick="openGuide('g3')">
-      <div class="guide-icon yellow">💰</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g3-title">经济系统指南：赚钱、交易与商店</div>
-        <div class="guide-desc"  id="g3-desc">服务器货币系统、玩家市集使用方式、高效赚钱方法</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g3')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g3')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="guide-item" data-id="g4" onclick="openGuide('g4')">
-      <div class="guide-icon red">🏰</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g4-title">副本攻略：深渊要塞完全指南</div>
-        <div class="guide-desc"  id="g4-desc">5层关卡详细攻略、Boss机制说明、最佳队伍配置建议</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g4')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g4')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="guide-item" data-id="g5" onclick="openGuide('g5')">
-      <div class="guide-icon green">🏡</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g5-title">领地系统：如何圈地保护你的建筑</div>
-        <div class="guide-desc"  id="g5-desc">领地指令教学、保护设定、共享与信任玩家管理</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g5')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g5')">🗑 删除</button>
-      </div>
-    </div>
-    <div class="guide-item" data-id="g6" onclick="openGuide('g6')">
-      <div class="guide-icon blue">📋</div>
-      <div class="guide-info">
-        <div class="guide-title" id="g6-title">完整指令清单</div>
-        <div class="guide-desc"  id="g6-desc">所有可用指令一览，包含传送、商店、领地、个人设置等</div>
-      </div>
-      <span class="guide-arrow">›</span>
-      <div class="edit-actions" onclick="event.stopPropagation()">
-        <button class="btn-edit" onclick="editGuide('g6')">✏️ 编辑</button>
-        <button class="btn-del"  onclick="deleteGuide('g6')">🗑 删除</button>
-      </div>
-    </div>
-  </div>
-  <button class="btn-add-card" onclick="newGuide()">＋ 新增攻略</button>
+  <div class="guide-list" id="guideList"></div>
+  <button class="btn-add" onclick="openEditor('guide',null)">＋ 新增攻略</button>
 </section>
 
 <hr class="section-divider">
 
+<!-- BANS -->
 <section class="section" id="bans">
   <div class="section-header">
     <div class="section-tag">🚫 封禁</div>
@@ -984,70 +329,27 @@
   </div>
   <div class="ban-table-wrap">
     <table>
-      <thead>
-        <tr>
-          <th>玩家名称</th>
-          <th>违规原因</th>
-          <th>封禁时间</th>
-          <th>状态</th>
-        </tr>
-      </thead>
-      <tbody id="banTable">
-        <tr>
-          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">Steve_Hacker</code></td>
-          <td class="ban-reason">使用外挂程序（飞行 / KillAura）</td>
-          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-14</td>
-          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
-        </tr>
-        <tr>
-          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">xXNoob_DestroyXx</code></td>
-          <td class="ban-reason">恶意破坏他人领地与建筑</td>
-          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-12</td>
-          <td><span class="ban-status ban-temp">⏱ 封禁30天</span></td>
-        </tr>
-        <tr>
-          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">ChatSpam_Bot</code></td>
-          <td class="ban-reason">大量刷屏、广告宣传其他服务器</td>
-          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-09</td>
-          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
-        </tr>
-        <tr>
-          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">ToxicPlayer99</code></td>
-          <td class="ban-reason">持续骚扰玩家、言语攻击</td>
-          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-07</td>
-          <td><span class="ban-status ban-temp">⏱ 封禁7天</span></td>
-        </tr>
-        <tr>
-          <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:0.82rem;">DupeGlitch_King</code></td>
-          <td class="ban-reason">利用复制BUG刷取物品，破坏游戏经济</td>
-          <td style="color:var(--text-dim);font-size:0.82rem;">2025-01-03</td>
-          <td><span class="ban-status ban-perm">● 永久封禁</span></td>
-        </tr>
-      </tbody>
+      <thead><tr><th>玩家名称</th><th>违规原因</th><th>封禁时间</th><th>状态</th><th class="ban-actions">操作</th></tr></thead>
+      <tbody id="banBody"></tbody>
     </table>
   </div>
-  <p style="font-size:0.8rem;color:var(--text-dim);margin-top:1rem;">
-    ⚠️ 如对封禁结果有异议，请通过 Discord 申诉频道提出申请。管理员将在 72 小时内回复。
-  </p>
+  <button class="btn-add" onclick="openEditor('ban',null)">＋ 新增封禁记录</button>
+  <p style="font-size:.8rem;color:var(--text-dim);margin-top:1rem;">⚠️ 如对封禁结果有异议，请通过 Discord 申诉频道提出申请。</p>
 </section>
 
 <hr class="section-divider">
 
+<!-- SUGGESTIONS -->
 <section class="section" id="suggestions">
   <div class="section-header">
     <div class="section-tag">💬 玩家</div>
     <h2 class="section-title">玩家建议</h2>
   </div>
-
   <div style="background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:2rem;margin-bottom:2rem;">
     <h3 style="font-size:1rem;font-weight:700;margin-bottom:1.25rem;color:var(--green);">📝 提交你的建议</h3>
     <div class="form-grid">
-      <div class="form-field">
-        <label>游戏名称</label>
-        <input type="text" id="suggName" placeholder="Steve" />
-      </div>
-      <div class="form-field">
-        <label>建议类型</label>
+      <div class="form-field"><label>游戏名称</label><input type="text" id="suggName" placeholder="Steve"/></div>
+      <div class="form-field"><label>建议类型</label>
         <select id="suggType">
           <option value="">选择类型...</option>
           <option value="gameplay">游戏玩法</option>
@@ -1058,595 +360,366 @@
           <option value="other">其他</option>
         </select>
       </div>
-      <div class="form-field full">
-        <label>建议内容</label>
-        <textarea id="suggContent" placeholder="详细描述你的建议，越具体越好！我们会认真阅读每一条。"></textarea>
-      </div>
+      <div class="form-field full"><label>建议内容</label><textarea id="suggContent" placeholder="详细描述你的建议..."></textarea></div>
     </div>
     <button class="form-submit" onclick="submitSuggestion()">提交建议</button>
-    <p class="form-note">💡 所有建议都会被认真评估。已采纳的建议会在下次更新时标记。</p>
+    <p class="form-note">💡 所有建议都会被认真评估。</p>
   </div>
-
-  <h3 style="font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:0.5rem;">📌 近期建议</h3>
-  <div class="suggestion-cards" id="suggCards">
-    <div class="suggestion-card">
-      <div class="suggestion-header">
-        <span class="suggestion-player">CreeperFarmer</span>
-        <div class="suggestion-votes">
-          <button class="vote-btn voted" onclick="vote(this)">▲ <span class="vcount">34</span></button>
-        </div>
-      </div>
-      <div class="suggestion-text">希望能增加“自动农场”系统，让玩家可以设置定时收获机制，离线时也能有少量产出。</div>
-      <span class="suggestion-tag">游戏玩法</span>
-      <div class="suggestion-status status-accepted">✅ 已采纳，预计 v2.5 上线</div>
-    </div>
-    <div class="suggestion-card">
-      <div class="suggestion-header">
-        <span class="suggestion-player">BuildMaster_CN</span>
-        <div class="suggestion-votes">
-          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">21</span></button>
-        </div>
-      </div>
-      <div class="suggestion-text">建议在主城附近设置“展览区”，让玩家能展示自己的建筑作品，每月评选最佳建筑。</div>
-      <span class="suggestion-tag">活动 / 副本</span>
-      <div class="suggestion-status status-reviewed">🔍 审核中</div>
-    </div>
-    <div class="suggestion-card">
-      <div class="suggestion-header">
-        <span class="suggestion-player">EmeraldTrader</span>
-        <div class="suggestion-votes">
-          <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">15</span></button>
-        </div>
-      </div>
-      <div class="suggestion-text">市集系统可以加入“收购单”功能，玩家可以挂出收购需求，让其他玩家来填订单。</div>
-      <span class="suggestion-tag">经济系统</span>
-      <div class="suggestion-status status-pending">⏳ 待审核</div>
-    </div>
-  </div>
+  <h3 style="font-size:1rem;font-weight:700;color:var(--text-muted);margin-bottom:.5rem;">📌 近期建议</h3>
+  <div class="suggestion-cards" id="suggCards"></div>
 </section>
 
 <footer>
   <div style="margin-bottom:1rem;font-size:1.5rem;">⛏️</div>
-  <p><strong>神域城邦群组</strong></p>
-  <p style="margin-top:0.5rem;">服务器 IP：<code style="font-family:'JetBrains Mono',monospace;color:var(--green);" id="footerIP">symc.cc</code></p>
+  <p><strong>神域城邦官网</strong></p>
+  <p style="margin-top:.5rem;">服务器 IP：<code style="font-family:'JetBrains Mono',monospace;color:var(--green);">symc.cc</code></p>
   <p style="margin-top:1rem;">版本 1.12.2 · Java Edition · 非官方，与 Mojang 无关</p>
-  <p style="margin-top:0.5rem;">© 2025 我的世界神域城邦管理团队</p>
+  <p style="margin-top:.5rem;">© 2025 神域城邦管理团队</p>
 </footer>
 
-<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-  <div class="modal" id="modal">
-    <button class="modal-close" onclick="closeModalBtn()">✕</button>
+<!-- 查看弹窗 -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
     <div class="modal-title" id="modalTitle"></div>
-    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-body"  id="modalBody"></div>
   </div>
 </div>
 
-<!-- 管理员密码弹窗 -->
-<div id="adminLoginOverlay">
+<!-- 管理员登录弹窗 -->
+<div class="overlay-admin-login" id="loginOverlay">
   <div class="login-box">
     <h3>🔐 管理员登录</h3>
-    <input type="password" id="adminPwdInput" placeholder="输入管理员密码" onkeydown="if(event.key==='Enter')checkAdminPwd()" />
+    <input type="password" id="adminPwd" placeholder="输入管理员密码" onkeydown="if(event.key==='Enter')checkPwd()"/>
     <div class="login-row">
-      <button class="btn-login-ok" onclick="checkAdminPwd()">确认</button>
-      <button class="btn-login-no" onclick="closeAdminLogin()">取消</button>
+      <button class="btn-login-ok" onclick="checkPwd()">确认登录</button>
+      <button class="btn-login-no" onclick="closeLogin()">取消</button>
     </div>
-    <div class="login-err" id="loginErr">❌ 密码错误</div>
+    <div class="login-err" id="loginErr">❌ 密码错误，请重试</div>
   </div>
 </div>
 
-<!-- 内容编辑弹窗 -->
-<div id="editorOverlay">
+<!-- 编辑弹窗 -->
+<div class="overlay-editor" id="editorOverlay">
   <div class="editor-box">
-    <button class="editor-close" onclick="closeEditor()">✕</button>
-    <h3 id="editorTitle">编辑内容</h3>
+    <button class="ed-close" onclick="closeEditor()">✕</button>
+    <h3 id="edTitle_h">编辑</h3>
 
-    <!-- 公告专用字段 -->
-    <div id="postFields">
-      <div class="editor-field">
-        <label>标题</label>
-        <input type="text" id="edTitle" placeholder="公告标题" />
-      </div>
-      <div class="editor-field">
-        <label>摘要（卡片上显示的简短描述）</label>
-        <input type="text" id="edExcerpt" placeholder="简短描述..." />
-      </div>
-      <div class="editor-field">
-        <label>类型标签</label>
-        <select id="edBadge">
-          <option value="更新">更新</option>
-          <option value="活动">活动</option>
-          <option value="维护">维护</option>
-          <option value="公告">公告</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label>日期</label>
-        <input type="date" id="edDate" />
+    <!-- 公告字段 -->
+    <div id="fPost">
+      <div class="ed-field"><label>标题</label><input type="text" id="fPostTitle" placeholder="公告标题"/></div>
+      <div class="ed-field"><label>摘要（卡片简短描述）</label><input type="text" id="fPostExcerpt" placeholder="一行简介..."/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="ed-field"><label>类型</label>
+          <select id="fPostBadge">
+            <option value="更新">更新</option><option value="活动">活动</option>
+            <option value="维护">维护</option><option value="公告">公告</option>
+          </select>
+        </div>
+        <div class="ed-field"><label>日期</label><input type="date" id="fPostDate"/></div>
       </div>
     </div>
 
-    <!-- 攻略专用字段 -->
-    <div id="guideFields" style="display:none">
-      <div class="editor-field">
-        <label>标题</label>
-        <input type="text" id="edGuideTitle" placeholder="攻略标题" />
-      </div>
-      <div class="editor-field">
-        <label>简介（列表上显示）</label>
-        <input type="text" id="edGuideDesc" placeholder="一行简介..." />
-      </div>
-      <div class="editor-field">
-        <label>图标颜色</label>
-        <select id="edGuideColor">
-          <option value="green">🟢 绿色</option>
-          <option value="blue">🔵 蓝色</option>
-          <option value="yellow">🟡 黄色</option>
-          <option value="red">🔴 红色</option>
-        </select>
-      </div>
-      <div class="editor-field">
-        <label>图标 Emoji</label>
-        <input type="text" id="edGuideIcon" placeholder="例：🌱 ⚔️ 💰" />
+    <!-- 攻略字段 -->
+    <div id="fGuide" style="display:none">
+      <div class="ed-field"><label>标题</label><input type="text" id="fGuideTitle" placeholder="攻略标题"/></div>
+      <div class="ed-field"><label>简介（列表显示）</label><input type="text" id="fGuideDesc" placeholder="一行简介..."/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="ed-field"><label>图标颜色</label>
+          <select id="fGuideColor"><option value="green">🟢 绿</option><option value="blue">🔵 蓝</option><option value="yellow">🟡 黄</option><option value="red">🔴 红</option></select>
+        </div>
+        <div class="ed-field"><label>图标 Emoji</label><input type="text" id="fGuideIcon" placeholder="🌱"/></div>
       </div>
     </div>
 
-    <!-- 富文本编辑器（公告和攻略共用） -->
-    <div class="editor-field">
-      <label>正文内容</label>
-      <div class="richbar">
-        <button onclick="fmt('bold')"><b>B</b></button>
-        <button onclick="fmt('italic')"><i>I</i></button>
-        <button onclick="fmtH3()">H3 标题</button>
-        <button onclick="fmtP()">段落</button>
-        <button onclick="fmtBr()">换行</button>
-        <button onclick="fmtCode()">代码</button>
-        <button onclick="fmtHr()" title="分隔线">—</button>
+    <!-- 封禁字段 -->
+    <div id="fBan" style="display:none">
+      <div class="ed-field"><label>玩家名称</label><input type="text" id="fBanPlayer" placeholder="PlayerName"/></div>
+      <div class="ed-field"><label>违规原因</label><input type="text" id="fBanReason" placeholder="使用外挂..."/></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+        <div class="ed-field"><label>日期</label><input type="date" id="fBanDate"/></div>
+        <div class="ed-field"><label>状态</label>
+          <select id="fBanStatus"><option value="perm">永久封禁</option><option value="temp">临时封禁</option></select>
+        </div>
       </div>
-      <div class="rich-editor" id="richEditor" contenteditable="true"></div>
+      <div class="ed-field"><label>临时封禁说明（选填）</label><input type="text" id="fBanDuration" placeholder="封禁30天"/></div>
     </div>
 
-    <div class="editor-footer">
+    <!-- 富文本（公告和攻略共用） -->
+    <div id="fRich">
+      <div class="ed-field" style="margin-top:.5rem;">
+        <label>正文内容</label>
+        <div class="richbar">
+          <button onclick="fmt('bold')"><b>B</b></button>
+          <button onclick="fmt('italic')"><i>I</i></button>
+          <button onclick="fmtBlock('h3')">H3</button>
+          <button onclick="fmtBlock('p')">段落</button>
+          <button onclick="document.execCommand('insertLineBreak')">换行</button>
+          <button onclick="fmtCode()">代码</button>
+        </div>
+        <div class="rich-editor" id="richEditor" contenteditable="true"></div>
+      </div>
+    </div>
+
+    <div class="ed-footer">
       <button class="btn-cancel" onclick="closeEditor()">取消</button>
-      <button class="btn-save"   id="edSaveBtn" onclick="saveContent()">💾 保存</button>
+      <button class="btn-save" id="edSaveBtn" onclick="saveItem()">💾 保存</button>
     </div>
   </div>
 </div>
 
-<!-- 管理员按钮（右下角） -->
-<button class="admin-btn" id="adminBtn" onclick="toggleAdmin()" title="管理员模式">⚙️</button>
-
-
+<!-- 管理员FAB -->
+<button class="admin-fab" id="adminFab" onclick="toggleAdmin()" title="管理员">⚙️</button>
+<div class="toast" id="toast"></div>
 
 <script>
-// ── Supabase ─────────────────────────────────────────
-const SUPABASE_URL = 'https://vlbdguleovswmchypadd.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
-const SB_TABLE_CONTENT  = 'content';   // 公告+攻略表
-const SB_TABLE_SUGGEST  = 'suggestions';
+// ═══════════════════════════════════════════════
+// 配置区 — 修改这里
+// ═══════════════════════════════════════════════
+const SB_URL  = 'https://vlbdguleovswmchypadd.supabase.co';
+const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
+const ADMIN_PWD = 'admin123'; // ← 改成你的密码
+// ═══════════════════════════════════════════════
 
-function sbH(extra={}) {
-  return { 'Content-Type':'application/json',
-    'apikey': SUPABASE_KEY, 'Authorization':'Bearer '+SUPABASE_KEY, ...extra };
-}
-
-// ── 管理员密码（改这里）─────────────────────────────
-const ADMIN_PASSWORD = 'Fe#d35@f';
-// ───────────────────────────────────────────────────
 let isAdmin = false;
+let _edit = null; // 当前编辑状态 {kind, id}
 
-// ── 静态初始数据（Supabase 无数据时的默认内容）───────
-const posts = {
-  post1: {
-    title: '✨ v2.4.0 重大更新 — 新副本"深渊要塞"',
-    badge: '更新', date: '2025-01-15',
-    excerpt: '全新地下城副本上线！组队挑战5层难度，顶层Boss掉落稀有装备与称号...',
-    body: `<h3>更新概览</h3><p>本次更新加入全新地下城副本"深渊要塞"，共5层难度，挑战最顶层的古老巨龙 BOSS，可获得限定传说装备。</p><h3>新增内容</h3><p><strong>🏰 深渊要塞副本</strong><br>· 5层难度，每层有不同机制<br>· 第5层 BOSS 掉落稀有传说装备<br>· 通关可获得限定称号"深渊征服者"</p><h3>Bug 修复</h3><p>· 修复市集部分物品无法交易的问题<br>· 修复玩家传送后偶发卡在方块内的问题</p>`
-  },
-  post2: {
-    title: '🎉 冬季节日活动开始！', badge: '活动', date: '2025-01-10',
-    excerpt: '为期两周的冬季活动，完成限定任务可获得雪花币，兑换独家外观与称号...',
-    body: `<h3>活动时间</h3><p><strong>2025/01/10 — 2025/01/24</strong>（共14天）</p><h3>活动内容</h3><p><strong>❄️ 每日任务</strong><br>每天完成3个节日任务，获得雪花币 × 50</p><h3>兑换商店</h3><p>雪花币可在主城 NPC"冬日商人"兑换各种限定外观</p>`
-  },
-  post3: {
-    title: '🔧 服务器性能优化公告', badge: '维护', date: '2025-01-05',
-    excerpt: '针对高峰时段的TPS掉落问题进行了全面优化，内存管理升级，生成速度提升...',
-    body: `<h3>优化内容</h3><p><strong>内存管理升级</strong><br>将服务器内存从 16GB 提升至 32GB，大幅减少卡顿。</p><p><strong>Chunk 生成优化</strong><br>新玩家进入未开发区域时的地形生成速度提升约 60%。</p>`
-  }
-};
-
-const guides = {
-  g1: { title:'🌱 新手入门指南', icon:'🌱', color:'green', desc:'领取新手礼包、认识基本指令、找到适合的居住地点',
-    body:`<h3>第一步：领取新手礼包</h3><p>进服后输入 <strong>/newbie</strong> 即可领取一次性新手礼包，包含：基础工具、食物 × 64、金币 × 500。</p><h3>基本指令</h3><p><strong>/spawn</strong> — 回到主城<br><strong>/home</strong> — 回到家<br><strong>/sethome</strong> — 设定家的位置</p>`},
-  g2: { title:'⚔️ 战斗系统教学', icon:'⚔️', color:'blue', desc:'了解自定义战斗系统、如何取得最强装备、附魔与强化流程',
-    body:`<h3>技能系统</h3><p>本服务器使用自定义技能系统，每个职业有4个主动技能 + 2个被动技能。</p><h3>装备品质</h3><p>装备分5个品质：⬜ 普通 → 🟦 罕见 → 🟩 稀有 → 🟪 史诗 → 🟨 传说</p>`},
-  g3: { title:'💰 经济系统指南', icon:'💰', color:'yellow', desc:'服务器货币系统、玩家市集使用方式、高效赚钱方法',
-    body:`<h3>赚钱方式</h3><p><strong>🌾 农业</strong> — 稳定但较慢，适合挂机<br><strong>⚔️ 刷怪</strong> — 怪物掉落金币与材料<br><strong>🛒 市集交易</strong> — 买低卖高，熟悉行情后利润最高</p>`},
-  g4: { title:'🏰 深渊要塞攻略', icon:'🏰', color:'red', desc:'5层关卡详细攻略、Boss机制说明、最佳队伍配置建议',
-    body:`<h3>入口位置</h3><p>主城以北 200格，输入 <strong>/dungeon abyss</strong> 也可直接传送。</p><h3>推荐队伍配置（5人）</h3><p>1 坦克 + 1 治疗 + 3 输出。坦克需要至少 +7 以上装备。</p>`},
-  g5: { title:'🏡 领地系统教学', icon:'🏡', color:'green', desc:'领地指令教学、保护设定、共享与信任玩家管理',
-    body:`<h3>建立领地</h3><p>手持木棍，左键选第一个角落，右键选第二个角落，输入 <strong>/claim [领地名称]</strong> 完成圈地。</p>`},
-  g6: { title:'📋 完整指令清单', icon:'📋', color:'blue', desc:'所有可用指令一览，包含传送、商店、领地、个人设置等',
-    body:`<h3>基本指令</h3><p>/spawn · /home · /sethome · /tpa · /tpaccept · /back</p><h3>经济指令</h3><p>/money · /pay · /market · /shop · /baltop</p><h3>领地指令</h3><p>/claim · /unclaim · /trust · /untrust · /claimlist</p>`}
-};
-
-// ── 从 Supabase 加载并覆盖内容 ─────────────────────
-async function loadContent() {
-  try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}?select=*`,
-      { headers: sbH() }
-    );
-    if (!res.ok) return;
-    const rows = await res.json();
-    rows.forEach(row => {
-      const d = row.data;
-      if (row.type === 'post' && posts[row.slug]) {
-        Object.assign(posts[row.slug], d);
-        applyPostToDOM(row.slug);
-      } else if (row.type === 'guide' && guides[row.slug]) {
-        Object.assign(guides[row.slug], d);
-        applyGuideToDOM(row.slug);
-      }
-    });
-  } catch(e) { console.warn('loadContent:', e); }
+// ── Supabase 工具 ──────────────────────────────
+function sbH(extra={}) {
+  return {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,...extra};
 }
-
-function applyPostToDOM(id) {
-  const p = posts[id];
-  const el = document.querySelector(`.post-card[data-id="${id}"]`);
-  if (!el) return;
-  const badge = el.querySelector('.post-badge');
-  if (badge) {
-    badge.textContent = p.badge || '';
-    badge.className = 'post-badge ' + badgeClass(p.badge);
-  }
-  const date = el.querySelector('.post-date'); if (date) date.textContent = p.date || '';
-  const title = el.querySelector('.post-title'); if (title) title.textContent = p.title || '';
-  const excerpt = el.querySelector('.post-excerpt'); if (excerpt) excerpt.textContent = p.excerpt || '';
+async function sbGet(table, query='') {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {headers:sbH()});
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
 }
-
-function applyGuideToDOM(id) {
-  const g = guides[id];
-  const el = document.querySelector(`.guide-item[data-id="${id}"]`);
-  if (!el) return;
-  const icon = el.querySelector('.guide-icon');
-  if (icon) { icon.textContent = g.icon || ''; icon.className = 'guide-icon ' + (g.color||'green'); }
-  const t = el.querySelector('.guide-title'); if (t) t.textContent = g.title || '';
-  const d = el.querySelector('.guide-desc');  if (d) d.textContent = g.desc  || '';
-}
-
-function badgeClass(badge) {
-  const map = { '活动':'badge-event','维护':'badge-update','公告':'badge-update','更新':'badge-update' };
-  return map[badge] || 'badge-update';
-}
-
-// ── 保存到 Supabase ─────────────────────────────────
-async function saveToSupabase(type, slug, data) {
-  // upsert: 如果存在就更新，不存在就插入
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}`, {
-    method: 'POST',
-    headers: sbH({ 'Prefer': 'resolution=merge-duplicates,return=minimal' }),
-    body: JSON.stringify({ type, slug, data })
+async function sbPost(table, body, prefer='return=representation') {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
+    method:'POST', headers:sbH({'Prefer':prefer}), body:JSON.stringify(body)
   });
-  if (!res.ok) throw new Error(await res.text());
+  if (!r.ok) throw new Error(await r.text());
+  return prefer.includes('representation') ? r.json() : null;
+}
+async function sbPatch(table, query, body) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {
+    method:'PATCH', headers:sbH({'Prefer':'return=minimal'}), body:JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(await r.text());
+}
+async function sbDelete(table, query) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {method:'DELETE',headers:sbH()});
+  if (!r.ok) throw new Error(await r.text());
+}
+async function sbUpsert(table, body) {
+  const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
+    method:'POST',
+    headers:sbH({'Prefer':'resolution=merge-duplicates,return=representation'}),
+    body:JSON.stringify(body)
+  });
+  if (!r.ok) throw new Error(await r.text());
+  return r.json();
 }
 
-async function deleteFromSupabase(type, slug) {
-  const res = await fetch(
-    `${SUPABASE_URL}/rest/v1/${SB_TABLE_CONTENT}?type=eq.${type}&slug=eq.${slug}`,
-    { method: 'DELETE', headers: sbH() }
-  );
-  if (!res.ok) throw new Error(await res.text());
+// ── 管理员登录（sessionStorage 记住） ──────────
+function initAdmin() {
+  if (sessionStorage.getItem('mc_admin') === '1') {
+    isAdmin = true;
+    document.body.classList.add('admin-mode');
+    document.getElementById('adminFab').classList.add('active');
+  }
 }
 
-// ── 弹窗查看 ────────────────────────────────────────
-function openPost(id) {
-  const p = posts[id];
-  if (!p) return;
-  document.getElementById('modalTitle').textContent = p.title;
-  document.getElementById('modalBody').innerHTML = p.body;
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function openGuide(id) {
-  const g = guides[id];
-  if (!g) return;
-  document.getElementById('modalTitle').textContent = g.title;
-  document.getElementById('modalBody').innerHTML = g.body;
-  document.getElementById('modalOverlay').classList.add('open');
-}
-
-function closeModal(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModalBtn();
-}
-function closeModalBtn() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-// ── 管理员逻辑 ───────────────────────────────────────
 function toggleAdmin() {
   if (isAdmin) {
     isAdmin = false;
+    sessionStorage.removeItem('mc_admin');
     document.body.classList.remove('admin-mode');
-    document.getElementById('adminBtn').classList.remove('active');
+    document.getElementById('adminFab').classList.remove('active');
     showToast('已退出管理员模式');
   } else {
-    document.getElementById('adminLoginOverlay').classList.add('open');
-    setTimeout(() => document.getElementById('adminPwdInput').focus(), 100);
+    document.getElementById('loginOverlay').classList.add('open');
+    setTimeout(()=>document.getElementById('adminPwd').focus(),100);
   }
 }
 
-function checkAdminPwd() {
-  const val = document.getElementById('adminPwdInput').value;
-  if (val === ADMIN_PASSWORD) {
+function checkPwd() {
+  const v = document.getElementById('adminPwd').value;
+  if (v === ADMIN_PWD) {
     isAdmin = true;
+    sessionStorage.setItem('mc_admin','1'); // 记住登录（关闭标签页才清除）
     document.body.classList.add('admin-mode');
-    document.getElementById('adminBtn').classList.add('active');
-    document.getElementById('adminLoginOverlay').classList.remove('open');
-    document.getElementById('adminPwdInput').value = '';
-    document.getElementById('loginErr').style.display = 'none';
+    document.getElementById('adminFab').classList.add('active');
+    closeLogin();
     showToast('✅ 进入管理员模式');
   } else {
-    document.getElementById('loginErr').style.display = 'block';
-    document.getElementById('adminPwdInput').value = '';
-    document.getElementById('adminPwdInput').focus();
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('adminPwd').value='';
+    document.getElementById('adminPwd').focus();
   }
 }
 
-function closeAdminLogin() {
-  document.getElementById('adminLoginOverlay').classList.remove('open');
-  document.getElementById('adminPwdInput').value = '';
-  document.getElementById('loginErr').style.display = 'none';
+function closeLogin() {
+  document.getElementById('loginOverlay').classList.remove('open');
+  document.getElementById('adminPwd').value='';
+  document.getElementById('loginErr').style.display='none';
 }
 
-// ── 编辑弹窗 ─────────────────────────────────────────
-let _editMode = null; // { kind:'post'|'guide', id, isNew }
-
-function editPost(id) {
-  if (!isAdmin) return;
-  const p = posts[id];
-  _editMode = { kind:'post', id, isNew:false };
-  document.getElementById('editorTitle').textContent = '编辑公告';
-  document.getElementById('postFields').style.display = '';
-  document.getElementById('guideFields').style.display = 'none';
-  document.getElementById('edTitle').value   = p.title   || '';
-  document.getElementById('edExcerpt').value = p.excerpt || '';
-  document.getElementById('edDate').value    = p.date    || '';
-  const badgeEl = document.getElementById('edBadge');
-  badgeEl.value = p.badge || '更新';
-  document.getElementById('richEditor').innerHTML = p.body || '';
-  document.getElementById('editorOverlay').classList.add('open');
+// ══════════════════════════════════════════════
+// 公告 POSTS
+// ══════════════════════════════════════════════
+function badgeCls(b) {
+  return {活动:'badge-event',维护:'badge-maintain',公告:'badge-notice',更新:'badge-update'}[b]||'badge-update';
 }
 
-function newPost() {
-  if (!isAdmin) return;
-  const newId = 'post' + Date.now();
-  posts[newId] = { title:'新公告', badge:'公告', date: new Date().toISOString().slice(0,10), excerpt:'', body:'' };
-  _editMode = { kind:'post', id: newId, isNew:true };
-  document.getElementById('editorTitle').textContent = '新增公告';
-  document.getElementById('postFields').style.display = '';
-  document.getElementById('guideFields').style.display = 'none';
-  document.getElementById('edTitle').value   = '';
-  document.getElementById('edExcerpt').value = '';
-  document.getElementById('edDate').value    = new Date().toISOString().slice(0,10);
-  document.getElementById('edBadge').value   = '公告';
-  document.getElementById('richEditor').innerHTML = '';
-  document.getElementById('editorOverlay').classList.add('open');
-}
-
-function editGuide(id) {
-  if (!isAdmin) return;
-  const g = guides[id];
-  _editMode = { kind:'guide', id, isNew:false };
-  document.getElementById('editorTitle').textContent = '编辑攻略';
-  document.getElementById('postFields').style.display = 'none';
-  document.getElementById('guideFields').style.display = '';
-  document.getElementById('edGuideTitle').value = g.title || '';
-  document.getElementById('edGuideDesc').value  = g.desc  || '';
-  document.getElementById('edGuideColor').value = g.color || 'green';
-  document.getElementById('edGuideIcon').value  = g.icon  || '';
-  document.getElementById('richEditor').innerHTML = g.body || '';
-  document.getElementById('editorOverlay').classList.add('open');
-}
-
-function newGuide() {
-  if (!isAdmin) return;
-  const newId = 'g' + Date.now();
-  guides[newId] = { title:'新攻略', icon:'📋', color:'blue', desc:'', body:'' };
-  _editMode = { kind:'guide', id: newId, isNew:true };
-  document.getElementById('editorTitle').textContent = '新增攻略';
-  document.getElementById('postFields').style.display = 'none';
-  document.getElementById('guideFields').style.display = '';
-  document.getElementById('edGuideTitle').value = '';
-  document.getElementById('edGuideDesc').value  = '';
-  document.getElementById('edGuideColor').value = 'blue';
-  document.getElementById('edGuideIcon').value  = '📋';
-  document.getElementById('richEditor').innerHTML = '';
-  document.getElementById('editorOverlay').classList.add('open');
-}
-
-function closeEditor() {
-  document.getElementById('editorOverlay').classList.remove('open');
-  _editMode = null;
-}
-
-async function saveContent() {
-  if (!_editMode) return;
-  const btn = document.getElementById('edSaveBtn');
-  btn.disabled = true; btn.textContent = '保存中...';
-  const body = document.getElementById('richEditor').innerHTML;
-
-  try {
-    if (_editMode.kind === 'post') {
-      const id = _editMode.id;
-      const badge  = document.getElementById('edBadge').value;
-      const date   = document.getElementById('edDate').value;
-      const title  = document.getElementById('edTitle').value.trim();
-      const excerpt= document.getElementById('edExcerpt').value.trim();
-      posts[id] = { ...posts[id], title, badge, date, excerpt, body };
-      await saveToSupabase('post', id, posts[id]);
-      if (_editMode.isNew) addPostCard(id);
-      else applyPostToDOM(id);
-
-    } else {
-      const id    = _editMode.id;
-      const title = document.getElementById('edGuideTitle').value.trim();
-      const desc  = document.getElementById('edGuideDesc').value.trim();
-      const color = document.getElementById('edGuideColor').value;
-      const icon  = document.getElementById('edGuideIcon').value.trim();
-      guides[id] = { ...guides[id], title, desc, color, icon, body };
-      await saveToSupabase('guide', id, guides[id]);
-      if (_editMode.isNew) addGuideItem(id);
-      else applyGuideToDOM(id);
-    }
-    closeEditor();
-    showToast('✅ 已保存到数据库！');
-  } catch(e) {
-    showToast('❌ 保存失败：' + e.message);
-    console.error(e);
-  } finally {
-    btn.disabled = false; btn.textContent = '💾 保存';
-  }
-}
-
-// 动态插入新公告卡片
-function addPostCard(id) {
-  const p = posts[id];
-  const grid = document.getElementById('postsGrid');
-  const div = document.createElement('div');
-  div.className = 'post-card';
-  div.dataset.id = id;
-  div.onclick = () => openPost(id);
-  div.innerHTML = `
+function renderPostCard(p) {
+  const d = document.createElement('div');
+  d.className = 'post-card';
+  d.dataset.id = p.id;
+  d.onclick = () => openView(p.title, p.body);
+  d.innerHTML = `
     <div class="post-card-header">
-      <span class="post-badge ${badgeClass(p.badge)}">${p.badge}</span>
-      <span class="post-date">${p.date}</span>
+      <span class="post-badge ${badgeCls(p.badge)}">${esc(p.badge||'')}</span>
+      <span class="post-date">${esc(p.date||'')}</span>
     </div>
     <div class="post-card-body">
-      <div class="post-title">${p.title}</div>
-      <div class="post-excerpt">${p.excerpt}</div>
+      <div class="post-title">${esc(p.title||'')}</div>
+      <div class="post-excerpt">${esc(p.excerpt||'')}</div>
     </div>
-    <div class="edit-actions" onclick="event.stopPropagation()">
-      <button class="btn-edit" onclick="editPost('${id}')">✏️ 编辑</button>
-      <button class="btn-del"  onclick="deletePost('${id}')">🗑 删除</button>
+    <div class="edit-bar" onclick="event.stopPropagation()">
+      <button class="btn-edit" onclick="openEditor('post','${p.id}')">✏️ 编辑</button>
+      <button class="btn-del"  onclick="delItem('post','${p.id}')">🗑 删除</button>
     </div>`;
-  grid.appendChild(div);
+  return d;
 }
 
-// 动态插入新攻略条目
-function addGuideItem(id) {
-  const g = guides[id];
-  const list = document.getElementById('guideList');
-  const div = document.createElement('div');
-  div.className = 'guide-item';
-  div.dataset.id = id;
-  div.onclick = () => openGuide(id);
-  div.innerHTML = `
-    <div class="guide-icon ${g.color}">${g.icon}</div>
+async function loadPosts() {
+  const grid = document.getElementById('postsGrid');
+  grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem">加载中...</p>';
+  try {
+    const rows = await sbGet('posts','order=created_at.desc');
+    grid.innerHTML = '';
+    rows.forEach(p => grid.appendChild(renderPostCard(p)));
+  } catch(e) {
+    grid.innerHTML = `<p style="color:var(--red);font-size:.85rem">⚠️ 加载失败</p>`;
+    console.error(e);
+  }
+}
+
+// ══════════════════════════════════════════════
+// 攻略 GUIDES
+// ══════════════════════════════════════════════
+function renderGuideItem(g) {
+  const d = document.createElement('div');
+  d.className = 'guide-item';
+  d.dataset.id = g.id;
+  d.onclick = () => openView(g.title, g.body);
+  d.innerHTML = `
+    <div class="guide-icon ${esc(g.color||'green')}">${esc(g.icon||'📋')}</div>
     <div class="guide-info">
-      <div class="guide-title">${g.title}</div>
-      <div class="guide-desc">${g.desc}</div>
+      <div class="guide-title">${esc(g.title||'')}</div>
+      <div class="guide-desc">${esc(g.desc||'')}</div>
     </div>
     <span class="guide-arrow">›</span>
-    <div class="edit-actions" onclick="event.stopPropagation()">
-      <button class="btn-edit" onclick="editGuide('${id}')">✏️ 编辑</button>
-      <button class="btn-del"  onclick="deleteGuide('${id}')">🗑 删除</button>
+    <div class="edit-bar" onclick="event.stopPropagation()">
+      <button class="btn-edit" onclick="openEditor('guide','${g.id}')">✏️ 编辑</button>
+      <button class="btn-del"  onclick="delItem('guide','${g.id}')">🗑 删除</button>
     </div>`;
-  list.appendChild(div);
+  return d;
 }
 
-// ── 删除 ────────────────────────────────────────────
-async function deletePost(id) {
-  if (!isAdmin || !confirm('确定要删除这条公告吗？')) return;
+async function loadGuides() {
+  const list = document.getElementById('guideList');
+  list.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;padding:1rem">加载中...</p>';
   try {
-    await deleteFromSupabase('post', id);
-    const el = document.querySelector(`.post-card[data-id="${id}"]`);
-    if (el) el.remove();
-    delete posts[id];
-    showToast('🗑 已删除');
-  } catch(e) { showToast('❌ 删除失败'); }
+    const rows = await sbGet('guides','order=sort_order.asc,created_at.asc');
+    list.innerHTML = '';
+    rows.forEach(g => list.appendChild(renderGuideItem(g)));
+  } catch(e) {
+    list.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:1rem">⚠️ 加载失败</p>`;
+    console.error(e);
+  }
 }
 
-async function deleteGuide(id) {
-  if (!isAdmin || !confirm('确定要删除这条攻略吗？')) return;
+// ══════════════════════════════════════════════
+// 封禁名单 BANS
+// ══════════════════════════════════════════════
+function renderBanRow(b) {
+  const tr = document.createElement('tr');
+  tr.dataset.id = b.id;
+  const statusHtml = b.status==='perm'
+    ? `<span class="ban-status ban-perm">● 永久封禁</span>`
+    : `<span class="ban-status ban-temp">⏱ ${esc(b.duration||'临时封禁')}</span>`;
+  tr.innerHTML = `
+    <td><code style="font-family:'JetBrains Mono',monospace;color:var(--text-muted);font-size:.82rem">${esc(b.player||'')}</code></td>
+    <td class="ban-reason">${esc(b.reason||'')}</td>
+    <td style="color:var(--text-dim);font-size:.82rem">${esc(b.date||'')}</td>
+    <td>${statusHtml}</td>
+    <td>
+      <div class="ban-actions">
+        <button class="btn-edit" onclick="openEditor('ban','${b.id}')">✏️</button>
+        <button class="btn-del"  onclick="delItem('ban','${b.id}')">🗑</button>
+      </div>
+    </td>`;
+  return tr;
+}
+
+async function loadBans() {
+  const tbody = document.getElementById('banBody');
+  tbody.innerHTML = '<tr><td colspan="5" style="color:var(--text-dim);font-size:.85rem;padding:1rem">加载中...</td></tr>';
   try {
-    await deleteFromSupabase('guide', id);
-    const el = document.querySelector(`.guide-item[data-id="${id}"]`);
-    if (el) el.remove();
-    delete guides[id];
-    showToast('🗑 已删除');
-  } catch(e) { showToast('❌ 删除失败'); }
+    const rows = await sbGet('bans','order=created_at.desc');
+    tbody.innerHTML = '';
+    rows.forEach(b => tbody.appendChild(renderBanRow(b)));
+  } catch(e) {
+    tbody.innerHTML = `<tr><td colspan="5" style="color:var(--red);font-size:.85rem;padding:1rem">⚠️ 加载失败</td></tr>`;
+    console.error(e);
+  }
 }
 
-// ── 富文本工具栏 ─────────────────────────────────────
-function fmt(cmd) { document.getElementById('richEditor').focus(); document.execCommand(cmd, false, null); }
-function fmtH3() {
-  document.getElementById('richEditor').focus();
-  document.execCommand('formatBlock', false, 'h3');
-}
-function fmtP()  { document.getElementById('richEditor').focus(); document.execCommand('formatBlock', false, 'p'); }
-function fmtBr() { document.getElementById('richEditor').focus(); document.execCommand('insertLineBreak'); }
-function fmtCode() {
-  const sel = window.getSelection();
-  if (!sel.rangeCount) return;
-  const code = document.createElement('code');
-  code.style.cssText = 'background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;font-family:monospace;';
-  try { sel.getRangeAt(0).surroundContents(code); } catch(e) {}
-}
-function fmtHr() {
-  document.getElementById('richEditor').focus();
-  document.execCommand('insertHorizontalRule');
-}
-
-// ── 玩家建议 Supabase ────────────────────────────────
-const typeLabels = {
-  gameplay:'游戏玩法', economy:'经济系统', events:'活动 / 副本',
-  rules:'规则 / 管理', tech:'技术 / 性能', other:'其他'
+// ══════════════════════════════════════════════
+// 玩家建议 SUGGESTIONS
+// ══════════════════════════════════════════════
+const typeLabels = {gameplay:'游戏玩法',economy:'经济系统',events:'活动/副本',rules:'规则/管理',tech:'技术/性能',other:'其他'};
+const statusMap = {
+  pending: `<div class="suggestion-status status-pending">⏳ 待审核</div>`,
+  accepted:`<div class="suggestion-status status-accepted">✅ 已采纳</div>`,
+  reviewed:`<div class="suggestion-status status-reviewed">🔍 审核中</div>`,
+  rejected:`<div class="suggestion-status" style="color:var(--red);font-size:.75rem">❌ 暂不采纳</div>`
 };
 
 function renderSuggCard(s) {
-  const esc = str => String(str ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;');
-  const statusMap = {
-    pending:  `<div class="suggestion-status status-pending">⏳ 待审核</div>`,
-    accepted: `<div class="suggestion-status status-accepted">✅ 已采纳</div>`,
-    reviewed: `<div class="suggestion-status status-reviewed">🔍 审核中</div>`,
-    rejected: `<div class="suggestion-status" style="color:var(--red);font-size:.75rem;">❌ 暂不采纳</div>`
-  };
   const el = document.createElement('div');
   el.className = 'suggestion-card';
   el.dataset.id = s.id;
   el.innerHTML = `
     <div class="suggestion-header">
-      <span class="suggestion-player">${esc(s.player_name)}</span>
-      <div class="suggestion-votes">
-        <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">${s.votes ?? 0}</span></button>
-      </div>
+      <span class="suggestion-player">${esc(s.player_name||'')}</span>
+      <button class="vote-btn" onclick="vote(this)">▲ <span class="vcount">${s.votes||0}</span></button>
     </div>
-    <div class="suggestion-text">${esc(s.content)}</div>
-    ${s.type ? `<span class="suggestion-tag">${esc(typeLabels[s.type] ?? s.type)}</span>` : ''}
-    ${statusMap[s.status] ?? statusMap.pending}`;
+    <div class="suggestion-text">${esc(s.content||'')}</div>
+    ${s.type?`<span class="suggestion-tag">${esc(typeLabels[s.type]||s.type)}</span>`:''}
+    ${statusMap[s.status]||statusMap.pending}
+    <div class="sugg-admin">
+      <button onclick="setSuggStatus('${s.id}','pending')">⏳ 待审</button>
+      <button onclick="setSuggStatus('${s.id}','reviewed')">🔍 审核中</button>
+      <button onclick="setSuggStatus('${s.id}','accepted')">✅ 采纳</button>
+      <button onclick="setSuggStatus('${s.id}','rejected')">❌ 拒绝</button>
+      <button onclick="delItem('sugg','${s.id}')" style="color:var(--red)">🗑 删除</button>
+    </div>`;
   return el;
 }
 
 async function loadSuggestions() {
-  const container = document.getElementById('suggCards');
-  container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">加载中...</p>`;
+  const c = document.getElementById('suggCards');
+  c.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">加载中...</p>';
   try {
-    const res = await fetch(
-      `${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}?order=created_at.desc&limit=50`,
-      { headers: sbH() }
-    );
-    if (!res.ok) throw new Error(await res.text());
-    const rows = await res.json();
-    container.innerHTML = '';
-    if (!rows.length) {
-      container.innerHTML = `<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">暂无建议，来第一个提交吧！</p>`;
-      return;
-    }
-    rows.forEach(s => container.appendChild(renderSuggCard(s)));
+    const rows = await sbGet('suggestions','order=created_at.desc&limit=50');
+    c.innerHTML = '';
+    if (!rows.length) { c.innerHTML='<p style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0">暂无建议，来第一个提交吧！</p>'; return; }
+    rows.forEach(s => c.appendChild(renderSuggCard(s)));
   } catch(e) {
+    c.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败</p>`;
     console.error(e);
-    container.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:.5rem 0">⚠️ 加载失败</p>`;
   }
 }
 
@@ -1654,28 +727,34 @@ async function submitSuggestion() {
   const name    = document.getElementById('suggName').value.trim();
   const type    = document.getElementById('suggType').value;
   const content = document.getElementById('suggContent').value.trim();
-  if (!name || !type || !content) { showToast('⚠️ 请填写所有栏位！'); return; }
+  if (!name||!type||!content) { showToast('⚠️ 请填写所有栏位！'); return; }
   const btn = document.querySelector('.form-submit');
-  btn.disabled = true; btn.textContent = '提交中...';
+  btn.disabled=true; btn.textContent='提交中...';
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}`, {
-      method: 'POST',
-      headers: sbH({ 'Prefer':'return=representation' }),
-      body: JSON.stringify({ player_name:name, type, content, votes:0, status:'pending' })
-    });
-    if (!res.ok) throw new Error(await res.text());
-    const [saved] = await res.json();
+    const [saved] = await sbPost('suggestions',{player_name:name,type,content,votes:0,status:'pending'});
     document.getElementById('suggCards').prepend(renderSuggCard(saved));
-    document.getElementById('suggName').value = '';
-    document.getElementById('suggType').value = '';
-    document.getElementById('suggContent').value = '';
+    document.getElementById('suggName').value='';
+    document.getElementById('suggType').value='';
+    document.getElementById('suggContent').value='';
     showToast('✅ 建议已送出！感谢你的反馈！');
-  } catch(e) {
-    showToast('❌ 提交失败，请稍后再试');
-    console.error(e);
-  } finally {
-    btn.disabled = false; btn.textContent = '提交建议';
-  }
+  } catch(e) { showToast('❌ 提交失败：'+e.message); console.error(e);
+  } finally { btn.disabled=false; btn.textContent='提交建议'; }
+}
+
+async function setSuggStatus(id, status) {
+  if (!isAdmin) return;
+  try {
+    await sbPatch('suggestions',`id=eq.${id}`,{status});
+    const card = document.querySelector(`.suggestion-card[data-id="${id}"]`);
+    if (card) {
+      card.querySelector('.suggestion-status,.status-pending,.status-accepted,.status-reviewed')
+        ?.replaceWith(Object.assign(document.createElement('div'), {innerHTML:(statusMap[status]||statusMap.pending)}).firstChild);
+      // re-render easier:
+      const rows = await sbGet('suggestions',`id=eq.${id}`);
+      if (rows[0]) card.replaceWith(renderSuggCard(rows[0]));
+    }
+    showToast('✅ 状态已更新');
+  } catch(e) { showToast('❌ 更新失败'); console.error(e); }
 }
 
 async function vote(btn) {
@@ -1683,68 +762,241 @@ async function vote(btn) {
   const card = btn.closest('[data-id]');
   const id = card?.dataset.id;
   const isVoted = btn.classList.contains('voted');
-  const newVotes = parseInt(countEl.textContent) + (isVoted ? -1 : 1);
+  const newVotes = parseInt(countEl.textContent)+(isVoted?-1:1);
   btn.classList.toggle('voted');
   countEl.textContent = newVotes;
   if (!id) return;
+  try { await sbPatch('suggestions',`id=eq.${id}`,{votes:newVotes}); } catch(e) { console.error(e); }
+}
+
+// ══════════════════════════════════════════════
+// 通用删除
+// ══════════════════════════════════════════════
+const tableMap = {post:'posts',guide:'guides',ban:'bans',sugg:'suggestions'};
+const selectorMap = {post:'.post-card',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
+
+async function delItem(kind, id) {
+  if (!isAdmin||!confirm('确定删除？')) return;
   try {
-    await fetch(`${SUPABASE_URL}/rest/v1/${SB_TABLE_SUGGEST}?id=eq.${id}`, {
-      method: 'PATCH', headers: sbH(),
-      body: JSON.stringify({ votes: newVotes })
-    });
-  } catch(e) { console.error(e); }
+    await sbDelete(tableMap[kind],`id=eq.${id}`);
+    document.querySelector(`${selectorMap[kind]}[data-id="${id}"]`)?.remove();
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); console.error(e); }
 }
 
-// ── 工具函数 ─────────────────────────────────────────
+// ══════════════════════════════════════════════
+// 编辑弹窗
+// ══════════════════════════════════════════════
+async function openEditor(kind, id) {
+  if (!isAdmin) return;
+  _edit = {kind, id};
+
+  // 显示/隐藏对应字段
+  document.getElementById('fPost').style.display  = kind==='post'  ? '' : 'none';
+  document.getElementById('fGuide').style.display = kind==='guide' ? '' : 'none';
+  document.getElementById('fBan').style.display   = kind==='ban'   ? '' : 'none';
+  document.getElementById('fRich').style.display  = kind!=='ban'   ? '' : 'none';
+
+  const titles = {post:'公告',guide:'攻略',ban:'封禁记录'};
+  document.getElementById('edTitle_h').textContent = (id?'编辑':'新增') + titles[kind];
+  document.getElementById('richEditor').innerHTML = '';
+
+  if (id) {
+    // 加载现有数据
+    try {
+      const [row] = await sbGet(tableMap[kind],`id=eq.${id}`);
+      if (kind==='post') {
+        document.getElementById('fPostTitle').value   = row.title||'';
+        document.getElementById('fPostExcerpt').value = row.excerpt||'';
+        document.getElementById('fPostBadge').value   = row.badge||'更新';
+        document.getElementById('fPostDate').value    = row.date||'';
+        document.getElementById('richEditor').innerHTML = row.body||'';
+      } else if (kind==='guide') {
+        document.getElementById('fGuideTitle').value = row.title||'';
+        document.getElementById('fGuideDesc').value  = row.desc||'';
+        document.getElementById('fGuideColor').value = row.color||'green';
+        document.getElementById('fGuideIcon').value  = row.icon||'';
+        document.getElementById('richEditor').innerHTML = row.body||'';
+      } else if (kind==='ban') {
+        document.getElementById('fBanPlayer').value   = row.player||'';
+        document.getElementById('fBanReason').value   = row.reason||'';
+        document.getElementById('fBanDate').value     = row.date||'';
+        document.getElementById('fBanStatus').value   = row.status||'perm';
+        document.getElementById('fBanDuration').value = row.duration||'';
+      }
+    } catch(e) { console.error(e); }
+  } else {
+    // 新增默认值
+    if (kind==='post') {
+      document.getElementById('fPostTitle').value='';
+      document.getElementById('fPostExcerpt').value='';
+      document.getElementById('fPostBadge').value='公告';
+      document.getElementById('fPostDate').value=new Date().toISOString().slice(0,10);
+    } else if (kind==='guide') {
+      document.getElementById('fGuideTitle').value='';
+      document.getElementById('fGuideDesc').value='';
+      document.getElementById('fGuideColor').value='green';
+      document.getElementById('fGuideIcon').value='📋';
+    } else if (kind==='ban') {
+      document.getElementById('fBanPlayer').value='';
+      document.getElementById('fBanReason').value='';
+      document.getElementById('fBanDate').value=new Date().toISOString().slice(0,10);
+      document.getElementById('fBanStatus').value='perm';
+      document.getElementById('fBanDuration').value='';
+    }
+  }
+  document.getElementById('editorOverlay').classList.add('open');
+}
+
+function closeEditor() {
+  document.getElementById('editorOverlay').classList.remove('open');
+  _edit = null;
+}
+
+async function saveItem() {
+  if (!_edit) return;
+  const btn = document.getElementById('edSaveBtn');
+  btn.disabled=true; btn.textContent='保存中...';
+  const {kind, id} = _edit;
+  const body_html = document.getElementById('richEditor').innerHTML;
+
+  try {
+    let payload = {};
+    if (kind==='post') {
+      payload = {
+        title:   document.getElementById('fPostTitle').value.trim(),
+        excerpt: document.getElementById('fPostExcerpt').value.trim(),
+        badge:   document.getElementById('fPostBadge').value,
+        date:    document.getElementById('fPostDate').value,
+        body:    body_html
+      };
+    } else if (kind==='guide') {
+      payload = {
+        title: document.getElementById('fGuideTitle').value.trim(),
+        desc:  document.getElementById('fGuideDesc').value.trim(),
+        color: document.getElementById('fGuideColor').value,
+        icon:  document.getElementById('fGuideIcon').value.trim(),
+        body:  body_html
+      };
+    } else if (kind==='ban') {
+      payload = {
+        player:   document.getElementById('fBanPlayer').value.trim(),
+        reason:   document.getElementById('fBanReason').value.trim(),
+        date:     document.getElementById('fBanDate').value,
+        status:   document.getElementById('fBanStatus').value,
+        duration: document.getElementById('fBanDuration').value.trim()
+      };
+    }
+
+    if (id) {
+      // 更新
+      await sbPatch(tableMap[kind],`id=eq.${id}`,payload);
+      // 重新拉数据刷新卡片
+      const [updated] = await sbGet(tableMap[kind],`id=eq.${id}`);
+      const old = document.querySelector(`${selectorMap[kind]}[data-id="${id}"]`);
+      if (old) {
+        const newEl = kind==='post' ? renderPostCard(updated)
+                    : kind==='guide' ? renderGuideItem(updated)
+                    : renderBanRow(updated);
+        old.replaceWith(newEl);
+      }
+    } else {
+      // 新增
+      const [saved] = await sbPost(tableMap[kind], payload);
+      if (kind==='post')  document.getElementById('postsGrid').prepend(renderPostCard(saved));
+      if (kind==='guide') document.getElementById('guideList').appendChild(renderGuideItem(saved));
+      if (kind==='ban')   document.getElementById('banBody').prepend(renderBanRow(saved));
+    }
+
+    closeEditor();
+    showToast('✅ 已保存！');
+  } catch(e) {
+    showToast('❌ 保存失败：'+e.message);
+    console.error('saveItem error:', e);
+  } finally {
+    btn.disabled=false; btn.textContent='💾 保存';
+  }
+}
+
+// ══════════════════════════════════════════════
+// 查看弹窗
+// ══════════════════════════════════════════════
+function openView(title, body) {
+  document.getElementById('modalTitle').textContent = title||'';
+  document.getElementById('modalBody').innerHTML = body||'';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+// ══════════════════════════════════════════════
+// 富文本
+// ══════════════════════════════════════════════
+function fmt(cmd) { document.getElementById('richEditor').focus(); document.execCommand(cmd,false,null); }
+function fmtBlock(tag) { document.getElementById('richEditor').focus(); document.execCommand('formatBlock',false,tag); }
+function fmtCode() {
+  const sel = window.getSelection();
+  if (!sel.rangeCount) return;
+  const code = document.createElement('code');
+  code.style.cssText='background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;font-family:monospace;';
+  try { sel.getRangeAt(0).surroundContents(code); } catch(e) {}
+}
+
+// ══════════════════════════════════════════════
+// 工具
+// ══════════════════════════════════════════════
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
 function copyIP() {
-  const ip = document.getElementById('serverIP').textContent;
-  navigator.clipboard.writeText(ip).catch(() => {});
-  const tip = document.getElementById('copyTip');
-  tip.classList.add('show');
-  setTimeout(() => tip.classList.remove('show'), 2000);
+  navigator.clipboard.writeText(document.getElementById('serverIP').textContent).catch(()=>{});
+  const t = document.getElementById('copyTip');
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2000);
 }
 
-function toggleNav() {
-  document.getElementById('navLinks').classList.toggle('open');
-}
+function toggleNav() { document.getElementById('navLinks').classList.toggle('open'); }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2800);
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
 }
 
-// ── 数字滚动动画 ─────────────────────────────────────
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      animateNum(document.getElementById('stat1'), 0, 10050, 1800);
+// 数字动画
+const observer = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      animateNum(document.getElementById('stat1'),0,10050,1800);
       observer.disconnect();
     }
   });
-}, { threshold: 0.3 });
+},{threshold:.3});
 const statsEl = document.querySelector('.stats-grid');
-if (statsEl) observer.observe(statsEl);
+if(statsEl) observer.observe(statsEl);
 
-function animateNum(el, from, to, dur) {
-  const start = performance.now();
-  function step(now) {
-    const p = Math.min((now - start) / dur, 1);
-    el.textContent = Math.floor(from + (to - from) * easeOut(p)).toLocaleString();
-    if (p < 1) requestAnimationFrame(step);
+function animateNum(el,from,to,dur){
+  const start=performance.now();
+  function step(now){
+    const p=Math.min((now-start)/dur,1);
+    el.textContent=Math.floor(from+(to-from)*(1-Math.pow(1-p,3))).toLocaleString();
+    if(p<1)requestAnimationFrame(step);
   }
   requestAnimationFrame(step);
 }
-function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
-document.querySelectorAll('.nav-links a').forEach(a => {
-  a.addEventListener('click', () => document.getElementById('navLinks').classList.remove('open'));
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>document.getElementById('navLinks').classList.remove('open'));
 });
 
-// ── 启动 ─────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-  loadContent();
+// ══════════════════════════════════════════════
+// 启动
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded',()=>{
+  initAdmin();   // 恢复管理员登录状态
+  loadPosts();
+  loadGuides();
+  loadBans();
   loadSuggestions();
 });
 </script>
