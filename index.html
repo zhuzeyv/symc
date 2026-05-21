@@ -126,7 +126,7 @@ select option{background:var(--stone);}
 .suggestion-tag{display:inline-block;margin-top:.75rem;font-size:.7rem;padding:2px 8px;border-radius:3px;background:var(--stone-light);color:var(--text-dim);}
 .suggestion-status{font-size:.75rem;margin-top:.5rem;}
 .status-pending{color:var(--yellow);}
-。status-accepted{color:var(--green);}
+.status-accepted{color:var(--green);}
 .status-reviewed{color:var(--blue);}
 
 /* FOOTER */
@@ -520,9 +520,9 @@ async function sbUpsert(table, body) {
   return r.json();
 }
 
-// ── 管理员登录（sessionStorage 记住） ──────────
+// ── 管理员登录（localStorage 记住） ──────────
 function initAdmin() {
-  if (sessionStorage.getItem('mc_admin') === '1') {
+  if (localStorage.getItem('mc_admin') === '1') {
     isAdmin = true;
     document.body.classList.add('admin-mode');
     document.getElementById('adminFab').classList.add('active');
@@ -532,7 +532,7 @@ function initAdmin() {
 function toggleAdmin() {
   if (isAdmin) {
     isAdmin = false;
-    sessionStorage.removeItem('mc_admin');
+    localStorage.removeItem('mc_admin');
     document.body.classList.remove('admin-mode');
     document.getElementById('adminFab').classList.remove('active');
     showToast('已退出管理员模式');
@@ -546,7 +546,7 @@ function checkPwd() {
   const v = document.getElementById('adminPwd').value;
   if (v === ADMIN_PWD) {
     isAdmin = true;
-    sessionStorage.setItem('mc_admin','1'); // 记住登录（关闭标签页才清除）
+    localStorage.setItem('mc_admin','1'); // 记住登录（永久保存，手动退出才清除）
     document.body.classList.add('admin-mode');
     document.getElementById('adminFab').classList.add('active');
     closeLogin();
@@ -742,7 +742,7 @@ async function submitSuggestion() {
 }
 
 async function setSuggStatus(id, status) {
-  if (!isAdm在) return;
+  if (!isAdmin) return;
   try {
     await sbPatch('suggestions',`id=eq.${id}`,{status});
     const card = document.querySelector(`.suggestion-card[data-id="${id}"]`);
@@ -776,7 +776,7 @@ const tableMap = {post:'posts',guide:'guides',ban:'bans',sugg:'suggestions'};
 const selectorMap = {post:'.post-card',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
 
 async function delItem(kind, id) {
-  if (!isAdm在||!confirm('确定删除？')) return;
+  if (!isAdmin||!confirm('确定删除？')) return;
   try {
     await sbDelete(tableMap[kind],`id=eq.${id}`);
     document.querySelector(`${selectorMap[kind]}[data-id="${id}"]`)?.remove();
@@ -788,7 +788,7 @@ async function delItem(kind, id) {
 // 编辑弹窗
 // ══════════════════════════════════════════════
 async function openEditor(kind, id) {
-  if (!isAdm在) return;
+  if (!isAdmin) return;
   _edit = {kind, id};
 
   // 显示/隐藏对应字段
