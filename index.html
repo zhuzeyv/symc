@@ -71,7 +71,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-fil
 .badge-event{background:rgba(250,204,21,.15);color:var(--yellow);}
 .badge-notice{background:rgba(96,165,250,.15);color:var(--blue);}
 .badge-maintain{background:rgba(248,113,113,.12);color:var(--red);}
-.post-date{font-size:.78rem;color:var(--text-dim);margin-left:auto;}
+。post-date{font-size:.78rem;color:var(--text-dim);margin-left:auto;}
 .post-card-body{padding:1rem 1.5rem 1.5rem;}
 .post-title{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;}
 .post-excerpt{font-size:.875rem;color:var(--text-muted);line-height:1.6;}
@@ -226,6 +226,29 @@ body.admin-mode .admin-bar{display:block;}
   .form-grid{grid-template-columns:1fr;}
   .form-field.full{grid-column:auto;}
 }
+/* ── 物价表 ──────────────────────────────────── */
+.price-toolbar{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;}
+.price-search{flex:1;min-width:180px;background:var(--stone-mid);border:1px solid var(--border);border-radius:8px;color:var(--text);padding:.6rem 1rem;font-size:.875rem;font-family:'Noto Sans SC',sans-serif;outline:none;}
+.price-search:focus{border-color:var(--green);}
+.cat-tabs{display:flex;flex-wrap:wrap;gap:.4rem;}
+.cat-tab{background:var(--stone-mid);border:1px solid var(--border);color:var(--text-muted);padding:.35rem .9rem;border-radius:100px;cursor:pointer;font-size:.78rem;font-family:'Noto Sans SC',sans-serif;transition:.15s;white-space:nowrap;}
+.cat-tab:hover{border-color:var(--green);color:var(--green);}
+.cat-tab.active{background:rgba(74,222,128,.15);border-color:var(--green);color:var(--green);font-weight:700;}
+.price-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;}
+.price-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.25rem;transition:border-color .2s,transform .2s;position:relative;}
+.price-card:hover{border-color:rgba(74,222,128,.3);transform:translateY(-2px);}
+.price-item-name{font-weight:700;font-size:.95rem;margin-bottom:.25rem;display:flex;align-items:center;gap:.4rem;}
+.price-item-icon{font-size:1.2rem;}
+.price-cat-tag{font-size:.68rem;padding:2px 7px;border-radius:3px;background:var(--stone-light);color:var(--text-dim);display:inline-block;margin-bottom:.5rem;}
+.price-row{display:flex;justify-content:space-between;align-items:center;font-size:.82rem;padding:.2rem 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.price-row:last-of-type{border-bottom:none;}
+.price-label{color:var(--text-muted);}
+.price-val{font-family:'JetBrains Mono',monospace;color:var(--yellow);font-weight:700;font-size:.85rem;}
+.price-val.buy{color:var(--blue);}
+.price-note{font-size:.75rem;color:var(--text-dim);margin-top:.5rem;font-style:italic;}
+.price-edit-bar{display:none;gap:5px;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border);}
+body.admin-mode .price-edit-bar{display:flex;}
+.price-empty{color:var(--text-dim);font-size:.9rem;text-align:center;padding:3rem;grid-column:1/-1;}
 </style>
 </head>
 <body>
@@ -253,6 +276,7 @@ body.admin-mode .admin-bar{display:block;}
     <li><a href="#guides">攻略中心</a></li>
     <li><a href="#bans">封禁名单</a></li>
     <li><a href="#suggestions">玩家建议</a></li>
+    <li><a href="#prices">物价表</a></li>
   </ul>
   <div class="nav-right">
     <div class="nav-ip" onclick="copyIP()">
@@ -369,6 +393,30 @@ body.admin-mode .admin-bar{display:block;}
   <div class="suggestion-cards" id="suggCards"></div>
 </section>
 
+<hr class="section-divider">
+
+<!-- PRICES -->
+<section class="section" id="prices">
+  <div class="section-header">
+    <div class="section-tag">💰 物价</div>
+    <h2 class="section-title">游戏内物价参考表</h2>
+    <p style="color:var(--text-muted);font-size:.875rem;margin-top:.5rem;">价格由管理员维护，仅供参考。实际交易价格以玩家市集为准。</p>
+  </div>
+
+  <!-- 搜索 + 分类筛选 -->
+  <div class="price-toolbar">
+    <input class="price-search" id="priceSearch" placeholder="🔍 搜索物品名称..." oninput="filterPrices()"/>
+    <div class="cat-tabs" id="catTabs">
+      <button class="cat-tab active" data-cat="全部" onclick="selectCat(this)">全部</button>
+    </div>
+  </div>
+
+  <div class="price-grid" id="priceGrid">
+    <p style="color:var(--text-dim);font-size:.85rem;padding:2rem 0">加载中...</p>
+  </div>
+  <button class="btn-add" onclick="openPriceEditor(null)">＋ 新增物品</button>
+</section>
+
 <footer>
   <div style="margin-bottom:1rem;font-size:1.5rem;">⛏️</div>
   <p><strong>神域城邦官网</strong></p>
@@ -464,6 +512,30 @@ body.admin-mode .admin-bar{display:block;}
     <div class="ed-footer">
       <button class="btn-cancel" onclick="closeEditor()">取消</button>
       <button class="btn-save" id="edSaveBtn" onclick="saveItem()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 物价编辑弹窗 -->
+<div class="overlay-editor" id="priceEditorOverlay">
+  <div class="editor-box" style="max-width:480px">
+    <button class="ed-close" onclick="closePriceEditor()">✕</button>
+    <h3 id="priceEdTitle">新增物品</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="ed-field" style="grid-column:1/-1"><label>物品名称</label><input type="text" id="pName" placeholder="钻石"/></div>
+      <div class="ed-field" style="grid-column:1/-1"><label>分类</label>
+        <input type="text" id="pCat" placeholder="矿物 / 食物 / 装备 / 建材..." list="catList"/>
+        <datalist id="catList"></datalist>
+      </div>
+      <div class="ed-field" style="grid-column:1/-1"><label>图标 Emoji（选填）</label><input type="text" id="pIcon" placeholder="💎"/></div>
+      <div class="ed-field"><label>收购价（玩家卖出）</label><input type="number" id="pBuy" placeholder="0" min="0"/></div>
+      <div class="ed-field"><label>出售价（玩家购买）</label><input type="number" id="pSell" placeholder="0" min="0"/></div>
+      <div class="ed-field" style="grid-column:1/-1"><label>单位</label><input type="text" id="pUnit" placeholder="个 / 组 / 套..."/></div>
+      <div class="ed-field" style="grid-column:1/-1"><label>备注（选填）</label><input type="text" id="pNote" placeholder="价格可能随市场波动"/></div>
+    </div>
+    <div class="ed-footer">
+      <button class="btn-cancel" onclick="closePriceEditor()">取消</button>
+      <button class="btn-save" id="priceSaveBtn" onclick="savePrice()">💾 保存</button>
     </div>
   </div>
 </div>
@@ -611,7 +683,7 @@ async function loadPosts() {
 function renderGuideItem(g) {
   const d = document.createElement('div');
   d.className = 'guide-item';
-  d.dataset.id = g.id;
+  d。dataset.id = g.id;
   d.onclick = () => openView(g.title, g.body);
   d.innerHTML = `
     <div class="guide-icon ${esc(g.color||'green')}">${esc(g.icon||'📋')}</div>
@@ -742,7 +814,7 @@ async function submitSuggestion() {
 }
 
 async function setSuggStatus(id, status) {
-  if (!isAdmin) return;
+  if (!isAdm在) return;
   try {
     await sbPatch('suggestions',`id=eq.${id}`,{status});
     const card = document.querySelector(`.suggestion-card[data-id="${id}"]`);
@@ -776,7 +848,7 @@ const tableMap = {post:'posts',guide:'guides',ban:'bans',sugg:'suggestions'};
 const selectorMap = {post:'.post-card',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
 
 async function delItem(kind, id) {
-  if (!isAdmin||!confirm('确定删除？')) return;
+  if (!isAdm在||!confirm('确定删除？')) return;
   try {
     await sbDelete(tableMap[kind],`id=eq.${id}`);
     document.querySelector(`${selectorMap[kind]}[data-id="${id}"]`)?.remove();
@@ -788,7 +860,7 @@ async function delItem(kind, id) {
 // 编辑弹窗
 // ══════════════════════════════════════════════
 async function openEditor(kind, id) {
-  if (!isAdmin) return;
+  if (!isAdm在) return;
   _edit = {kind, id};
 
   // 显示/隐藏对应字段
@@ -830,7 +902,7 @@ async function openEditor(kind, id) {
     if (kind==='post') {
       document.getElementById('fPostTitle').value='';
       document.getElementById('fPostExcerpt').value='';
-      document.getElementById('fPostBadge').value='公告';
+      document。getElementById('fPostBadge').value='公告';
       document.getElementById('fPostDate').value=new Date().toISOString().slice(0,10);
     } else if (kind==='guide') {
       document.getElementById('fGuideTitle').value='';
@@ -993,12 +1065,199 @@ document.querySelectorAll('.nav-links a').forEach(a=>{
 // 启动
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
-  initAdmin();   // 恢复管理员登录状态
+  initAdmin();
   loadPosts();
   loadGuides();
   loadBans();
   loadSuggestions();
+  loadPrices();
 });
+// ══════════════════════════════════════════════
+// 物价系统 PRICES
+// ══════════════════════════════════════════════
+let _allPrices = [];
+let _activeCat = '全部';
+let _editPriceId = null;
+
+function renderPriceCard(p) {
+  const el = document.createElement('div');
+  el.className = 'price-card';
+  el.dataset.id = p.id;
+  el.dataset.cat = p.category || '';
+  el.dataset.name = (p.name || '').toLowerCase();
+  el.innerHTML = `
+    <div class="price-item-name">
+      ${p.icon ? `<span class="price-item-icon">${esc(p.icon)}</span>` : ''}
+      ${esc(p.name || '')}
+    </div>
+    <span class="price-cat-tag">${esc(p.category || '')}</span>
+    <div class="price-row">
+      <span class="price-label">📥 收购价</span>
+      <span class="price-val buy">${p.buy_price != null ? Number(p.buy_price).toLocaleString() : '—'} <small style="font-weight:400;color:var(--text-dim)">/ ${esc(p.unit||'个')}</small></span>
+    </div>
+    <div class="price-row">
+      <span class="price-label">📤 出售价</span>
+      <span class="price-val">${p.sell_price != null ? Number(p.sell_price).toLocaleString() : '—'} <small style="font-weight:400;color:var(--text-dim)">/ ${esc(p.unit||'个')}</small></span>
+    </div>
+    ${p.note ? `<div class="price-note">${esc(p.note)}</div>` : ''}
+    <div class="price-edit-bar">
+      <button class="btn-edit" onclick="openPriceEditor('${p.id}')">✏️ 编辑</button>
+      <button class="btn-del"  onclick="delPrice('${p.id}')">🗑 删除</button>
+    </div>`;
+  return el;
+}
+
+function buildCatTabs(prices) {
+  const cats = ['全部', ...new Set(prices.map(p => p.category).filter(Boolean).sort())];
+  const tabs = document.getElementById('catTabs');
+  tabs.innerHTML = '';
+  // also update datalist
+  const dl = document.getElementById('catList');
+  dl.innerHTML = '';
+  cats.slice(1).forEach(c => {
+    const opt = document.createElement('option'); opt.value = c; dl.appendChild(opt);
+  });
+  cats.forEach(c => {
+    const btn = document.createElement('button');
+    btn.className = 'cat-tab' + (c === _activeCat ? ' active' : '');
+    btn.dataset.cat = c;
+    btn.textContent = c;
+    btn.onclick = () => selectCat(btn);
+    tabs.appendChild(btn);
+  });
+}
+
+function selectCat(btn) {
+  _activeCat = btn.dataset.cat;
+  document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterPrices();
+}
+
+function filterPrices() {
+  const q = (document.getElementById('priceSearch').value || '').toLowerCase();
+  const grid = document.getElementById('priceGrid');
+  let visible = 0;
+  grid.querySelectorAll('.price-card').forEach(card => {
+    const matchCat  = _activeCat === '全部' || card.dataset.cat === _activeCat;
+    const matchName = !q || card.dataset.name.includes(q);
+    const show = matchCat && matchName;
+    card.style.display = show ? '' : 'none';
+    if (show) visible++;
+  });
+  // show/hide empty state
+  let empty = grid.querySelector('.price-empty');
+  if (!visible) {
+    if (!empty) { empty = document.createElement('p'); empty.className = 'price-empty'; grid.appendChild(empty); }
+    empty.textContent = q ? `没有找到"${q}"相关物品` : '该分类暂无物品';
+  } else if (empty) {
+    empty.remove();
+  }
+}
+
+async function loadPrices() {
+  const grid = document.getElementById('priceGrid');
+  grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;padding:2rem 0;grid-column:1/-1">加载中...</p>';
+  try {
+    const rows = await sbGet('prices', 'order=category.asc,name.asc');
+    _allPrices = rows;
+    grid.innerHTML = '';
+    buildCatTabs(rows);
+    if (!rows.length) {
+      grid.innerHTML = '<p class="price-empty">暂无物价数据，管理员可点击下方按钮添加。</p>';
+      return;
+    }
+    rows.forEach(p => grid.appendChild(renderPriceCard(p)));
+    filterPrices();
+  } catch(e) {
+    grid.innerHTML = `<p style="color:var(--red);font-size:.85rem;padding:2rem 0;grid-column:1/-1">⚠️ 加载失败</p>`;
+    console.error(e);
+  }
+}
+
+function openPriceEditor(id) {
+  if (!isAdmin) return;
+  _editPriceId = id;
+  document.getElementById('priceEdTitle').textContent = id ? '编辑物品价格' : '新增物品';
+  if (id) {
+    const p = _allPrices.find(x => x.id === id);
+    if (p) {
+      document.getElementById('pName').value  = p.name  || '';
+      document.getElementById('pCat').value   = p.category || '';
+      document.getElementById('pIcon').value  = p.icon  || '';
+      document.getElementById('pBuy').value   = p.buy_price  != null ? p.buy_price  : '';
+      document.getElementById('pSell').value  = p.sell_price != null ? p.sell_price : '';
+      document.getElementById('pUnit').value  = p.unit  || '个';
+      document.getElementById('pNote').value  = p.note  || '';
+    }
+  } else {
+    ['pName','pCat','pIcon','pBuy','pSell','pNote'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('pUnit').value = '个';
+  }
+  document.getElementById('priceEditorOverlay').classList.add('open');
+}
+
+function closePriceEditor() {
+  document.getElementById('priceEditorOverlay').classList.remove('open');
+  _editPriceId = null;
+}
+
+async function savePrice() {
+  if (!isAdmin) return;
+  const name = document.getElementById('pName').value.trim();
+  const cat  = document.getElementById('pCat').value.trim();
+  if (!name || !cat) { showToast('⚠️ 请填写物品名称和分类'); return; }
+
+  const btn = document.getElementById('priceSaveBtn');
+  btn.disabled = true; btn.textContent = '保存中...';
+
+  const payload = {
+    name,
+    category:   cat,
+    icon:       document.getElementById('pIcon').value.trim(),
+    buy_price:  document.getElementById('pBuy').value  !== '' ? Number(document.getElementById('pBuy').value)  : null,
+    sell_price: document.getElementById('pSell').value !== '' ? Number(document.getElementById('pSell').value) : null,
+    unit:       document.getElementById('pUnit').value.trim() || '个',
+    note:       document.getElementById('pNote').value.trim()
+  };
+
+  try {
+    if (_editPriceId) {
+      await sbPatch('prices', `id=eq.${_editPriceId}`, payload);
+      // 更新本地数据
+      const idx = _allPrices.findIndex(x => x.id === _editPriceId);
+      if (idx !== -1) _allPrices[idx] = {..._allPrices[idx], ...payload};
+      const old = document.querySelector(`.price-card[data-id="${_editPriceId}"]`);
+      if (old) old.replaceWith(renderPriceCard({id: _editPriceId, ..._allPrices.find(x=>x.id===_editPriceId)}));
+    } else {
+      const [saved] = await sbPost('prices', payload);
+      _allPrices.push(saved);
+      document.getElementById('priceGrid').querySelector('.price-empty')?.remove();
+      document.getElementById('priceGrid').appendChild(renderPriceCard(saved));
+      buildCatTabs(_allPrices);
+    }
+    filterPrices();
+    closePriceEditor();
+    showToast('✅ 物价已保存！');
+  } catch(e) {
+    showToast('❌ 保存失败：' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 保存';
+  }
+}
+
+async function delPrice(id) {
+  if (!isAdmin || !confirm('确定删除这条物价记录？')) return;
+  try {
+    await sbDelete('prices', `id=eq.${id}`);
+    document.querySelector(`.price-card[data-id="${id}"]`)?.remove();
+    _allPrices = _allPrices.filter(x => x.id !== id);
+    buildCatTabs(_allPrices);
+    filterPrices();
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); console.error(e); }
+}
 </script>
 </body>
 </html>
