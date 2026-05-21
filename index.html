@@ -71,7 +71,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-fil
 .badge-event{background:rgba(250,204,21,.15);color:var(--yellow);}
 .badge-notice{background:rgba(96,165,250,.15);color:var(--blue);}
 .badge-maintain{background:rgba(248,113,113,.12);color:var(--red);}
-。post-date{font-size:.78rem;color:var(--text-dim);margin-left:auto;}
+.post-date{font-size:.78rem;color:var(--text-dim);margin-left:auto;}
 .post-card-body{padding:1rem 1.5rem 1.5rem;}
 .post-title{font-size:1.05rem;font-weight:700;margin-bottom:.5rem;}
 .post-excerpt{font-size:.875rem;color:var(--text-muted);line-height:1.6;}
@@ -550,7 +550,7 @@ body.admin-mode .price-edit-bar{display:flex;}
 // ═══════════════════════════════════════════════
 const SB_URL  = 'https://vlbdguleovswmchypadd.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
-const ADMIN_PWD = 'reyo9999'; // ← 改成你的密码
+const ADMIN_PWD = 'admin123'; // ← 改成你的密码
 // ═══════════════════════════════════════════════
 
 let isAdmin = false;
@@ -683,7 +683,7 @@ async function loadPosts() {
 function renderGuideItem(g) {
   const d = document.createElement('div');
   d.className = 'guide-item';
-  d。dataset.id = g.id;
+  d.dataset.id = g.id;
   d.onclick = () => openView(g.title, g.body);
   d.innerHTML = `
     <div class="guide-icon ${esc(g.color||'green')}">${esc(g.icon||'📋')}</div>
@@ -814,7 +814,7 @@ async function submitSuggestion() {
 }
 
 async function setSuggStatus(id, status) {
-  if (!isAdm在) return;
+  if (!isAdmin) return;
   try {
     await sbPatch('suggestions',`id=eq.${id}`,{status});
     const card = document.querySelector(`.suggestion-card[data-id="${id}"]`);
@@ -848,7 +848,7 @@ const tableMap = {post:'posts',guide:'guides',ban:'bans',sugg:'suggestions'};
 const selectorMap = {post:'.post-card',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
 
 async function delItem(kind, id) {
-  if (!isAdm在||!confirm('确定删除？')) return;
+  if (!isAdmin||!confirm('确定删除？')) return;
   try {
     await sbDelete(tableMap[kind],`id=eq.${id}`);
     document.querySelector(`${selectorMap[kind]}[data-id="${id}"]`)?.remove();
@@ -860,7 +860,7 @@ async function delItem(kind, id) {
 // 编辑弹窗
 // ══════════════════════════════════════════════
 async function openEditor(kind, id) {
-  if (!isAdm在) return;
+  if (!isAdmin) return;
   _edit = {kind, id};
 
   // 显示/隐藏对应字段
@@ -902,7 +902,7 @@ async function openEditor(kind, id) {
     if (kind==='post') {
       document.getElementById('fPostTitle').value='';
       document.getElementById('fPostExcerpt').value='';
-      document。getElementById('fPostBadge').value='公告';
+      document.getElementById('fPostBadge').value='公告';
       document.getElementById('fPostDate').value=new Date().toISOString().slice(0,10);
     } else if (kind==='guide') {
       document.getElementById('fGuideTitle').value='';
