@@ -522,16 +522,18 @@ body.admin-mode .price-edit-bar{display:flex;}
     <button class="ed-close" onclick="closePriceEditor()">✕</button>
     <h3 id="priceEdTitle">新增物品</h3>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
-      <div class="ed-field" style="grid-column:1/-1"><label>物品名称</label><input type="text" id="pName" placeholder="钻石"/></div>
+      <div class="ed-field" style="grid-column:1/-1"><label>物品名称</label><input type="text" id="pName" placeholder="例：神圣之剑、龙鳞护甲..."/></div>
       <div class="ed-field" style="grid-column:1/-1"><label>分类</label>
-        <input type="text" id="pCat" placeholder="矿物 / 食物 / 装备 / 建材..." list="catList"/>
+        <input type="text" id="pCat" placeholder="武器 / 防具 / 药水 / 材料..." list="catList"/>
         <datalist id="catList"></datalist>
       </div>
-      <div class="ed-field" style="grid-column:1/-1"><label>图标 Emoji（选填）</label><input type="text" id="pIcon" placeholder="💎"/></div>
-      <div class="ed-field"><label>收购价（玩家卖出）</label><input type="number" id="pBuy" placeholder="0" min="0"/></div>
-      <div class="ed-field"><label>出售价（玩家购买）</label><input type="number" id="pSell" placeholder="0" min="0"/></div>
-      <div class="ed-field" style="grid-column:1/-1"><label>单位</label><input type="text" id="pUnit" placeholder="个 / 组 / 套..."/></div>
-      <div class="ed-field" style="grid-column:1/-1"><label>备注（选填）</label><input type="text" id="pNote" placeholder="价格可能随市场波动"/></div>
+      <div class="ed-field"><label>收购价 <span style="color:var(--text-dim);font-weight:400">（玩家卖出）</span></label><input type="number" id="pBuy" placeholder="0" min="0"/></div>
+      <div class="ed-field"><label>出售价 <span style="color:var(--text-dim);font-weight:400">（玩家购买）</span></label><input type="number" id="pSell" placeholder="0" min="0"/></div>
+      <div class="ed-field" style="grid-column:1/-1">
+        <label>价格单位 <span style="color:var(--text-dim);font-weight:400">（自定义填写）</span></label>
+        <input type="text" id="pUnit" placeholder="例：金币/把、钻石/套、元宝/个..."/>
+      </div>
+      <div class="ed-field" style="grid-column:1/-1"><label>备注 <span style="color:var(--text-dim);font-weight:400">（选填）</span></label><input type="text" id="pNote" placeholder="例：限量、活动期间特价、可议价..."/></div>
     </div>
     <div class="ed-footer">
       <button class="btn-cancel" onclick="closePriceEditor()">取消</button>
@@ -1080,26 +1082,30 @@ let _activeCat = '全部';
 let _editPriceId = null;
 
 function renderPriceCard(p) {
+  // 按分类自动配色
+  const catColors = {
+    '武器':'#f87171','防具':'#60a5fa','药水':'#a78bfa','材料':'#4ade80',
+    '食物':'#fb923c','坐骑':'#facc15','魔法':'#e879f9','其他':'#94a3b8'
+  };
+  const accentColor = catColors[p.category] || '#4ade80';
   const el = document.createElement('div');
   el.className = 'price-card';
   el.dataset.id = p.id;
   el.dataset.cat = p.category || '';
   el.dataset.name = (p.name || '').toLowerCase();
+  el.style.borderTop = `2px solid ${accentColor}33`;
   el.innerHTML = `
-    <div class="price-item-name">
-      ${p.icon ? `<span class="price-item-icon">${esc(p.icon)}</span>` : ''}
-      ${esc(p.name || '')}
-    </div>
+    <div class="price-item-name" style="color:${accentColor}">${esc(p.name || '')}</div>
     <span class="price-cat-tag">${esc(p.category || '')}</span>
     <div class="price-row">
-      <span class="price-label">📥 收购价</span>
-      <span class="price-val buy">${p.buy_price != null ? Number(p.buy_price).toLocaleString() : '—'} <small style="font-weight:400;color:var(--text-dim)">/ ${esc(p.unit||'个')}</small></span>
+      <span class="price-label">📥 收购</span>
+      <span class="price-val buy">${p.buy_price != null ? Number(p.buy_price).toLocaleString() : '—'}<small style="font-weight:400;color:var(--text-dim);font-family:sans-serif"> ${esc(p.unit||'')}</small></span>
     </div>
     <div class="price-row">
-      <span class="price-label">📤 出售价</span>
-      <span class="price-val">${p.sell_price != null ? Number(p.sell_price).toLocaleString() : '—'} <small style="font-weight:400;color:var(--text-dim)">/ ${esc(p.unit||'个')}</small></span>
+      <span class="price-label">📤 出售</span>
+      <span class="price-val">${p.sell_price != null ? Number(p.sell_price).toLocaleString() : '—'}<small style="font-weight:400;color:var(--text-dim);font-family:sans-serif"> ${esc(p.unit||'')}</small></span>
     </div>
-    ${p.note ? `<div class="price-note">${esc(p.note)}</div>` : ''}
+    ${p.note ? `<div class="price-note">💬 ${esc(p.note)}</div>` : ''}
     <div class="price-edit-bar">
       <button class="btn-edit" onclick="openPriceEditor('${p.id}')">✏️ 编辑</button>
       <button class="btn-del"  onclick="delPrice('${p.id}')">🗑 删除</button>
@@ -1184,15 +1190,13 @@ function openPriceEditor(id) {
     if (p) {
       document.getElementById('pName').value  = p.name  || '';
       document.getElementById('pCat').value   = p.category || '';
-      document.getElementById('pIcon').value  = p.icon  || '';
       document.getElementById('pBuy').value   = p.buy_price  != null ? p.buy_price  : '';
       document.getElementById('pSell').value  = p.sell_price != null ? p.sell_price : '';
-      document.getElementById('pUnit').value  = p.unit  || '个';
+      document.getElementById('pUnit').value  = p.unit  || '';
       document.getElementById('pNote').value  = p.note  || '';
     }
   } else {
-    ['pName','pCat','pIcon','pBuy','pSell','pNote'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('pUnit').value = '个';
+    ['pName','pCat','pBuy','pSell','pUnit','pNote'].forEach(i => document.getElementById(i).value = '');
   }
   document.getElementById('priceEditorOverlay').classList.add('open');
 }
@@ -1214,17 +1218,15 @@ async function savePrice() {
   const payload = {
     name,
     category:   cat,
-    icon:       document.getElementById('pIcon').value.trim(),
     buy_price:  document.getElementById('pBuy').value  !== '' ? Number(document.getElementById('pBuy').value)  : null,
     sell_price: document.getElementById('pSell').value !== '' ? Number(document.getElementById('pSell').value) : null,
-    unit:       document.getElementById('pUnit').value.trim() || '个',
+    unit:       document.getElementById('pUnit').value.trim(),
     note:       document.getElementById('pNote').value.trim()
   };
 
   try {
     if (_editPriceId) {
       await sbPatch('prices', `id=eq.${_editPriceId}`, payload);
-      // 更新本地数据
       const idx = _allPrices.findIndex(x => x.id === _editPriceId);
       if (idx !== -1) _allPrices[idx] = {..._allPrices[idx], ...payload};
       const old = document.querySelector(`.price-card[data-id="${_editPriceId}"]`);
