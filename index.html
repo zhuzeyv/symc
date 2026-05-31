@@ -249,6 +249,18 @@ body.admin-mode .admin-bar{display:block;}
 .price-edit-bar{display:none;gap:5px;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border);}
 body.admin-mode .price-edit-bar{display:flex;}
 .price-empty{color:var(--text-dim);font-size:.9rem;text-align:center;padding:3rem;grid-column:1/-1;}
+/* ── 快速链接 ─────────────────────────────────── */
+.links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+.link-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s,background .2s;position:relative;}
+.link-card:hover{border-color:rgba(74,222,128,.45);transform:translateY(-2px);background:var(--stone-light);}
+.link-icon-wrap{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;background:rgba(74,222,128,.1);}
+.link-info{flex:1;min-width:0;}
+.link-title{font-weight:700;font-size:.95rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-desc{font-size:.78rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.link-arrow{color:var(--text-dim);font-size:1rem;flex-shrink:0;}
+.link-edit-bar{display:none;gap:5px;position:absolute;bottom:.6rem;right:.75rem;}
+body.admin-mode .link-card{padding-bottom:2.4rem;}
+body.admin-mode .link-edit-bar{display:flex;}
 </style>
 </head>
 <body>
@@ -277,6 +289,7 @@ body.admin-mode .price-edit-bar{display:flex;}
     <li><a href="#bans">封禁名单</a></li>
     <li><a href="#suggestions">玩家建议</a></li>
     <li><a href="#prices">物价表</a></li>
+    <li><a href="#links">快速链接</a></li>
   </ul>
   <div class="nav-right">
     <div class="nav-ip" onclick="copyIP()">
@@ -417,6 +430,21 @@ body.admin-mode .price-edit-bar{display:flex;}
   <button class="btn-add" onclick="openPriceEditor(null)">＋ 新增物品</button>
 </section>
 
+<hr class="section-divider">
+
+<!-- LINKS -->
+<section class="section" id="links">
+  <div class="section-header">
+    <div class="section-tag">🔗 链接</div>
+    <h2 class="section-title">快速链接</h2>
+    <p style="color:var(--text-muted);font-size:.875rem;margin-top:.5rem;">常用网站与资源，点击直接跳转。</p>
+  </div>
+  <div class="links-grid" id="linksGrid">
+    <p style="color:var(--text-dim);font-size:.85rem">加载中...</p>
+  </div>
+  <button class="btn-add" onclick="openLinkEditor(null)">＋ 新增链接</button>
+</section>
+
 <footer>
   <div style="margin-bottom:1rem;font-size:1.5rem;">⛏️</div>
   <p><strong>神域城邦官网</strong></p>
@@ -538,6 +566,22 @@ body.admin-mode .price-edit-bar{display:flex;}
     <div class="ed-footer">
       <button class="btn-cancel" onclick="closePriceEditor()">取消</button>
       <button class="btn-save" id="priceSaveBtn" onclick="savePrice()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 链接编辑弹窗 -->
+<div class="overlay-editor" id="linkEditorOverlay">
+  <div class="editor-box" style="max-width:440px">
+    <button class="ed-close" onclick="closeLinkEditor()">✕</button>
+    <h3 id="linkEdTitle">新增链接</h3>
+    <div class="ed-field"><label>链接名称</label><input type="text" id="lName" placeholder="例：神域Discord、Wiki、地图..."/></div>
+    <div class="ed-field"><label>网址 URL</label><input type="url" id="lUrl" placeholder="https://..."/></div>
+    <div class="ed-field"><label>简短描述（选填）</label><input type="text" id="lDesc" placeholder="一句话说明这个链接是什么"/></div>
+    <div class="ed-field"><label>图标 Emoji</label><input type="text" id="lIcon" placeholder="💬 🗺️ 📖 🎮 🌐"/></div>
+    <div class="ed-footer">
+      <button class="btn-cancel" onclick="closeLinkEditor()">取消</button>
+      <button class="btn-save" id="linkSaveBtn" onclick="saveLink()">💾 保存</button>
     </div>
   </div>
 </div>
@@ -1073,6 +1117,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   loadBans();
   loadSuggestions();
   loadPrices();
+  loadLinks();
 });
 // ══════════════════════════════════════════════
 // 物价系统 PRICES
@@ -1257,6 +1302,130 @@ async function delPrice(id) {
     _allPrices = _allPrices.filter(x => x.id !== id);
     buildCatTabs(_allPrices);
     filterPrices();
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); console.error(e); }
+}
+// ══════════════════════════════════════════════
+// 快速链接 LINKS
+// ══════════════════════════════════════════════
+let _allLinks = [];
+let _editLinkId = null;
+
+function renderLinkCard(lk) {
+  const el = document.createElement('a');
+  el.className = 'link-card';
+  el.href = lk.url || '#';
+  el.target = '_blank';
+  el.rel = 'noopener noreferrer';
+  el.dataset.id = lk.id;
+  // 阻止管理员模式下点击编辑按钮时跳转
+  el.addEventListener('click', e => {
+    if (e.target.closest('.link-edit-bar')) e.preventDefault();
+  });
+  el.innerHTML = `
+    <div class="link-icon-wrap">${esc(lk.icon || '🔗')}</div>
+    <div class="link-info">
+      <div class="link-title">${esc(lk.name || '')}</div>
+      <div class="link-desc">${esc(lk.desc || lk.url || '')}</div>
+    </div>
+    <span class="link-arrow">↗</span>
+    <div class="link-edit-bar" onclick="event.stopPropagation()">
+      <button class="btn-edit" onclick="openLinkEditor('${lk.id}')">✏️</button>
+      <button class="btn-del"  onclick="delLink('${lk.id}')">🗑</button>
+    </div>`;
+  return el;
+}
+
+async function loadLinks() {
+  const grid = document.getElementById('linksGrid');
+  grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem">加载中...</p>';
+  try {
+    const rows = await sbGet('links', 'order=sort_order.asc,created_at.asc');
+    _allLinks = rows;
+    grid.innerHTML = '';
+    if (!rows.length) {
+      grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem">暂无链接，管理员可点击下方按钮添加。</p>';
+      return;
+    }
+    rows.forEach(lk => grid.appendChild(renderLinkCard(lk)));
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--red);font-size:.85rem">⚠️ 加载失败</p>';
+    console.error(e);
+  }
+}
+
+function openLinkEditor(id) {
+  if (!isAdmin) return;
+  _editLinkId = id;
+  document.getElementById('linkEdTitle').textContent = id ? '编辑链接' : '新增链接';
+  if (id) {
+    const lk = _allLinks.find(x => x.id === id);
+    if (lk) {
+      document.getElementById('lName').value = lk.name || '';
+      document.getElementById('lUrl').value  = lk.url  || '';
+      document.getElementById('lDesc').value = lk.desc || '';
+      document.getElementById('lIcon').value = lk.icon || '';
+    }
+  } else {
+    ['lName','lUrl','lDesc','lIcon'].forEach(i => document.getElementById(i).value = '');
+  }
+  document.getElementById('linkEditorOverlay').classList.add('open');
+}
+
+function closeLinkEditor() {
+  document.getElementById('linkEditorOverlay').classList.remove('open');
+  _editLinkId = null;
+}
+
+async function saveLink() {
+  if (!isAdmin) return;
+  const name = document.getElementById('lName').value.trim();
+  const url  = document.getElementById('lUrl').value.trim();
+  if (!name || !url) { showToast('⚠️ 请填写名称和网址'); return; }
+
+  const btn = document.getElementById('linkSaveBtn');
+  btn.disabled = true; btn.textContent = '保存中...';
+
+  const payload = {
+    name,
+    url,
+    desc: document.getElementById('lDesc').value.trim(),
+    icon: document.getElementById('lIcon').value.trim() || '🔗',
+  };
+
+  try {
+    if (_editLinkId) {
+      await sbPatch('links', `id=eq.${_editLinkId}`, payload);
+      const idx = _allLinks.findIndex(x => x.id === _editLinkId);
+      if (idx !== -1) _allLinks[idx] = {..._allLinks[idx], ...payload};
+      const old = document.querySelector(`.link-card[data-id="${_editLinkId}"]`);
+      if (old) old.replaceWith(renderLinkCard({id: _editLinkId, ..._allLinks[idx]}));
+    } else {
+      const [saved] = await sbPost('links', payload);
+      _allLinks.push(saved);
+      const grid = document.getElementById('linksGrid');
+      grid.querySelector('p')?.remove();
+      grid.appendChild(renderLinkCard(saved));
+    }
+    closeLinkEditor();
+    showToast('✅ 链接已保存！');
+  } catch(e) {
+    showToast('❌ 保存失败：' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '💾 保存';
+  }
+}
+
+async function delLink(id) {
+  if (!isAdmin || !confirm('确定删除这条链接？')) return;
+  try {
+    await sbDelete('links', `id=eq.${id}`);
+    document.querySelector(`.link-card[data-id="${id}"]`)?.remove();
+    _allLinks = _allLinks.filter(x => x.id !== id);
+    if (!_allLinks.length) {
+      document.getElementById('linksGrid').innerHTML = '<p style="color:var(--text-dim);font-size:.85rem">暂无链接。</p>';
+    }
     showToast('🗑 已删除');
   } catch(e) { showToast('❌ 删除失败'); console.error(e); }
 }
