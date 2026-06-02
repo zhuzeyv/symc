@@ -35,7 +35,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-fil
 .pixel-art{width:100px;height:100px;margin-bottom:2rem;image-rendering:pixelated;animation:float 3s ease-in-out infinite;}
 @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
 .hero-tag{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--green);letter-spacing:3px;text-transform:uppercase;margin-bottom:1rem;opacity:0;animation:fadeUp .6s .2s forwards;}
-.hero-title{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s 。4s forwards;}
+.hero-title{font-size:clamp(2.5rem,6vw,5rem);font-weight:900;line-height:1.1;margin-bottom:1.5rem;opacity:0;animation:fadeUp .6s .4s forwards;}
 .hero-title span{color:var(--green);}
 .hero-sub{font-size:1.1rem;color:var(--text-muted);max-width:540px;margin-bottom:2.5rem;opacity:0;animation:fadeUp .6s .6s forwards;}
 .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;opacity:0;animation:fadeUp .6s .8s forwards;}
@@ -64,7 +64,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-fil
 /* POST CARDS */
 .posts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem;}
 .post-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:border-color .2s,transform .2s;cursor:pointer;display:block;}
-.post-card:hover{border-color:rgba(74,222,128,。4);transform:translateY(-3px);}
+.post-card:hover{border-color:rgba(74,222,128,.4);transform:translateY(-3px);}
 .post-card-header{padding:1.25rem 1.5rem 0;display:flex;align-items:center;gap:10px;}
 .post-badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:1px;text-transform:uppercase;}
 .badge-update{background:rgba(74,222,128,.15);color:var(--green);}
@@ -218,13 +218,63 @@ body.admin-mode .sugg-admin{display:flex;flex-wrap:wrap;}
 .admin-bar{display:none;position:sticky;top:60px;z-index:99;background:rgba(74,222,128,.12);border-bottom:1px solid rgba(74,222,128,.25);padding:.5rem 2rem;font-size:.8rem;color:var(--green);text-align:center;}
 body.admin-mode .admin-bar{display:block;}
 
-@media(max-width:640px){
+@media(max-width:768px){
+  /* 导航 */
+  nav{padding:0 1rem;grid-template-columns:1fr auto;}
   .nav-links{display:none;}
-  .nav-links.open{display:flex;flex-direction:column;position:absolute;top:60px;left:0;right:0;background:var(--stone);border-bottom:1px solid var(--border);}
-  .nav-links.open a{height:auto;padding:1rem 2rem;line-height:1.5;}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:60px;left:0;right:0;bottom:0;background:rgba(28,25,23,.98);z-index:99;overflow-y:auto;padding:1rem 0;}
+  .nav-links.open a{height:auto;padding:1rem 1.5rem;line-height:1.6;font-size:1rem;border-bottom:1px solid var(--border);}
   .hamburger{display:flex;}
+  .nav-right .hover-hint{display:none;}
+
+  /* Hero */
+  .hero{min-height:70vh;padding:2rem 1rem;}
+  .hero-title{font-size:2.2rem;}
+  .hero-btns{flex-direction:column;align-items:center;}
+  .btn-primary,.btn-outline{width:100%;max-width:260px;text-align:center;}
+
+  /* Sections */
+  .section{padding:3rem 1rem;}
+  .section-title{font-size:1.5rem;}
+
+  /* Stats */
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .stat-num{font-size:1.8rem;}
+
+  /* Cards */
+  .posts-grid{grid-template-columns:1fr;}
+  .price-grid{grid-template-columns:1fr 1fr;}
+  .links-grid{grid-template-columns:1fr;}
+  .suggestion-cards{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:1fr 1fr;}
+
+  /* Guide */
+  .guide-item{flex-wrap:wrap;}
+  .edit-bar{width:100%;}
+
+  /* Ban table */
+  thead th:nth-child(3){display:none;}
+  tbody td:nth-child(3){display:none;}
+
+  /* Forms */
   .form-grid{grid-template-columns:1fr;}
   .form-field.full{grid-column:auto;}
+
+  /* Editor */
+  .editor-box{padding:1.25rem;}
+  div[style*="grid-template-columns:1fr 1fr"]{display:flex !important;flex-direction:column !important;}
+
+  /* Admin fab */
+  .admin-fab{bottom:1rem;left:1rem;width:40px;height:40px;font-size:1rem;}
+
+  /* Decorations */
+  .deco-item{opacity:.4;}
+}
+@media(max-width:420px){
+  .stats-grid{grid-template-columns:1fr 1fr;}
+  .price-grid{grid-template-columns:1fr;}
+  .gallery-grid{grid-template-columns:1fr;}
+  .hero-title{font-size:1.8rem;}
 }
 /* ── 物价表 ──────────────────────────────────── */
 .price-toolbar{display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center;}
@@ -252,7 +302,7 @@ body.admin-mode .price-edit-bar{display:flex;}
 /* ── 快速链接 ─────────────────────────────────── */
 .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
 .link-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s,background .2s;position:relative;}
-。link-card:hover{border-color:rgba(74,222,128,.45);transform:translateY(-2px);background:var(--stone-light);}
+.link-card:hover{border-color:rgba(74,222,128,.45);transform:translateY(-2px);background:var(--stone-light);}
 .link-icon-wrap{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;background:rgba(74,222,128,.1);}
 .link-info{flex:1;min-width:0;}
 .link-title{font-weight:700;font-size:.95rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -261,6 +311,49 @@ body.admin-mode .price-edit-bar{display:flex;}
 .link-edit-bar{display:none;gap:5px;position:absolute;bottom:.6rem;right:.75rem;}
 body.admin-mode .link-card{padding-bottom:2.4rem;}
 body.admin-mode .link-edit-bar{display:flex;}
+/* ── 背景装饰 ─────────────────────────────────── */
+.deco-layer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+.deco-item{position:absolute;opacity:.55;user-select:none;animation:decoFloat linear infinite;}
+@keyframes decoFloat{
+  0%{transform:translateY(0) rotate(0deg);}
+  33%{transform:translateY(-18px) rotate(6deg);}
+  66%{transform:translateY(8px) rotate(-4deg);}
+  100%{transform:translateY(0) rotate(0deg);}
+}
+/* Minecraft 像素方块 */
+.deco-block{width:32px;height:32px;image-rendering:pixelated;border-radius:2px;}
+/* 二次元玩偶用 emoji 大字 */
+.deco-chibi{font-size:2.2rem;filter:drop-shadow(0 2px 8px rgba(74,222,128,.3));}
+
+/* ── 照片墙 ─────────────────────────────────── */
+.gallery-toolbar{display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1.5rem;}
+.gallery-filter{display:flex;gap:.4rem;flex-wrap:wrap;}
+.gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
+.gallery-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:10px;overflow:hidden;position:relative;transition:border-color .2s,transform .2s;}
+.gallery-card:hover{border-color:rgba(74,222,128,.4);transform:translateY(-2px);}
+.gallery-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;cursor:pointer;background:var(--stone-light);}
+.gallery-info{padding:.75rem 1rem;}
+.gallery-player{font-weight:700;font-size:.85rem;}
+.gallery-caption{font-size:.78rem;color:var(--text-muted);margin-top:2px;}
+.gallery-date{font-size:.72rem;color:var(--text-dim);margin-top:4px;}
+.gallery-pending{position:absolute;top:.5rem;left:.5rem;background:rgba(250,204,21,.9);color:#000;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:3px;}
+.gallery-edit-bar{display:none;gap:5px;padding:.5rem 1rem .75rem;}
+body.admin-mode .gallery-edit-bar{display:flex;}
+/* 上传区 */
+.upload-zone{border:2px dashed var(--border);border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:.2s;background:var(--stone-mid);}
+.upload-zone:hover,.upload-zone.drag{border-color:var(--green);background:rgba(74,222,128,.05);}
+.upload-zone input{display:none;}
+.upload-icon{font-size:2.5rem;margin-bottom:.75rem;}
+.upload-text{color:var(--text-muted);font-size:.9rem;}
+.upload-text strong{color:var(--green);}
+.upload-preview{display:none;margin-top:1rem;}
+.upload-preview img{max-height:180px;border-radius:8px;border:1px solid var(--border);}
+/* 大图弹窗 */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:700;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;padding:1rem;}
+.lightbox.open{opacity:1;pointer-events:all;}
+.lightbox img{max-width:90vw;max-height:85vh;border-radius:8px;object-fit:contain;}
+.lightbox-close{position:absolute;top:1rem;right:1rem;background:rgba(255,255,255,.1);border:none;color:#fff;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:1.2rem;}
+.lightbox-info{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.7);color:#fff;padding:.5rem 1.25rem;border-radius:100px;font-size:.82rem;white-space:nowrap;}
 </style>
 </head>
 <body>
@@ -290,6 +383,7 @@ body.admin-mode .link-edit-bar{display:flex;}
     <li><a href="#suggestions">玩家建议</a></li>
     <li><a href="#prices">物价表</a></li>
     <li><a href="#links">快速链接</a></li>
+    <li><a href="#gallery">照片墙</a></li>
   </ul>
   <div class="nav-right">
     <div class="nav-ip" onclick="copyIP()">
@@ -444,6 +538,56 @@ body.admin-mode .link-edit-bar{display:flex;}
   </div>
   <button class="btn-add" onclick="openLinkEditor(null)">＋ 新增链接</button>
 </section>
+
+<!-- 背景装饰层 -->
+<div class="deco-layer" id="decoLayer"></div>
+
+<hr class="section-divider">
+
+<!-- GALLERY 照片墙 -->
+<section class="section" id="gallery">
+  <div class="section-header">
+    <div class="section-tag">🖼️ 照片墙</div>
+    <h2 class="section-title">玩家留念相册</h2>
+    <p style="color:var(--text-muted);font-size:.875rem;margin-top:.5rem;">上传你在神域城邦的精彩瞬间，留作永久纪念。照片经管理员审核后公开展示。</p>
+  </div>
+
+  <!-- 上传区 -->
+  <div style="background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:1.75rem;margin-bottom:2rem;">
+    <h3 style="font-size:1rem;font-weight:700;color:var(--green);margin-bottom:1.25rem;">📸 上传你的截图</h3>
+    <div class="form-grid">
+      <div class="form-field"><label>游戏名称</label><input type="text" id="galPlayer" placeholder="你的游戏ID"/></div>
+      <div class="form-field"><label>图片说明（选填）</label><input type="text" id="galCaption" placeholder="描述一下这张截图..."/></div>
+    </div>
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('galFile').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+      <input type="file" id="galFile" accept="image/*" onchange="previewFile(this)"/>
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-text"><strong>点击选择图片</strong>，或拖拽到此处<br><span style="font-size:.78rem;color:var(--text-dim);">支持 JPG / PNG / WebP，最大 5MB</span></div>
+      <div class="upload-preview" id="uploadPreview"><img id="previewImg" src="" alt="预览"/></div>
+    </div>
+    <button class="form-submit" style="margin-top:1rem;" onclick="submitPhoto()">📤 提交审核</button>
+    <p class="form-note">📋 照片将在管理员审核通过后公开展示。</p>
+  </div>
+
+  <!-- 筛选 -->
+  <div class="gallery-toolbar">
+    <div class="gallery-filter" id="galleryFilter">
+      <button class="cat-tab active" data-status="approved" onclick="selectGalFilter(this)">✅ 已展示</button>
+    </div>
+    <button class="cat-tab" id="pendingTab" style="display:none;color:var(--yellow);border-color:rgba(250,204,21,.3)" data-status="pending" onclick="selectGalFilter(this)">⏳ 待审核</button>
+  </div>
+
+  <div class="gallery-grid" id="galleryGrid">
+    <p style="color:var(--text-dim);font-size:.85rem;grid-column:1/-1">加载中...</p>
+  </div>
+</section>
+
+<!-- 大图弹窗 -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <img id="lightboxImg" src="" alt=""/>
+  <div class="lightbox-info" id="lightboxInfo"></div>
+</div>
 
 <footer>
   <div style="margin-bottom:1rem;font-size:1.5rem;">⛏️</div>
@@ -654,6 +798,7 @@ function toggleAdmin() {
     document.body.classList.remove('admin-mode');
     document.getElementById('adminFab').classList.remove('active');
     showToast('已退出管理员模式');
+    updateGalleryAdminUI();
   } else {
     document.getElementById('loginOverlay').classList.add('open');
     setTimeout(()=>document.getElementById('adminPwd').focus(),100);
@@ -669,6 +814,7 @@ function checkPwd() {
     document.getElementById('adminFab').classList.add('active');
     closeLogin();
     showToast('✅ 进入管理员模式');
+    updateGalleryAdminUI();
   } else {
     document.getElementById('loginErr').style.display='block';
     document.getElementById('adminPwd').value='';
@@ -1112,12 +1258,15 @@ document.querySelectorAll('.nav-links a').forEach(a=>{
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded',()=>{
   initAdmin();
+  initDecorations();
   loadPosts();
   loadGuides();
   loadBans();
   loadSuggestions();
   loadPrices();
   loadLinks();
+  loadGallery('approved');
+  updateGalleryAdminUI();
 });
 // ══════════════════════════════════════════════
 // 物价系统 PRICES
@@ -1428,6 +1577,245 @@ async function delLink(id) {
     }
     showToast('🗑 已删除');
   } catch(e) { showToast('❌ 删除失败'); console.error(e); }
+}
+// ══════════════════════════════════════════════
+// 背景装饰层
+// ══════════════════════════════════════════════
+function initDecorations() {
+  const layer = document.getElementById('decoLayer');
+  // Minecraft 像素方块色（SVG data URL）
+  const blocks = [
+    // 草方块
+    `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='#92400e'/><rect width='32' height='10' fill='#4ade80'/><rect y='10' width='16' height='4' fill='#16a34a'/></svg>`,
+    // 钻石矿
+    `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='#3c3835'/><rect x='4' y='4' width='8' height='8' fill='#60a5fa'/><rect x='20' y='16' width='8' height='8' fill='#60a5fa'/><rect x='8' y='20' width='6' height='6' fill='#93c5fd'/></svg>`,
+    // 金块
+    `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='#d97706'/><rect x='4' y='4' width='24' height='24' fill='#facc15'/><rect x='8' y='8' width='6' height='6' fill='#fef08a'/></svg>`,
+    // 苦力怕脸
+    `<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><rect width='32' height='32' fill='#4ade80'/><rect x='8' y='8' width='6' height='6' fill='#1c1917'/><rect x='18' y='8' width='6' height='6' fill='#1c1917'/><rect x='10' y='18' width='12' height='4' fill='#1c1917'/><rect x='8' y='22' width='4' height='4' fill='#1c1917'/><rect x='20' y='22' width='4' height='4' fill='#1c1917'/></svg>`,
+  ];
+  // 二次元玩偶 emoji
+  const chibis = ['🐱','🌸','⭐','🦊','🐰','✨','🌙','🎀','💫','🍀','🦋','🌺'];
+
+  const items = [
+    // 方块（左右散布）
+    {type:'block',x:3,y:15,s:1.2,dur:7,delay:0,idx:0},
+    {type:'block',x:8,y:55,s:0.9,dur:9,delay:1,idx:1},
+    {type:'block',x:88,y:25,s:1.1,dur:8,delay:2,idx:2},
+    {type:'block',x:93,y:65,s:0.8,dur:10,delay:0.5,idx:3},
+    {type:'block',x:5,y:80,s:1.0,dur:12,delay:3,idx:0},
+    {type:'block',x:91,y:80,s:0.9,dur:11,delay:1.5,idx:1},
+    {type:'block',x:12,y:38,s:0.7,dur:8.5,delay:2.5,idx:2},
+    {type:'block',x:85,y:45,s:0.75,dur:9.5,delay:4,idx:3},
+    // 二次元玩偶
+    {type:'chibi',x:2,y:5,s:1.1,dur:6,delay:1,idx:0},
+    {type:'chibi',x:94,y:8,s:1.2,dur:7,delay:2,idx:3},
+    {type:'chibi',x:6,y:90,s:1.0,dur:8,delay:0,idx:7},
+    {type:'chibi',x:90,y:88,s:1.1,dur:9,delay:3,idx:4},
+    {type:'chibi',x:1,y:48,s:0.9,dur:7.5,delay:1.5,idx:10},
+    {type:'chibi',x:96,y:50,s:0.85,dur:8,delay:2.5,idx:6},
+    {type:'chibi',x:10,y:70,s:0.8,dur:6.5,delay:4,idx:2},
+    {type:'chibi',x:87,y:70,s:0.9,dur:7,delay:0.5,idx:9},
+  ];
+
+  items.forEach(it => {
+    const el = document.createElement('div');
+    el.className = 'deco-item ' + (it.type==='block' ? 'deco-block' : 'deco-chibi');
+    el.style.left  = it.x + 'vw';
+    el.style.top   = it.y + 'vh';
+    el.style.transform = `scale(${it.s})`;
+    el.style.animationDuration = it.dur + 's';
+    el.style.animationDelay   = it.delay + 's';
+    if (it.type === 'block') {
+      const svg = blocks[it.idx % blocks.length];
+      el.style.backgroundImage = `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
+      el.style.backgroundSize = 'contain';
+    } else {
+      el.textContent = chibis[it.idx % chibis.length];
+    }
+    layer.appendChild(el);
+  });
+}
+
+// ══════════════════════════════════════════════
+// 照片墙 GALLERY
+// ══════════════════════════════════════════════
+const SB_BUCKET = 'gallery';
+let _galFilter = 'approved';
+let _galFile = null;
+
+function renderGalleryCard(p) {
+  const el = document.createElement('div');
+  el.className = 'gallery-card';
+  el.dataset.id = p.id;
+  const imgUrl = p.image_url || '';
+  el.innerHTML = `
+    ${p.status==='pending' ? '<div class="gallery-pending">待审核</div>' : ''}
+    <img class="gallery-img" src="${esc(imgUrl)}" alt="${esc(p.caption||'')}" loading="lazy"
+         onclick="openLightbox('${esc(imgUrl)}','${esc(p.player_name||'')} · ${esc(p.caption||'')}')"/>
+    <div class="gallery-info">
+      <div class="gallery-player">👤 ${esc(p.player_name||'匿名')}</div>
+      ${p.caption?`<div class="gallery-caption">${esc(p.caption)}</div>`:''}
+      <div class="gallery-date">${p.created_at ? new Date(p.created_at).toLocaleDateString('zh-CN') : ''}</div>
+    </div>
+    <div class="gallery-edit-bar">
+      ${p.status==='pending'
+        ? `<button class="btn-edit" onclick="approvePhoto('${p.id}')">✅ 通过</button>`
+        : `<button class="btn-edit" onclick="rejectPhoto('${p.id}')">⏸ 下架</button>`}
+      <button class="btn-del" onclick="delPhoto('${p.id}','${esc(p.storage_path||'')}')">🗑 删除</button>
+    </div>`;
+  return el;
+}
+
+async function loadGallery(status='approved') {
+  _galFilter = status;
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;grid-column:1/-1">加载中...</p>';
+  try {
+    const rows = await sbGet('gallery', `status=eq.${status}&order=created_at.desc`);
+    grid.innerHTML = '';
+    if (!rows.length) {
+      grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem;grid-column:1/-1">暂无图片。</p>';
+      return;
+    }
+    rows.forEach(p => grid.appendChild(renderGalleryCard(p)));
+  } catch(e) {
+    grid.innerHTML = '<p style="color:var(--red);font-size:.85rem;grid-column:1/-1">⚠️ 加载失败</p>';
+    console.error(e);
+  }
+}
+
+function selectGalFilter(btn) {
+  document.querySelectorAll('#galleryFilter .cat-tab, #pendingTab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadGallery(btn.dataset.status);
+}
+
+// 上传预览
+function previewFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { showToast('⚠️ 图片不能超过 5MB'); return; }
+  _galFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('uploadPreview').style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function dragOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('drag'); }
+function dragLeave(e) { document.getElementById('uploadZone').classList.remove('drag'); }
+function dropFile(e) {
+  e.preventDefault();
+  document.getElementById('uploadZone').classList.remove('drag');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('image/')) {
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('galFile').files = dt.files;
+    previewFile(document.getElementById('galFile'));
+  }
+}
+
+async function submitPhoto() {
+  const player = document.getElementById('galPlayer').value.trim();
+  if (!player) { showToast('⚠️ 请填写游戏名称'); return; }
+  if (!_galFile)  { showToast('⚠️ 请选择图片'); return; }
+  const caption = document.getElementById('galCaption').value.trim();
+
+  const btn = document.querySelector('#gallery .form-submit');
+  btn.disabled = true; btn.textContent = '上传中...';
+
+  try {
+    // 上传图片到 Supabase Storage
+    const ext = _galFile.name.split('.').pop();
+    const path = `photos/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const upRes = await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${path}`, {
+      method: 'POST',
+      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY,
+                 'Content-Type': _galFile.type, 'x-upsert': 'true' },
+      body: _galFile
+    });
+    if (!upRes.ok) throw new Error('图片上传失败：' + await upRes.text());
+
+    // 公开 URL
+    const imageUrl = `${SB_URL}/storage/v1/object/public/${SB_BUCKET}/${path}`;
+
+    // 写入数据库
+    await sbPost('gallery', {
+      player_name: player, caption, image_url: imageUrl,
+      storage_path: path, status: 'pending'
+    }, 'return=minimal');
+
+    // 重置表单
+    document.getElementById('galPlayer').value = '';
+    document.getElementById('galCaption').value = '';
+    document.getElementById('galFile').value = '';
+    document.getElementById('uploadPreview').style.display = 'none';
+    _galFile = null;
+    showToast('✅ 已提交！等待管理员审核后展示。');
+  } catch(e) {
+    showToast('❌ 上传失败：' + e.message);
+    console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '📤 提交审核';
+  }
+}
+
+async function approvePhoto(id) {
+  if (!isAdmin) return;
+  try {
+    await sbPatch('gallery', `id=eq.${id}`, {status:'approved'});
+    const card = document.querySelector(`.gallery-card[data-id="${id}"]`);
+    if (card) {
+      const [row] = await sbGet('gallery', `id=eq.${id}`);
+      card.replaceWith(renderGalleryCard(row));
+    }
+    showToast('✅ 已通过审核');
+  } catch(e) { showToast('❌ 操作失败'); console.error(e); }
+}
+
+async function rejectPhoto(id) {
+  if (!isAdmin) return;
+  try {
+    await sbPatch('gallery', `id=eq.${id}`, {status:'pending'});
+    loadGallery(_galFilter);
+    showToast('⏸ 已下架');
+  } catch(e) { showToast('❌ 操作失败'); console.error(e); }
+}
+
+async function delPhoto(id, storagePath) {
+  if (!isAdmin || !confirm('确定删除这张图片？')) return;
+  try {
+    // 删数据库记录
+    await sbDelete('gallery', `id=eq.${id}`);
+    // 删 Storage 文件
+    if (storagePath) {
+      await fetch(`${SB_URL}/storage/v1/object/${SB_BUCKET}/${storagePath}`, {
+        method: 'DELETE',
+        headers: {'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY}
+      });
+    }
+    document.querySelector(`.gallery-card[data-id="${id}"]`)?.remove();
+    showToast('🗑 已删除');
+  } catch(e) { showToast('❌ 删除失败'); console.error(e); }
+}
+
+// 大图弹窗
+function openLightbox(url, info) {
+  document.getElementById('lightboxImg').src = url;
+  document.getElementById('lightboxInfo').textContent = info;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// 管理员模式下显示待审核 tab
+function updateGalleryAdminUI() {
+  document.getElementById('pendingTab').style.display = isAdmin ? '' : 'none';
 }
 </script>
 </body>
