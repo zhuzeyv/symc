@@ -3,14 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1c1917">
 <title>🌍 神域城邦 - 官方网站</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="dns-prefetch" href="https://vlbdguleovswmchypadd.supabase.co">
+<link rel="preconnect" href="https://vlbdguleovswmchypadd.supabase.co" crossorigin>
+<link rel="preconnect" href="https://fonts.loli.net">
+<link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"></noscript>
 <style>
 :root{--green:#4ade80;--green-dark:#16a34a;--green-dim:#14532d;--stone:#1c1917;--stone-mid:#292524;--stone-light:#3c3835;--text:#fafaf9;--text-muted:#a8a29e;--text-dim:#78716c;--border:rgba(255,255,255,0.08);--red:#f87171;--blue:#60a5fa;--yellow:#facc15;}
 *{margin:0;padding:0;box-sizing:border-box;}
 html{scroll-behavior:smooth;}
-body{background:var(--stone);color:var(--text);font-family:'Noto Sans SC',sans-serif;line-height:1.7;overflow-x:hidden;}
+body{background:var(--stone);color:var(--text);font-family:'Noto Sans SC','PingFang SC','Microsoft YaHei','Hiragino Sans GB',sans-serif;line-height:1.7;overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(74,222,128,.03)1px,transparent 1px),linear-gradient(90deg,rgba(74,222,128,.03)1px,transparent 1px);background-size:40px 40px;pointer-events:none;z-index:0;}
 
 /* NAV */
@@ -299,6 +303,11 @@ body.admin-mode .admin-bar{display:block;}
 .price-edit-bar{display:none;gap:5px;margin-top:.7rem;padding-top:.6rem;border-top:1px solid var(--border);}
 body.admin-mode .price-edit-bar{display:flex;}
 .price-empty{color:var(--text-dim);font-size:.9rem;text-align:center;padding:3rem;grid-column:1/-1;}
+/* ── 性能优化：非首屏延迟渲染 ─────────────────── */
+#guides,#bans,#suggestions,#prices,#links,#gallery{
+  content-visibility:auto;
+  contain-intrinsic-size:0 600px;
+}
 /* ── 快速链接 ─────────────────────────────────── */
 .links-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
 .link-card{background:var(--stone-mid);border:1px solid var(--border);border-radius:12px;padding:1.25rem 1.5rem;display:flex;align-items:center;gap:1rem;text-decoration:none;color:inherit;transition:border-color .2s,transform .2s,background .2s;position:relative;}
@@ -750,16 +759,29 @@ let _edit = null; // 当前编辑状态 {kind, id}
 function sbH(extra={}) {
   return {'Content-Type':'application/json','apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,...extra};
 }
-async function sbGet(table, query='') {
+
+// 简单内存缓存，避免重复请求
+const _cache = {};
+async function sbGet(table, query='', ttl=30000) {
+  const key = table + '?' + query;
+  const now = Date.now();
+  if (_cache[key] && now - _cache[key].t < ttl) return _cache[key].d;
   const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {headers:sbH()});
   if (!r.ok) throw new Error(await r.text());
-  return r.json();
+  const d = await r.json();
+  _cache[key] = {d, t:now};
+  return d;
 }
+function sbCacheClear(table) {
+  Object.keys(_cache).forEach(k => { if(k.startsWith(table)) delete _cache[k]; });
+}
+
 async function sbPost(table, body, prefer='return=representation') {
   const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
     method:'POST', headers:sbH({'Prefer':prefer}), body:JSON.stringify(body)
   });
   if (!r.ok) throw new Error(await r.text());
+  sbCacheClear(table);
   return prefer.includes('representation') ? r.json() : null;
 }
 async function sbPatch(table, query, body) {
@@ -767,10 +789,12 @@ async function sbPatch(table, query, body) {
     method:'PATCH', headers:sbH({'Prefer':'return=minimal'}), body:JSON.stringify(body)
   });
   if (!r.ok) throw new Error(await r.text());
+  sbCacheClear(table);
 }
 async function sbDelete(table, query) {
   const r = await fetch(`${SB_URL}/rest/v1/${table}?${query}`, {method:'DELETE',headers:sbH()});
   if (!r.ok) throw new Error(await r.text());
+  sbCacheClear(table);
 }
 async function sbUpsert(table, body) {
   const r = await fetch(`${SB_URL}/rest/v1/${table}`, {
@@ -779,6 +803,7 @@ async function sbUpsert(table, body) {
     body:JSON.stringify(body)
   });
   if (!r.ok) throw new Error(await r.text());
+  sbCacheClear(table);
   return r.json();
 }
 
@@ -1259,14 +1284,17 @@ document.querySelectorAll('.nav-links a').forEach(a=>{
 document.addEventListener('DOMContentLoaded',()=>{
   initAdmin();
   initDecorations();
-  loadPosts();
-  loadGuides();
-  loadBans();
-  loadSuggestions();
-  loadPrices();
-  loadLinks();
-  loadGallery('approved');
   updateGalleryAdminUI();
+  // 并行加载所有数据，互不阻塞
+  Promise.allSettled([
+    loadPosts(),
+    loadGuides(),
+    loadBans(),
+    loadSuggestions(),
+    loadPrices(),
+    loadLinks(),
+    loadGallery('approved'),
+  ]);
 });
 // ══════════════════════════════════════════════
 // 物价系统 PRICES
