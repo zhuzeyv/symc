@@ -879,7 +879,13 @@ async function sbUpsert(table, body) {
   return r.json();
 }
 async function _sbErr(r) {
-  if (r.status === 401 || r.status === 403) return '没有写入权限，请确认已登录管理员账号';
+  if (r.status === 401 || r.status === 403) {
+    let body = '';
+    try { body = await r.text(); } catch (e) {}
+    if (/row-level security|policy/i.test(body))
+      return '数据库策略拦下了写入。SQL 里 admin_all 的邮箱必须是 ' + (ADMIN_EMAIL || '（前端未配置）');
+    return '登录已过期，请退出后重新登录';
+  }
   try { const t = await r.text(); return t || ('HTTP ' + r.status); } catch { return 'HTTP ' + r.status; }
 }
 
