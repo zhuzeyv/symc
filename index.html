@@ -1046,22 +1046,37 @@ function formatPostBody(raw) {
       if (n.nodeType === 3) {
         // <br> 被替换成 \n 后，第 0 段是块首，后面的都是续行
         n.textContent.split('\n').forEach((t, i) => push(t, i > 0));
-      } else if (n.nodeType === 1) {
-        const tag = n.tagName.toLowerCase();
-        if (/^h[1-6]$/.test(tag)) {
-          const t = n.textContent.trim();
-          if (t) rawLines.push({ text: '\u0001' + t, cont: false });
-        } else if (tag === 'ul' || tag === 'ol') {
-          n.querySelectorAll('li').forEach(li => {
-            const t = li.textContent.trim();
-            if (t) rawLines.push({ text: '+ ' + t, cont: false });
-          });
-        } else if (tag === 'div' || tag === 'p' || tag === 'span') {
-          walk(n);
-        } else {
-          push(n.textContent, false);
-        }
+        return;
       }
+      if (n.nodeType !== 1) return;
+      const tag = n.tagName.toLowerCase();
+      if (/^h[1-6]$/.test(tag)) {
+        const t = n.textContent.trim();
+        if (t) rawLines.push({ text: '\u0001' + t, cont: false });
+        return;
+      }
+      if (tag === 'ul' || tag === 'ol') {
+        n.querySelectorAll('li').forEach(li => {
+          const t = li.textContent.trim();
+          if (t) rawLines.push({ text: '+ ' + t, cont: false });
+        });
+        return;
+      }
+      if (tag === 'div' || tag === 'p' || tag === 'section' || tag === 'article') {
+        // 内部还有块级子元素（h3/ul/div…）就继续递归，别拍平
+        if (n.querySelector('h1,h2,h3,h4,h5,h6,ul,ol,div,p,section,article')) {
+          walk(n);
+          return;
+        }
+        // 纯内联内容：把 <b>/<span>/<a> 拍平成文本，再按换行切分，
+        // 否则 <b> 会被误当成独立的一行。
+        const flat = n.innerHTML
+          .replace(/<br\s*\/?>/gi, '\n')
+          .replace(/<[^>]*>/g, '');
+        flat.split('\n').forEach((t, i) => push(t, i > 0));
+        return;
+      }
+      push(n.textContent, false);
     });
   };
   walk(box);
@@ -1373,7 +1388,7 @@ async function vote(btn) {
 // 通用删除
 // ══════════════════════════════════════════════
 const tableMap = {post:'posts',guide:'guides',ban:'bans',sugg:'suggestions'};
-const selectorMap = {post:'.post-card',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
+const selectorMap = {post:'.log-entry',guide:'.guide-item',ban:'tr',sugg:'.suggestion-card'};
 
 async function delItem(kind, id) {
   if (!isAdmin||!confirm('确定删除？')) return;
