@@ -47,7 +47,8 @@ nav{position:sticky;top:0;z-index:100;background:rgba(28,25,23,.92);backdrop-fil
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(74,222,128,.35);}
 .btn-outline{border:1px solid var(--border);color:var(--text);padding:.8rem 2rem;border-radius:6px;text-decoration:none;transition:border-color .2s,background .2s;font-size:.95rem;}
 .btn-outline:hover{border-color:var(--green);background:rgba(74,222,128,.08);}
-.online-badge{display:inline-flex;align-items:center;gap:8px;margin-top:2rem;background:var(--stone-mid);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:.82rem;color:var(--text-muted);opacity:0;animation:fadeUp .6s 1s forwards;}
+.online-badge{display:inline-flex;align-items:center;gap:10px;margin-top:2rem;background:rgba(74,222,128,.10);border:1px solid rgba(74,222,128,.32);border-radius:100px;padding:10px 22px;font-size:1.02rem;font-weight:500;color:var(--text);box-shadow:0 0 0 4px rgba(74,222,128,.05);opacity:0;animation:fadeUp .5s .3s forwards;}
+.online-badge b{color:var(--green);font-weight:700;font-variant-numeric:tabular-nums;}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.25);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(74,222,128,.25);}50%{box-shadow:0 0 0 6px rgba(74,222,128,.1);}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
@@ -1019,69 +1020,98 @@ function badgeCls(b) {
 
 // 把旧格式正文（<div> 包裹 + ---- 分隔线 + 裸文本行）整理成规范结构
 function formatPostBody(raw) {
-  const src = String(raw || '').trim();
+  let src = String(raw || '').trim();
   if (!src) return '';
+  // 纯文本（没有任何标签）先把换行转成 <br>，否则 HTML 会吞掉换行
+  if (!/<[a-z\/]/i.test(src)) src = src.replace(/\r?\n/g, '<br>');
   // 富文本编辑器写的新格式（无分隔线、无 div 包裹）原样返回
   if (!/-{3,}/.test(src) && !/<div\b/i.test(src)) return src;
 
   const box = document.createElement('div');
   box.innerHTML = src;
   box.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+  box.normalize();   // 合并相邻文本节点，否则 \n 会被拆成独立节点，续行判断失效
 
-  const lines = [];
+  const rawLines = [];
+  const push = (t, cont) => { const s = String(t).trim(); if (s) rawLines.push({ text: s, cont: !!cont }); };
+
   const walk = node => {
     node.childNodes.forEach(n => {
       if (n.nodeType === 3) {
-        n.textContent.split('\n').forEach(t => { const s = t.trim(); if (s) lines.push(s); });
+        // <br> 被替换成 \n 后，第 0 段是块首，后面的都是续行
+        n.textContent.split('\n').forEach((t, i) => push(t, i > 0));
       } else if (n.nodeType === 1) {
         const tag = n.tagName.toLowerCase();
         if (/^h[1-6]$/.test(tag)) {
           const t = n.textContent.trim();
-          if (t) lines.push('\u0001' + t);
+          if (t) rawLines.push({ text: '\u0001' + t, cont: false });
         } else if (tag === 'ul' || tag === 'ol') {
           n.querySelectorAll('li').forEach(li => {
             const t = li.textContent.trim();
-            if (t) lines.push('+ ' + t);
+            if (t) rawLines.push({ text: '+ ' + t, cont: false });
           });
         } else if (tag === 'div' || tag === 'p' || tag === 'span') {
           walk(n);
         } else {
-          const t = n.textContent.trim();
-          if (t) lines.push(t);
+          push(n.textContent, false);
         }
       }
     });
   };
   walk(box);
 
-  const HEAD = /^(更新内容|新增|修复|删除|调整|优化|其他|注意|说明|改动|已知问题)[:：]?$/;
+  const HEAD = /^.{0,16}(更新内容|新增|修复|删除|调整|优化|其他|注意|说明|改动|已知问题)[:：]?$/;
+  const isDivider = s => /^[-*_=]{3,}$/.test(s);
+  const isItem    = s => /^[-+•·]\s*/.test(s);
+  const isHead    = s => s.charAt(0) === '\u0001' || (!isItem(s) && HEAD.test(s));
+
+  const blocks = [];
+  for (const ln of rawLines) {
+    const line = ln.text;
+    if (isDivider(line)) continue;
+    // 续行：不是新条目也不是标题，接到上一条后面（上一条不能是标题）
+    if (ln.cont && !isItem(line) && !isHead(line) && blocks.length && blocks[blocks.length - 1].type !== 'head') {
+      blocks[blocks.length - 1].text += line;
+      continue;
+    }
+    if (isHead(line))      blocks.push({ type: 'head', text: line.replace(/^\u0001/, '') });
+    else if (isItem(line)) blocks.push({ type: 'item', text: line.replace(/^[-+•·]\s*/, '').trim() });
+    else                   blocks.push({ type: 'text', text: line });
+  }
+
   let html = '', inList = false;
   const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
-
-  for (let line of lines) {
-    if (/^[-*_=]{3,}$/.test(line)) continue;
-    if (line.charAt(0) === '\u0001') {
+  for (const b of blocks) {
+    if (b.type === 'head') {
       closeList();
-      html += `<h3>${esc(line.slice(1))}</h3>`;
-      continue;
-    }
-    if (/^[-+•·]\s*/.test(line)) {
-      const t = line.replace(/^[-+•·]\s*/, '').trim();
-      if (!t) continue;
+      html += `<h3>${esc(b.text)}</h3>`;
+    } else if (b.type === 'item') {
+      if (!b.text) continue;
       if (!inList) { html += '<ul>'; inList = true; }
-      html += `<li>${esc(t)}</li>`;
-      continue;
-    }
-    if (HEAD.test(line)) {
+      html += `<li>${esc(b.text)}</li>`;
+    } else {
       closeList();
-      html += `<h3>${esc(line)}</h3>`;
-      continue;
+      html += `<p>${esc(b.text)}</p>`;
     }
-    closeList();
-    html += `<p>${esc(line)}</p>`;
   }
   closeList();
   return html || src;
+}
+
+// 富文本粘贴：纯文本自动整理排版（从网页复制的富文本交给浏览器默认处理）
+function initRichPaste() {
+  const ed = document.getElementById('richEditor');
+  if (!ed) return;
+  ed.addEventListener('paste', e => {
+    const cd = e.clipboardData || window.clipboardData;
+    if (!cd) return;
+    if (cd.types && Array.from(cd.types).indexOf('text/html') >= 0) return;
+    const text = cd.getData('text/plain');
+    if (!text || !text.trim()) return;
+    e.preventDefault();
+    ed.focus();
+    document.execCommand('insertHTML', false, formatPostBody(text));
+  });
 }
 
 function renderPostCard(p) {
@@ -1564,7 +1594,7 @@ async function refreshServerStatus() {
   const dot  = document.getElementById('onlineDot');
   if (!text) return;
   const setState = (msg, color) => {
-    text.textContent = msg;
+    text.innerHTML = msg;
     if (dot) { dot.style.background = color; if (color !== 'var(--green)') dot.style.animation = 'none'; }
   };
   const fetchJson = async (url, ms) => {
@@ -1578,9 +1608,10 @@ async function refreshServerStatus() {
   };
   const show = d => {
     if (!d || !d.online) { setState('服务器当前离线', 'var(--text-dim)'); return true; }
-    const cur = (d.players && typeof d.players.online === 'number') ? d.players.online : 0;
-    const max = (d.players && d.players.max) ? d.players.max : null;
-    setState(max ? `服务器运行中 · ${cur} / ${max} 人在线` : `服务器运行中 · ${cur} 人在线`, 'var(--green)');
+    const cur = Math.max(0, Number(d.players && d.players.online) || 0);
+    const max = Number(d.players && d.players.max) || 0;
+    setState(max ? `服务器运行中 · <b>${cur}</b> / ${max} 人在线`
+                 : `服务器运行中 · <b>${cur}</b> 人在线`, 'var(--green)');
     return true;
   };
 
@@ -1623,6 +1654,7 @@ document.addEventListener('DOMContentLoaded',async()=>{
   initDecorations();
   refreshServerStatus();
   updateGalleryAdminUI();
+  initRichPaste();
   // 并行加载所有数据，互不阻塞
   Promise.allSettled([
     loadPosts(),
