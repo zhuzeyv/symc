@@ -382,12 +382,39 @@ body.admin-mode .gallery-edit-bar{display:flex;}
 
 @media(max-width:768px){
   .hero{min-height:auto;padding:3.5rem 1rem 2.5rem;}
+  .log-entry{padding:1.25rem 1.15rem;}
+  .log-entry::before{display:none;}
+  .log-title{font-size:1.05rem;}
+  .log-body{font-size:.875rem;}
   thead th:nth-child(3){display:table-cell;}
   tbody td:nth-child(3){display:table-cell;}
   .ban-table-wrap{-webkit-overflow-scrolling:touch;}
   table{font-size:.82rem;}
   thead th,tbody td{padding:.7rem .85rem;white-space:nowrap;}
 }
+
+/* 更新日志 */
+.btn-load-more{display:block;width:100%;margin-top:1.25rem;background:var(--stone-mid);border:1px solid var(--border);color:var(--text-muted);padding:.9rem;border-radius:var(--radius);cursor:pointer;font-size:.875rem;font-family:'Noto Sans SC',sans-serif;transition:border-color .2s,color .2s,background .2s;}
+.btn-load-more:hover{border-color:rgba(74,222,128,.45);color:var(--green);background:rgba(74,222,128,.06);}
+.richbar-sep{width:1px;height:18px;background:var(--border);margin:0 4px;align-self:center;}
+.section-desc{color:var(--text-muted);font-size:.875rem;margin-top:.5rem;}
+.changelog{display:flex;flex-direction:column;gap:1.25rem;}
+.log-entry{position:relative;background:var(--stone-mid);border:1px solid var(--border);border-radius:var(--radius);padding:1.75rem 2rem;transition:border-color .2s;}
+.log-entry:hover{border-color:rgba(74,222,128,.28);}
+.log-entry::before{content:'';position:absolute;left:0;top:1.75rem;bottom:1.75rem;width:2px;border-radius:2px;background:linear-gradient(180deg,var(--green),rgba(74,222,128,0));opacity:.4;}
+.log-head{display:flex;align-items:center;gap:.75rem;margin-bottom:.7rem;}
+.log-badge{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.08em;text-transform:uppercase;}
+.log-date{font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text-dim);margin-left:auto;letter-spacing:.04em;}
+.log-title{font-size:1.15rem;font-weight:900;line-height:1.4;margin-bottom:1rem;letter-spacing:-.01em;}
+.log-body{font-size:.9rem;color:var(--text-muted);line-height:1.85;}
+.log-body h3{font-size:.95rem;font-weight:700;color:var(--green);margin:1.3rem 0 .45rem;}
+.log-body h3:first-child{margin-top:0;}
+.log-body p{margin-bottom:.5rem;}
+.log-body ul,.log-body ol{margin:.2rem 0 .8rem 1.3rem;}
+.log-body li{margin-bottom:.32rem;}
+.log-body strong{color:var(--text);}
+.log-body code{font-family:'JetBrains Mono',monospace;background:var(--stone);border:1px solid var(--border);padding:1px 6px;border-radius:4px;font-size:.85em;color:var(--yellow);}
+.log-body a{color:var(--green);}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;transition-duration:.01ms !important;scroll-behavior:auto !important;}
@@ -471,8 +498,10 @@ body.admin-mode .gallery-edit-bar{display:flex;}
   <div id="news" class="section-header">
     <div class="section-tag">📢 公告</div>
     <h2 class="section-title">最新公告与更新日志</h2>
+    <p class="section-desc">最新版本置顶，旧版本往下放</p>
   </div>
-  <div class="posts-grid" id="postsGrid"></div>
+  <div class="changelog" id="postsGrid"></div>
+  <button class="btn-load-more" id="loadMorePosts" onclick="loadMorePosts()" style="display:none"></button>
   <button class="btn-add" onclick="openEditor('post',null)">＋ 新增公告</button>
 </section>
 
@@ -666,8 +695,8 @@ body.admin-mode .gallery-edit-bar{display:flex;}
 
     <!-- 公告字段 -->
     <div id="fPost">
-      <div class="ed-field"><label>标题</label><input type="text" id="fPostTitle" placeholder="公告标题"/></div>
-      <div class="ed-field"><label>摘要（卡片简短描述）</label><input type="text" id="fPostExcerpt" placeholder="一行简介..."/></div>
+      <div class="ed-field"><label>标题</label><input type="text" id="fPostTitle" placeholder="例：v1.1.4 更新"/></div>
+      <div class="ed-field"><label>摘要（正文为空时显示这一行）</label><input type="text" id="fPostExcerpt" placeholder="一行简介..."/></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
         <div class="ed-field"><label>类型</label>
           <select id="fPostBadge">
@@ -715,6 +744,11 @@ body.admin-mode .gallery-edit-bar{display:flex;}
           <button onclick="fmtBlock('p')">段落</button>
           <button onclick="document.execCommand('insertLineBreak')">换行</button>
           <button onclick="fmtCode()">代码</button>
+          <span class="richbar-sep"></span>
+          <button onclick="insertSection('✨','新增')">✨ 新增</button>
+          <button onclick="insertSection('🐛','修复')">🐛 修复</button>
+          <button onclick="insertSection('⚙️','调整')">⚙️ 调整</button>
+          <button onclick="insertSection('📌','注意')">📌 注意</button>
         </div>
         <div class="rich-editor" id="richEditor" contenteditable="true"></div>
       </div>
@@ -780,7 +814,7 @@ body.admin-mode .gallery-edit-bar{display:flex;}
 const SB_URL  = 'https://vlbdguleovswmchypadd.supabase.co';
 const SB_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsYmRndWxlb3Zzd21jaHlwYWRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4MjA4NjEsImV4cCI6MjA5NDM5Njg2MX0.0z1v0ikgitJzxajV8itIL8grU0lDs3DTQHOORueSvAc';
 // ⚠️ 必填：Supabase → Authentication → Users 里创建的管理员账号邮箱
-const ADMIN_EMAIL = '';
+const ADMIN_EMAIL = '1404516878@qq.com';
 // ═══════════════════════════════════════════════
 
 let isAdmin = false;
@@ -983,43 +1017,135 @@ function badgeCls(b) {
   return {活动:'badge-event',维护:'badge-maintain',公告:'badge-notice',更新:'badge-update'}[b]||'badge-update';
 }
 
+// 把旧格式正文（<div> 包裹 + ---- 分隔线 + 裸文本行）整理成规范结构
+function formatPostBody(raw) {
+  const src = String(raw || '').trim();
+  if (!src) return '';
+  // 富文本编辑器写的新格式（无分隔线、无 div 包裹）原样返回
+  if (!/-{3,}/.test(src) && !/<div\b/i.test(src)) return src;
+
+  const box = document.createElement('div');
+  box.innerHTML = src;
+  box.querySelectorAll('br').forEach(br => br.replaceWith('\n'));
+
+  const lines = [];
+  const walk = node => {
+    node.childNodes.forEach(n => {
+      if (n.nodeType === 3) {
+        n.textContent.split('\n').forEach(t => { const s = t.trim(); if (s) lines.push(s); });
+      } else if (n.nodeType === 1) {
+        const tag = n.tagName.toLowerCase();
+        if (/^h[1-6]$/.test(tag)) {
+          const t = n.textContent.trim();
+          if (t) lines.push('\u0001' + t);
+        } else if (tag === 'ul' || tag === 'ol') {
+          n.querySelectorAll('li').forEach(li => {
+            const t = li.textContent.trim();
+            if (t) lines.push('+ ' + t);
+          });
+        } else if (tag === 'div' || tag === 'p' || tag === 'span') {
+          walk(n);
+        } else {
+          const t = n.textContent.trim();
+          if (t) lines.push(t);
+        }
+      }
+    });
+  };
+  walk(box);
+
+  const HEAD = /^(更新内容|新增|修复|删除|调整|优化|其他|注意|说明|改动|已知问题)[:：]?$/;
+  let html = '', inList = false;
+  const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+
+  for (let line of lines) {
+    if (/^[-*_=]{3,}$/.test(line)) continue;
+    if (line.charAt(0) === '\u0001') {
+      closeList();
+      html += `<h3>${esc(line.slice(1))}</h3>`;
+      continue;
+    }
+    if (/^[-+•·]\s*/.test(line)) {
+      const t = line.replace(/^[-+•·]\s*/, '').trim();
+      if (!t) continue;
+      if (!inList) { html += '<ul>'; inList = true; }
+      html += `<li>${esc(t)}</li>`;
+      continue;
+    }
+    if (HEAD.test(line)) {
+      closeList();
+      html += `<h3>${esc(line)}</h3>`;
+      continue;
+    }
+    closeList();
+    html += `<p>${esc(line)}</p>`;
+  }
+  closeList();
+  return html || src;
+}
+
 function renderPostCard(p) {
-  const d = document.createElement('div');
-  d.className = 'post-card';
+  const d = document.createElement('article');
+  d.className = 'log-entry';
   d.dataset.id = p.id;
-  d.onclick = () => openView(p.title, p.body);
+  const plain = String(p.body || '').replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').replace(/[-_=]{3,}/g, '').trim();
+  const bodyHtml = plain.length > 0 ? formatPostBody(p.body) : `<p>${esc(p.excerpt || '')}</p>`;
   d.innerHTML = `
-    <div class="post-card-header">
-      <span class="post-badge ${badgeCls(p.badge)}">${esc(p.badge||'')}</span>
-      <span class="post-date">${esc(p.date||'')}</span>
+    <div class="log-head">
+      <span class="log-badge ${badgeCls(p.badge)}">${esc(p.badge || '更新')}</span>
+      <time class="log-date">${esc(p.date || '')}</time>
     </div>
-    <div class="post-card-body">
-      <div class="post-title">${esc(p.title||'')}</div>
-      <div class="post-excerpt">${esc(p.excerpt||'')}</div>
-    </div>
-    <div class="edit-bar" onclick="event.stopPropagation()">
+    <h3 class="log-title">${esc(p.title || '')}</h3>
+    <div class="log-body">${bodyHtml}</div>
+    <div class="edit-bar">
       <button class="btn-edit" onclick="openEditor('post','${p.id}')">✏️ 编辑</button>
       <button class="btn-del"  onclick="delItem('post','${p.id}')">🗑 删除</button>
     </div>`;
   return d;
 }
 
+const POSTS_PAGE = 5;
+let _allPosts = [];
+let _shownPosts = 0;
+
 async function loadPosts() {
   const grid = document.getElementById('postsGrid');
   grid.innerHTML = '<p style="color:var(--text-dim);font-size:.85rem">加载中...</p>';
   try {
-    const rows = await sbGet('posts','order=created_at.desc');
+    const rows = await sbGet('posts','order=date.desc.nullslast,created_at.desc');
     grid.innerHTML = '';
-    if (!rows.length) {
+    _allPosts = rows || [];
+    _shownPosts = 0;
+    if (!_allPosts.length) {
       grid.innerHTML = '<div class="empty-state"><span class="empty-icon">📢</span><span class="empty-text">还没有公告</span><span class="empty-hint">管理员登录后可点击下方按钮发布</span></div>';
+      updateLoadMoreBtn();
       return;
     }
-    rows.forEach(p => grid.appendChild(renderPostCard(p)));
+    renderPostPage();
   } catch(e) {
     grid.innerHTML = `<p style="color:var(--red);font-size:.85rem">⚠️ 加载失败</p>`;
     console.error(e);
   }
 }
+
+function renderPostPage() {
+  const grid = document.getElementById('postsGrid');
+  const next = _allPosts.slice(_shownPosts, _shownPosts + POSTS_PAGE);
+  next.forEach(p => grid.appendChild(renderPostCard(p)));
+  _shownPosts += next.length;
+  updateLoadMoreBtn();
+}
+
+function updateLoadMoreBtn() {
+  const btn = document.getElementById('loadMorePosts');
+  if (!btn) return;
+  const rest = _allPosts.length - _shownPosts;
+  if (rest <= 0) { btn.style.display = 'none'; return; }
+  btn.style.display = 'block';
+  btn.textContent = `展开更多（还有 ${rest} 条）`;
+}
+
+function loadMorePosts() { renderPostPage(); }
 
 // ══════════════════════════════════════════════
 // 攻略 GUIDES
@@ -1341,7 +1467,12 @@ async function saveItem() {
     } else {
       // 新增
       const [saved] = await sbPost(tableMap[kind], payload);
-      if (kind==='post')  document.getElementById('postsGrid').prepend(renderPostCard(saved));
+      if (kind==='post') {
+        _allPosts.unshift(saved);
+        _shownPosts += 1;
+        document.getElementById('postsGrid').prepend(renderPostCard(saved));
+        updateLoadMoreBtn();
+      }
       if (kind==='guide') document.getElementById('guideList').appendChild(renderGuideItem(saved));
       if (kind==='ban')   document.getElementById('banBody').prepend(renderBanRow(saved));
     }
@@ -1379,6 +1510,28 @@ function fmtCode() {
   const code = document.createElement('code');
   code.style.cssText='background:rgba(255,255,255,.08);padding:1px 6px;border-radius:3px;font-family:monospace;';
   try { sel.getRangeAt(0).surroundContents(code); } catch(e) {}
+}
+
+// 插入分类小标题（✨ 新增 / 🐛 修复 / ⚙️ 调整 / 📌 注意）
+function insertSection(icon, name) {
+  const ed = document.getElementById('richEditor');
+  if (!ed) return;
+  ed.focus();
+  const html = `<h3>${icon} ${name}</h3><p><br></p>`;
+  const sel = window.getSelection();
+  const inEditor = sel && sel.rangeCount && ed.contains(sel.anchorNode);
+  if (inEditor) document.execCommand('insertHTML', false, html);
+  else ed.insertAdjacentHTML('beforeend', html);
+  // 光标移到新插入的空段落，直接就能打字
+  const ps = ed.querySelectorAll('p');
+  const last = ps[ps.length - 1];
+  if (last && sel) {
+    const r = document.createRange();
+    r.selectNodeContents(last);
+    r.collapse(false);
+    sel.removeAllRanges();
+    sel.addRange(r);
+  }
 }
 
 // ══════════════════════════════════════════════
